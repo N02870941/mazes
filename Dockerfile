@@ -5,6 +5,7 @@ ADD ./src /app
 WORKDIR /app
 
 # Install Java 10
+npm install
 
 EXPOSE 80
 
