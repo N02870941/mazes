@@ -6,12 +6,8 @@ services:
 script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t jabaridash/mazes .
-  - |
-    docker run                                         \
-    -d                                                 \
-    -p 8080:80                                         \
-    jabaridash/mazes
-  - sleep 15
+  - docker run -d -p 8080:80 jabaridash/mazes &
+  - sleep 5
   - docker ps -a
   - curl localhost:8080
   - docker push jabaridash/mazes
