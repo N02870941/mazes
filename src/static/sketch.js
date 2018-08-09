@@ -12,6 +12,8 @@ let canvasWidthSlider = $("#canvas-width-slider").slider();
 let pathWidthSlider   = $("#path-width-slider").slider();
 let canvas;
 
+// UI Setup
+//------------------------------------------------------------------------------
 
 $("#canvas-width-slider").on("slide", (e) => $("#canvas-width-slider-value").text(e.value));
 $("#path-width-slider").on("slide", (e) => $("#path-width-slider-value").text(e.value));

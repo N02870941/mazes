@@ -12,7 +12,7 @@ docker pull jabaridash/mazes
 docker run -p 8080:80 jabaridash/mazes
 ```
 
-You can also run it from source if you have git and node 8+installed:
+You can also run it from source if you have git and node 8+ installed:
 
 ```
 git clone https://github.com/N02870941/mazes.git
@@ -21,5 +21,12 @@ cd mazes/src
 
 npm install
 
-node index 8080
+gulp dev
 ```
+
+# Intuition
+Maze generation and solving can be described in terms of graph theory.
+
+# Maze generation
+
+# Maze solving
