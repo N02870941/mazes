@@ -1,0 +1,95 @@
+<html>
+
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- <meta name="viewport" content="user-scalable=no,initial-scale=1.0,maximum-scale=1,minimum-scale=1,width=device-width"> -->
+
+    <!-- External CSS -->
+    <link rel="stylesheet" type="text/css" href="scripts/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="scripts/bootstrap-slider/dist/css/bootstrap-slider.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+  <head>
+
+  <body>
+
+    <!-- Bootstrap container -->
+    <div id='container' class='container'>
+
+      <!-- Header row  -->
+      <div class='row'>
+        <div class="col-sm">
+          <h1 id="title">Mazes</h1>
+        </div>
+      </div>
+
+      <!-- Main canvas -->
+      <div class='row' id="sketch-holder"></div>
+
+      <div class='row' id='message'>
+        <h4 class='centered'>Graph is being generated...</h4>
+      </div>
+
+      <!-- Canvas width slider -->
+      <div class='row'>
+        <div class="col-md-6">
+          <input class='left-column' id="canvas-width-slider" type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="3"/>
+        </div>
+
+        <div class="col-md-6">
+          <span class='right-column' id="canvas-width-value-label">Image width: <span id="canvas-width-slider-value">3</span></span>
+        </div>
+      </div>
+
+      <!-- Path width slider -->
+      <div class='row'>
+        <div class="col-md-6">
+          <input class='left-column' id="path-width-slider" type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="3"/>
+        </div>
+
+        <div class="col-md-6">
+          <span class='right-column' id="path-width-value-label">Path width: <span id="path-width-slider-value">3</span></span>
+        </div>
+      </div>
+
+      <!-- Generate and export buttons -->
+      <div class='row'>
+        <div class="col-md-6">
+          <button type="button" class="btn btn-outline-primary">Generate</button>
+        </div>
+
+        <div class="col-md-6">
+          <button type="button" class="btn btn-outline-primary">Export</button>
+        </div>
+      </div>
+
+      <!-- Footer row -->
+      <div class='row'>
+        <div class="col-sm">
+          <p id="author-paragraph" class="paragraph">
+            By Jabari Dash, code found on <a class="link" href="" target="_blank">GitHub.</a>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Jquery, BootStrap, AJAX -->
+    <script type="text/javascript" src="scripts/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="scripts/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="scripts/bootstrap-slider/dist/bootstrap-slider.min.js"></script>
+
+    <!-- P5 -->
+    <script type="text/javascript" src="scripts/p5/lib/p5.min.js"></script>
+    <script type="text/javascript" src="scripts/p5/lib/addons/p5.dom.min.js"></script>
+
+    <!-- Custom JS -->
+    <script type="text/javascript" src="constant.js"></script>
+    <script type="text/javascript" src="service.js"></script>
+    <script type="text/javascript" src="cell.js"></script>
+    <script type="text/javascript" src="sketch.js"></script>
+  </body>
+
+<html>

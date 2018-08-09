@@ -1,0 +1,33 @@
+html, body {
+  width:  100%;
+  height: 100%;
+  margin: 0;
+}
+
+/* Centers text */
+.container, .centered {
+
+  margin     : auto;
+  text-align : center;
+}
+
+/* Centers the canvas */
+#sketch-holder {
+
+  display: inline;
+}
+
+.slider {
+
+  float:right;
+}
+
+.right-column {
+
+  float: left;
+}
+
+.left-column {
+
+  float: right;
+}
