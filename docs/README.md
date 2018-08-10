@@ -140,127 +140,52 @@ dependent on **how** the graph is implemented. Let's explore the worst case scen
 
 As stated, an undirected graph `G = {V, E}` can have a integer `|V|` of vertices. Provided
 that each vertex can be connected to at most, every other vertex, there can be some number
-`|E| ≈ |V|²`. We can prove this:
+`|E| ≈ |V|²`. **However, for this particular problem, we can assert otherwise**.
 
-We can also prove {@code |E|} ≈ {@code |V|²} for an undirected graph even though there are considerably less edges in the graph.
-
-```
-G = {V, E}
-
-V = {A, B, C, D, E, F}
-
-We will make a matrix to visualize all potential edges. We will use an {@code x} to denote an edge
-and a {@code -} to indicate there is no edge.
-
-  | A B C F E F
---+-------------
-A | x - - - - -
-B | x x - - - -
-C | x x x - - -
-D | x x x x - -
-E | x x x x x -
-F | x x x x x x
-
-We see that going down the matrix (from 1 to |V|) each row contains 1 more edge than the previous row.
-The upper triangle of the matrix is all hyphens because those represent edges that would be associating the same
-vertices, but going in the opposite direction (directed), so for undirected graphs, they are omitted.
-
-However, if we want to know how many edges we have, we can describe this with the following formula:
-
-      |V|
-      ---
-      \                                |V| * (|V| + 1)   |V|² + |V|
-|E| = /   i  = 1 + 2 + 3 + ... + |V| = --------------- = ----------
-      ---                                     2               2
-      i=1
-
-We can prove by induction:
-
- n
----
-\                                n * (n + 1)     n² + n
-/   i  = 1 + 2 + 3 + ... + n = -------------- = --------
----                                     2           2
-i=1
-
-Prove the base case:
-
- 1
----
-\              1 * (1 + 1)    1² + 1     2
-/   i  = 1  = ------------ = -------- = --- = 1
----                 2           2        2
-i=1
-
-Assume all case to be true up to k, where k is less than n:
-
- k
----
-\                                k * (k + 1)     k² + k
-/   i  = 1 + 2 + 3 + ... + k = -------------- = --------
----                                     2           2
-i=1
-
-Prove case: k+1
-
-k+1
----
-\                                       (k+1) * (k+1 + 1)     (k+1) * (k+2)
-/   i  = 1 + 2 + 3 + ... + k + (k+1) = ------------------- = -------------
----                                           2                     2
-i=1
-
-We re-write case: k+1
-
- k² + k            ? (k+1) * (k+2)
--------- + (k + 1) = -------------
-   2                       2
-
-We simplify the right side:
-
- k² + k    2 * (k+1) ?  k² + 3k + 2
--------- + --------- = -------------
-   2           2             2
-
-We simplify the left side:
-
- k² + k      2k + 2  ?  k² + 3k + 2
--------- + --------- = -------------
-   2           2             2
-
-They match:
-
- k² + 3k + 2     k² + 3k + 2
-------------- = -------------
-   2                 2
-
-We have now proven our summation:
-
- n
----
-\                                n * (n + 1)     n² + n
-/   i  = 1 + 2 + 3 + ... + n = -------------- = --------
----                                     2           2
-i=1
-
-So for the worst case of edges in an undirected graph, we can assert:
-
-      |V|
-      ---
-      \                                |V| * (|V| + 1)   |V|² + |V|
-|E| = /   i  = 1 + 2 + 3 + ... + |V| = --------------- = ----------
-      ---                                     2               2
-      i=1
+The reason is because we are working on an image where edges only exist for **adjacent** pixels:
 
 ```
+Consider a grid composed of n x n pixels or n² vertices.
 
-We can see our final term that expresses `|E|` in terms of `|V|` is of the
-order of magnitude `|V|²`. Therefore for both directed and undirected graphs the worst case, `O(|E|) = O(|V|²)`.
+However, we are only considering adjacent vertices. A grid vertex  have at most 4
+adjacent vertices:
+
+1. top
+2. bottom
+3. left
+4. right
+
+We can also visualize this each vertex from 0,0 to 0,k where k = n-1 as follows:
+
+   |       |       |           |
+-(0,0)- -(0,1)- -(0,2)- ... -(0,k)-
+   |       |       |           |
+   |       |       |           |
+-(1,0)- -(1,1)- -(1,2)- ... -(1,k)-
+   |       |       |           |
+   .       .       .           .
+   .       .       .    ...    .
+   .       .       .           .
+   |       |       |           |
+-(k,0)- -(k,1)- -(k,2)- ... -(k,k)-
+   |       |       |           |
+
+We observe, that each vertex has 4 edges pointing to top, bottom, left, and right
+vertices. In total, for |V| vertices we have 4 * |V| edges. |E| is linear with
+respect to |V|.
+```
+
+Although typically we say `O(|E|) = O(|V|²)`, for **this particular problem** we can say
+`O(|E|) = O(|V|²)`.
 
 ## Generating a maze
 As noted, we are using depth-first search to generate the graph. To *traverse* a graph
 we visit each node once, which is `O(|V|)`. But, we also must check all adjacent vertices.
-For a vertex `v` in a graph, `v` can have at most `|V|` edges
+This we can do in `O(1)` time because edges are simply stored as boolean values per grid cell.
+We must check all four (top, bottom, left and right) edges, for all `|V|` vertices. This is `4 * O(1)`
+which is still `O(1)`. So, we are doing `|V|` loop iterations, each of which does `O(1)` work.
+
+**Generating the maze is done in O(|V|) or O(n²) time.**
 
 [wiki]: https://en.wikipedia.org/wiki/Maze_generation_algorithm
 [youtube]:https://www.youtube.com/watch?v=HyK_Q5rrcr4
