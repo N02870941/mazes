@@ -3,6 +3,16 @@
  */
 function download() {
 
+  if (!generated) {
+
+    unprepared();
+
+    return;
+  }
+
+  // We need this boolean flag to
+  // let the always function know we just started
+  // solving but we need to wait until it finished
   let solving;
 
   let yes = () => {
@@ -33,19 +43,11 @@ function download() {
       return;
     }
 
-    if (!generated) {
-
-        notify("Please generate a maze or wait until the current one is complete.");
-
-        return;
-    }
-
     // Allow the dialog to go away
     await sleep(1000);
 
     saveCanvas(canvas, 'maze', 'png');
   };
 
-  confirm("Would you like to download the solution as well?", yes, no, always);
-
+  confirm(strings.DOWNLOAD_MSG, yes, no, always);
 }

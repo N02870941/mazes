@@ -67,3 +67,16 @@ function confirm(msg, yes, no, always) {
     }
   });
 }
+
+//------------------------------------------------------------------------------
+
+/**
+ * Alerts the user that the
+ * action attempting to be performed
+ * cannot be done yet because the maze
+ * is not generated or ready yet.
+ */
+function unprepared() {
+
+  notify(strings.WAIT_FOR_MAZE);
+}

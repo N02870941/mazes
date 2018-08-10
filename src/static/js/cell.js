@@ -62,6 +62,63 @@ function Cell(i, j) {
 
   }
 
+  this.neighbors = function() {
+
+    let neighbors = [];
+
+    let potentials = [
+
+      grid[index(i, j -1)],
+      grid[index(i+1, j)],
+      grid[index(i, j+1)],
+      grid[index(i -1, j)]
+    ];
+
+    potentials.forEach( (p) => {
+
+      if (p && !p.visited) {
+        neighbors.push(p)
+      }
+
+    });
+
+    return neighbors;
+  }
+
+  /**
+   * Computes the euclidian distance
+   * between this cell and another point
+   * speicifed by it's i and j values.
+   */
+  this.euclidian = function(i, j) {
+
+    let x = j - this.j;
+    let y = i - this.i;
+
+    // Pythagorean theorem
+    let d = squrt( sq(x) + sq(y) );
+
+    return d;
+  }
+
+  /**
+   * Computes the manhattan distance
+   * between this cell and another point
+   * speicifed by it's i and j values.
+   */
+  this.manhattan = function(i, j) {
+
+    let x = j - this.j;
+    let y = i - this.i;
+
+    let d = x + y
+
+    return d;
+  }
+
+  /**
+   * Colors the cell a specified color
+   */
   this.color = function(r, g, b, a, x, y, l, w) {
 
     noStroke();
@@ -79,12 +136,11 @@ function Cell(i, j) {
 
     this.color(
 
-      255, 0, 0, 100,
+      255, 0, 0, 255,
       this.i * w,
       this.j * w,
       w, w
     );
-
 
   }
 

@@ -1,7 +1,6 @@
 // Colors
 let BLACK    = 0;
 let WHITE    = 255;
-let CHARCOAL = 51;
 
 // Frame rate parameters
 const MIN_FRAME_RATE = 1;
@@ -15,14 +14,18 @@ const DEFAULT_CANVAS_WIDTH = MAX_CANVAS_WIDTH / 2;
 // Grid parameters
 const MIN_PATH_WIDTH     = Math.floor(0.01 * MAX_CANVAS_WIDTH);
 const MAX_PATH_WIDTH     = Math.floor(0.10 * MAX_CANVAS_WIDTH);
-const DEFAULT_PATH_WIDTH = Math.floor(0.05 * DEFAULT_CANVAS_WIDTH);
+const DEFAULT_PATH_WIDTH = Math.floor(0.1 * DEFAULT_CANVAS_WIDTH);
+
+// const DEFAULT_PATH_WIDTH = Math.floor(0.05 * DEFAULT_CANVAS_WIDTH);
 
 // All string messages
 const strings = {
 
   GENERATE_BUTTON : 'Generate',
   SOLVE_BUTTON    : 'Solve',
-  EXPORT_BUTTON   : 'Export'
+  EXPORT_BUTTON   : 'Export',
+  DOWNLOAD_MSG    : 'Would you like to download the solution as well?',
+  WAIT_FOR_MAZE   : 'Please wait until the maze is fully generated.'
 };
 
 // Keys for lookup in

@@ -3,15 +3,27 @@
  */
 function solve() {
 
-  if (generated) {
+  if (generated && action !== aStar) {
 
-    aStar();
+    action = aStar;
+
+    grid.forEach(c => c.visited = false);
+
+    current = grid[0];
+
+    loop();
+
+  } else if (action === aStar && !solved) {
+
+    notify("Please wait for the maze to be completely solved");
+
+  } else if (action === aStar && solved) {
+
+    notify("The maze is already solved");
 
   } else {
 
-    notify("Please wait until the maze is fully generated.");
-
-    return false;
+    unprepared()
   }
 
 }
@@ -20,9 +32,26 @@ function solve() {
 
 function aStar() {
 
-  solved = true;
+  grid.forEach(c => c.show());
 
-  console.log("SOLVING");
+  current.visited = true;
 
-  return true;
+  current.highlight();
+
+  let next = current.checkNeighbors();
+
+  if (next) {
+
+    next.visited = true;
+
+    stack.push(current);
+
+    current = next;
+
+  } else if (stack.length > 0) {
+
+    current = stack.pop();
+  }
+
+  return stack.length == 0;
 }

@@ -15,9 +15,10 @@ let w     = DEFAULT_PATH_WIDTH;
 let grid  = [];
 let stack = [];
 
-let generated = true;
+let generated = false;
 let solved    = false;
 
+// TODO - https://stackoverflow.com/questions/39711941/p5-js-manually-call-setup-and-draw
 // TODO - https://mobiforge.com/design-development/html5-mobile-web-canvas
 
 //------------------------------------------------------------------------------
@@ -104,7 +105,8 @@ function setup() {
  */
 function init() {
 
-  solved = false;
+  generated = false;
+  solved    = false;
 
   grid  = [];
   stack = [];

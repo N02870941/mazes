@@ -3,6 +3,8 @@
  */
 function generate() {
 
+  action = dfs;
+
   // Reset the grid
   if (generated) {
 
@@ -16,10 +18,8 @@ function generate() {
 
 function dfs() {
 
-  for (let i = 0; i < grid.length; i++) {
-
-    grid[i].show();
-  }
+  // Draw each cell onto canvas
+  grid.forEach(c => c.show());
 
   current.visited = true;
 
@@ -43,7 +43,6 @@ function dfs() {
   }
 
   return stack.length == 0;
-
 }
 
 //------------------------------------------------------------------------------

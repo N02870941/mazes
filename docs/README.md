@@ -210,6 +210,6 @@ pushed on to the stack before any popping (visiting) occurs.
 ## Solving the maze
 
 
-[site]: mazes.jabaridash.com
+[site]: http://mazes.jabaridash.com
 [wiki]: https://en.wikipedia.org/wiki/Maze_generation_algorithm
 [youtube]:https://www.youtube.com/watch?v=HyK_Q5rrcr4

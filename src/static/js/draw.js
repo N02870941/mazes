@@ -1,16 +1,28 @@
+let action = dfs;
 
 /**
  * Main event loop that repeats forever.
  */
-async function draw() {
+function draw() {
 
-  generated = dfs();
+  // Don't draw if grid not
+  // initialized yet.
+  if (grid[0]) {
+
+    if (action == dfs) {
+
+        generated = action();
+    }
+
+    if (action === aStar) {
+
+      solved = action();
+    }
+
+
+  }
 
   if (generated) {
-
-    await sleep(1000);
-
-    noLoop();
 
     let first = grid[0];
     let last  = grid[grid.length - 1];
@@ -21,4 +33,5 @@ async function draw() {
     first.show();
     last.show();
   }
+
 }
