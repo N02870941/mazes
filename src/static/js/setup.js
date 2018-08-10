@@ -17,6 +17,7 @@ let stack = [];
 
 let generated = false;
 let solved    = false;
+let costs     = [];
 
 // TODO - https://stackoverflow.com/questions/39711941/p5-js-manually-call-setup-and-draw
 // TODO - https://mobiforge.com/design-development/html5-mobile-web-canvas
@@ -111,13 +112,22 @@ function init() {
   grid  = [];
   stack = [];
 
+  let last = new Cell(rows - 1, cols - 1);
+
+  costs = new Array(rows);
+
   for (let j = 0; j < rows; j++) {
+
+    costs[j] = new Array(cols);
 
     for (let i = 0; i < cols; i++) {
 
       grid.push(new Cell(i, j));
+
+      costs[j][i] = grid[grid.length - 1].euclidian(last);
     }
   }
+
 
   current = grid[0];
 

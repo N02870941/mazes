@@ -3,6 +3,12 @@
  */
 function generate() {
 
+  if (action !== dfs && !solved) {
+
+
+    init();
+  }
+
   action = dfs;
 
   // Reset the grid

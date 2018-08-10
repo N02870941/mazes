@@ -14,7 +14,7 @@ function draw() {
         generated = action();
     }
 
-    if (action === aStar) {
+    if (action === aStar && !solved) {
 
       solved = action();
     }

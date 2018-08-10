@@ -38,11 +38,17 @@ function aStar() {
 
   current.highlight();
 
-  let next = current.checkNeighbors();
+  if (costs[current.i][current.j] === 0) {
+
+    return true;
+  }
+
+  let next = current.nextNeighbor();
 
   if (next) {
 
     next.visited = true;
+    next.optimal = true;
 
     stack.push(current);
 

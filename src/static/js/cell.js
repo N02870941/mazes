@@ -7,6 +7,7 @@ function Cell(i, j) {
 
   this.i       = i;
   this.j       = j;
+  this.optimal = false;
   this.visited = false;
   this.walls   = [
     true,
@@ -62,9 +63,14 @@ function Cell(i, j) {
 
   }
 
-  this.neighbors = function() {
-
+  /**
+   * Selects unvisited adjacent
+   * vertices based on minimum
+   * distance for A* algorithm
+   */
+  this.nextNeighbor = function() {
     let neighbors = [];
+    let distances = [];
 
     let potentials = [
 
@@ -74,44 +80,56 @@ function Cell(i, j) {
       grid[index(i -1, j)]
     ];
 
-    potentials.forEach( (p) => {
+    let p;
+
+    for (let i = 0; i < potentials.length; i++) {
+
+      p = potentials[i]
 
       if (p && !p.visited) {
-        neighbors.push(p)
+
+        neighbors.push(p);
+        distances.push(costs[p.i][p.j]);
+      }
+    }
+
+    if (neighbors.length > 0) {
+
+      let min = 0;
+
+      for (let i = 0; i < distances.length; i++)  {
+
+        if (distances[i] < distances[min]) {
+
+          min = i;
+        }
       }
 
-    });
+      return neighbors[min];
 
-    return neighbors;
+    // Otherwise, there is no
+    // more work to do from the
+    // current source vertex
+    } else {
+
+      return undefined;
+    }
+
   }
+
 
   /**
    * Computes the euclidian distance
    * between this cell and another point
    * speicifed by it's i and j values.
    */
-  this.euclidian = function(i, j) {
+  this.euclidian = function(cell) {
 
-    let x = j - this.j;
-    let y = i - this.i;
+    let x = abs(cell.j - this.j);
+    let y = abs(cell.i - this.i);
 
     // Pythagorean theorem
-    let d = squrt( sq(x) + sq(y) );
-
-    return d;
-  }
-
-  /**
-   * Computes the manhattan distance
-   * between this cell and another point
-   * speicifed by it's i and j values.
-   */
-  this.manhattan = function(i, j) {
-
-    let x = j - this.j;
-    let y = i - this.i;
-
-    let d = x + y
+    let d = sqrt( sq(x) + sq(y) );
 
     return d;
   }
@@ -169,7 +187,7 @@ function Cell(i, j) {
       line(x , y + w, x , y);
 
     // Set visited to white
-    if (this.visited) {
+    if (this.visited && !this.optimal) {
 
       this.color(
         255, 255, 255, 100,
