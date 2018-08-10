@@ -1,7 +1,8 @@
 # Mazes
 [![Build Status](https://travis-ci.com/N02870941/mazes.svg?branch=master)](https://travis-ci.com/N02870941/mazes)
 
-Mazes is a simple maze generator an solver available in the form of a docker based web app.
+A simple maze generator and solver available in the form of a docker based web app.
+You can test the [online version][site].
 
 # How to run
 Ensure you have docker installed before running the following commands:
@@ -209,5 +210,6 @@ pushed on to the stack before any popping (visiting) occurs.
 ## Solving the maze
 
 
+[site]: mazes.jabaridash.com
 [wiki]: https://en.wikipedia.org/wiki/Maze_generation_algorithm
 [youtube]:https://www.youtube.com/watch?v=HyK_Q5rrcr4
