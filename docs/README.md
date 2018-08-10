@@ -27,8 +27,8 @@ gulp dev
 # Intuition
 Maze generating and solving can be described in terms of graph theory. For the
 purpose of clarity, we will use the words maze and graph interchangeably. If You
-are not familiar with graph theory, here is a **brief** explanation on the relevant
-parts.
+are not familiar with graph theory, here is a **brief** explanation of the information
+relevant to understand this problem.
 
 A graph `G` is a pair denoted as `G = {V, E}` where `V` is a set of vertices and
 `E` is a set of edges that associates vertices in the set `V`. A vertex is an abstract
@@ -47,14 +47,14 @@ You can have any combination:
 
 A weighted graph is a graph where edges have a specified **weight** or **cost** associated
 with branching two vertices. For example, if we represent a country as a graph where
-cities are vertices and roads are edges, the weight of an edge might be distance between
+cities are vertices and roads are edges, the weight of an edge might be the distance between
 each city.
 
 A directed graph is a graph where an edge `e`  from vertex `u` to
 `v` is not equal to an edge `f` from `v` to `u`. For example, in our city
 example, we may have an edge from New York to Chicago with weight 200 miles.
 But, the edge going from Chicago to New York may be 250 miles because that
-edges represents a different road.
+edges represent a different roads.
 
 For the purpose of representing a maze, we will use an undirected weighted graph.
 We will consider vertices pixels (or square groups of pixels) and an edge will be
@@ -62,6 +62,13 @@ placed between two adjacent pixels. Edges will have a uniform weight of 1 which
 just indicates that two vertices are one pixel away from each other (adjacent). We
 do not need to make it directed because from pixels have uniform size, thus a
 uniform distance if they are adjacent.
+
+It is worth noting for the JavaScript particular implementation, we will have a
+tad of redundancy where each cell in the grid has information regarding all 4
+adjacent vertices. This causes overlap in that for a vertex `u` that is to the
+left of vertex `v`, `u`'s `right` vertex is the same as `v`'s `left` vertex pointer.
+This can be optimized if an abstract "`Graph`" object were created in memory. But,
+for the scope of this problem, is unnecessary.
 
 # Maze generating
 Generating a maze requires a modified depth-first search of the graph. A depth-first
@@ -114,7 +121,7 @@ the current and previous vertex, and repeats this until all vertices are visited
 # Maze solving
 Now that we have generated a maze, we want to solve it. Solving the maze can be done
 in several ways. We will use the A* algorithm to solve it. A* is a single source
-shortest pathfinding algorithm. In the case of our maze, we will have a starting point
+shortest path algorithm. In the case of our maze, we will have a starting point
 specified by a pixel's location in the image and a target pixel location to get to.
 We will then run A* on the maze to find shortest path between the two vertices (pixels).
 Pseudo code for A* follows:
@@ -133,30 +140,27 @@ For these reason we use A*, which can be considered a generalization of Dijkstra
 that uses the heuristic value (specific to the problem) that helps make more intelligent intermediate
 steps that lead to the overall optimal solution more quickly.
 
-# Runtime analysis
+# Time complexity analysis
 We will explore the runtime of both generating the maze, and solving it. But, before we do that
 we must prove a few things and understand that runtime analysis on graphs is often times
-dependent on **how** the graph is implemented. Let's explore the worst case scenario:
+dependent on **how** the graph is implemented. Let's explore the worst case scenario.
 
-As stated, an undirected graph `G = {V, E}` can have a integer `|V|` of vertices. Provided
-that each vertex can be connected to at most, every other vertex, there can be some number
-`|E| ≈ |V|²`. **However, for this particular problem, we can assert otherwise**.
+As stated, a graph `G = {V, E}` can have a vertex set with cardinality `|V|` of vertices. Provided
+that each vertex can be connected to at most, every other vertex, the cardinality of the edge set
+`E` can be expressed as `|E| ≈ |V|²`. **However, for this particular problem, we can assert otherwise**.
 
-The reason is because we are working on an image where edges only exist for **adjacent** pixels:
+The reason is because we are working on an image where edges only exist for **adjacent** pixels.
+Consider a grid composed of n x n pixels or n² vertices. We are only considering adjacent vertices.
+A vertex has at most 4 adjacent vertices:
+
+1. Top
+2. Bottom
+3. Left
+4. Right
+
+We can also visualize each vertex from 0,0 to 0,k where k = n-1 as follows:
 
 ```
-Consider a grid composed of n x n pixels or n² vertices.
-
-However, we are only considering adjacent vertices. A grid vertex  have at most 4
-adjacent vertices:
-
-1. top
-2. bottom
-3. left
-4. right
-
-We can also visualize this each vertex from 0,0 to 0,k where k = n-1 as follows:
-
    |       |       |           |
 -(0,0)- -(0,1)- -(0,2)- ... -(0,k)-
    |       |       |           |
@@ -169,23 +173,41 @@ We can also visualize this each vertex from 0,0 to 0,k where k = n-1 as follows:
    |       |       |           |
 -(k,0)- -(k,1)- -(k,2)- ... -(k,k)-
    |       |       |           |
-
-We observe, that each vertex has 4 edges pointing to top, bottom, left, and right
-vertices. In total, for |V| vertices we have 4 * |V| edges. |E| is linear with
-respect to |V|.
 ```
 
-Although typically we say `O(|E|) = O(|V|²)`, for **this particular problem** we can say
-`O(|E|) = O(|V|²)`.
+We observe, that each vertex has 4 edges that point to the top, bottom, left, and right
+adjacent vertices. In total, for `|V|` vertices we have 4 * `|V|` edges. |E| is linear with respect to `|V|`.
+Although typically we say `O(|E|) = O(|V|²)`, for **this particular problem** we can say `O(|E|) = O(|V|)`.
 
-## Generating a maze
+## Generating the maze
 As noted, we are using depth-first search to generate the graph. To *traverse* a graph
-we visit each node once, which is `O(|V|)`. But, we also must check all adjacent vertices.
+we visit each node once, which is `O(|V|)`. But, we also must check all adjacent vertices per vertex.
 This we can do in `O(1)` time because edges are simply stored as boolean values per grid cell.
-We must check all four (top, bottom, left and right) edges, for all `|V|` vertices. This is `4 * O(1)`
+We must check all four (top, bottom, left and right) edges, per vertex. This is `4 * O(1)`
 which is still `O(1)`. So, we are doing `|V|` loop iterations, each of which does `O(1)` work.
 
-**Generating the maze is done in O(|V|) or O(n²) time.**
+**Generating the maze is done in** `O(|V|)` **time.**
+
+## Solving the maze
+Running A* in the worst case visits all edges. So the run time is `O(|E|)`. For this problem
+we have already proven `|E| = 4 * |V|`.
+
+**Solving the maze is done in** `O(|V|)` **time.**
+
+# Space complexity analysis
+The space complexities are generally consistent with the standard space complexities of both
+graph algorithms used in this problem.
+
+## Generating the maze
+Not including space allocated to store the graph, the only auxiliary space we use is the stack
+structure for queuing vertices for processing. In the worst case, the depth-first search
+traverses the entire graph without repetition / backtracking. This would mean all `|V|` vertices are
+pushed on to the stack before any popping (visiting) occurs.
+
+**Generating the maze required** `O(|V|)` space.
+
+## Solving the maze
+
 
 [wiki]: https://en.wikipedia.org/wiki/Maze_generation_algorithm
 [youtube]:https://www.youtube.com/watch?v=HyK_Q5rrcr4
