@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "maze"
+    "maze", "mazes", "maze-solver", "maze-generator",
+    "graph", "graph-theory", "a*", "depth-first-search"
   ],
   "author": "Jabari Dash",
   "license": "MIT",

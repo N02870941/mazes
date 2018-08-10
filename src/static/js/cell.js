@@ -15,8 +15,6 @@ function Cell(i, j) {
     true
   ];
 
-//------------------------------------------------------------------------------
-
   /**
    * Selects unvisited adjacent
    * vertices are random for processing
@@ -64,8 +62,6 @@ function Cell(i, j) {
 
   }
 
-//------------------------------------------------------------------------------
-
   this.color = function(r, g, b, a, x, y, l, w) {
 
     noStroke();
@@ -74,8 +70,6 @@ function Cell(i, j) {
 
     rect(x, y, w, w);
   }
-
-//------------------------------------------------------------------------------
 
   /**
    * Highlights the current node
@@ -91,8 +85,6 @@ function Cell(i, j) {
       w, w
     );
   }
-
-//------------------------------------------------------------------------------
 
   /**
    * Displays the cell in
@@ -129,4 +121,20 @@ function Cell(i, j) {
 
   }
 
+}
+
+//------------------------------------------------------------------------------
+
+function index(i, j) {
+
+  if (
+    i < 0      ||
+    j < 0      ||
+    i > cols-1 ||
+    j > rows-1) {
+
+    return -1;
+  }
+
+  return i + j * cols;
 }

@@ -17,6 +17,7 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="css/style.css">
+
   <head>
 
   <body>
@@ -36,7 +37,7 @@
 
       <!-- Message that say's what's happening -->
       <div class='row' id='message'>
-        <h4 class='centered'>Graph is being generated...</h4>
+        <h4 style='display:none;' class='centered'></h4>
       </div>
 
       <!-- Canvas width slider -->
@@ -50,8 +51,10 @@
         <!-- Label -->
         <div class="col-md-6">
           <span class='right-column' id="canvas-width-value-label">
-            Image Size: <span id="canvas-width-slider-value">3</span>
-            <span>px</span>
+            Image Size:
+            <span id="canvas-width-slider-value">3</span>
+            ×
+            <span id="canvas-height-slider-value">3</span> px
           </span>
         </div>
       </div>
@@ -77,18 +80,18 @@
       <div class='row'>
 
         <!-- Generate -->
-        <div class="col-md-3">
-          <button type="button" class="btn btn-outline-primary">Generate</button>
+        <div class="col-md-4">
+          <button id='button-generate' type="button" class="btn btn-outline-primary">Generate</button>
         </div>
 
         <!-- Solve -->
-        <div class="col-md-3">
-          <button type="button" class="btn btn-outline-primary">Solve</button>
+        <div class="col-md-4">
+          <button id='button-solve' type="button" class="btn btn-outline-primary">Solve</button>
         </div>
 
         <!-- Export -->
-        <div class="col-md-3">
-          <button type="button" class="btn btn-outline-primary">Export</button>
+        <div class="col-md-4">
+          <button id='button-export' type="button" class="btn btn-outline-primary">Export</button>
         </div>
       </div>
 
@@ -115,11 +118,12 @@
 
     <!-- Custom JS -->
     <script type="text/javascript" src="js/constant.js"></script>
-    <script type="text/javascript" src="js/service.js"></script>
     <script type="text/javascript" src="js/cell.js"></script>
     <script type="text/javascript" src="js/generate.js"></script>
     <script type="text/javascript" src="js/solve.js"></script>
-    <script type="text/javascript" src="js/sketch.js"></script>
+    <script type="text/javascript" src="js/export.js"></script>
+    <script type="text/javascript" src="js/setup.js"></script>
+    <script type="text/javascript" src="js/draw.js"></script>
   </body>
 
 <html>
