@@ -3,14 +3,13 @@
  */
 function draw() {
 
-  background(CHARCOAL);
-
   for (let i = 0; i < grid.length; i++) {
 
     grid[i].show();
   }
 
   current.visited = true;
+
   current.highlight();
 
   let next = current.checkNeighbors();
@@ -30,4 +29,7 @@ function draw() {
     current = stack.pop();
   }
 
+  // Redraw bottom boundary
+
+  // Redraw right boundary
 }

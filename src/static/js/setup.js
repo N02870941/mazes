@@ -27,6 +27,7 @@ function setup() {
   // The sliders
   sliders[keys.CANVAS] = $("#canvas-width-slider").slider();
   sliders[keys.PATH]   = $("#path-width-slider").slider();
+  sliders[keys.FRAMES] = $("#frame-rate-slider").slider();
 
   // The buttons
   buttons[keys.GENERATE] = $('#button-generate');
@@ -38,6 +39,7 @@ function setup() {
   labels[keys.WIDTH]  = $("#canvas-height-slider-value");
   labels[keys.HEIGHT] = $("#canvas-width-slider-value");
   labels[keys.PATH]   = $("#path-width-slider-value");
+  labels[keys.FRAMES] = $("#frame-rate-slider-value");
 
   // Add functionality to UI elements
 
@@ -51,7 +53,17 @@ function setup() {
   // Setup the path width slider
   sliders[keys.PATH].on(events.SLIDE, (e) => {
 
-    labels[keys.PATH].text(e.value)
+    labels[keys.PATH].text(e.value);
+  });
+
+  // Setup the frame rate slider
+  sliders[keys.FRAMES].on(events.SLIDE, (e) => {
+
+    let x = abs(int(e.value));
+
+    frameRate(x);
+
+    labels[keys.FRAMES].text(e.value)
   });
 
   // Setup generate, solve, and export buttons
@@ -64,8 +76,8 @@ function setup() {
   // Create p5 canvas object
   canvas = createCanvas(
 
-    DEFAULT_CANVAS_WIDTH,
-    DEFAULT_CANVAS_WIDTH
+    DEFAULT_CANVAS_WIDTH + 2,
+    DEFAULT_CANVAS_WIDTH + 2
   );
 
   // Assign to inline html element
@@ -74,8 +86,6 @@ function setup() {
   // Compute dimension of grid
   cols = floor(width / w);
   rows = floor(height / w);
-
-  // frameRate(10);
 
   init();
 

@@ -84,6 +84,8 @@ function Cell(i, j) {
       this.j * w,
       w, w
     );
+
+
   }
 
   /**
@@ -96,6 +98,7 @@ function Cell(i, j) {
     let y = this.j * w;
 
     stroke(BLACK);
+    strokeWeight(3);
 
     if (this.walls[0])
       line(x, y , x + w, y);

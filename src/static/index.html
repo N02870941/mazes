@@ -76,6 +76,23 @@
         </div>
       </div>
 
+      <!-- Frame rate slider -->
+      <div class='row'>
+
+        <!-- Slider -->
+        <div class="col-md-6">
+          <input class='left-column' id="frame-rate-slider" type="text" data-slider-min="1" data-slider-max="120" data-slider-step="1" data-slider-value="60"/>
+        </div>
+
+        <!-- Label -->
+        <div class="col-md-6">
+          <span class='right-column' id="frame-rate-value-label">
+            Frame rate: <span id="frame-rate-slider-value">60</span>
+            <span>fps</span>
+          </span>
+        </div>
+      </div>
+
       <!-- Generate and export buttons -->
       <div class='row'>
 
@@ -117,6 +134,7 @@
     <script type="text/javascript" src="scripts/p5/lib/addons/p5.dom.min.js"></script>
 
     <!-- Custom JS -->
+    <script type="text/javascript" src="js/util.js"></script>
     <script type="text/javascript" src="js/constant.js"></script>
     <script type="text/javascript" src="js/cell.js"></script>
     <script type="text/javascript" src="js/generate.js"></script>
