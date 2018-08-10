@@ -1,35 +1,24 @@
+
 /**
- * Main loop that repeats forever
+ * Main event loop that repeats forever.
  */
-function draw() {
+async function draw() {
 
-  for (let i = 0; i < grid.length; i++) {
+  generated = dfs();
 
-    grid[i].show();
+  if (generated) {
+
+    await sleep(1000);
+
+    noLoop();
+
+    let first = grid[0];
+    let last  = grid[grid.length - 1];
+
+    first.walls[3] = false
+    last.walls[1]  = false;
+
+    first.show();
+    last.show();
   }
-
-  current.visited = true;
-
-  current.highlight();
-
-  let next = current.checkNeighbors();
-
-  if (next) {
-
-    next.visited = true;
-
-    stack.push(current);
-
-    removeWalls(current, next);
-
-    current = next;
-
-  } else if (stack.length > 0) {
-
-    current = stack.pop();
-  }
-
-  // Redraw bottom boundary
-
-  // Redraw right boundary
 }

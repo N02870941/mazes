@@ -15,6 +15,11 @@ let w     = DEFAULT_PATH_WIDTH;
 let grid  = [];
 let stack = [];
 
+let generated = true;
+let solved    = false;
+
+// TODO - https://mobiforge.com/design-development/html5-mobile-web-canvas
+
 //------------------------------------------------------------------------------
 
 /**
@@ -76,8 +81,8 @@ function setup() {
   // Create p5 canvas object
   canvas = createCanvas(
 
-    DEFAULT_CANVAS_WIDTH + 2,
-    DEFAULT_CANVAS_WIDTH + 2
+    DEFAULT_CANVAS_WIDTH,
+    DEFAULT_CANVAS_WIDTH
   );
 
   // Assign to inline html element
@@ -89,7 +94,7 @@ function setup() {
 
   init();
 
-  current = grid[0];
+  noLoop();
 }
 
 //------------------------------------------------------------------------------
@@ -99,6 +104,11 @@ function setup() {
  */
 function init() {
 
+  solved = false;
+
+  grid  = [];
+  stack = [];
+
   for (let j = 0; j < rows; j++) {
 
     for (let i = 0; i < cols; i++) {
@@ -106,5 +116,7 @@ function init() {
       grid.push(new Cell(i, j));
     }
   }
+
+  current = grid[0];
 
 }

@@ -10,12 +10,12 @@ const MAX_FRAME_RATE = 30;
 // Canvas parameters
 const MIN_CANVAS_WIDTH     = 200;
 const MAX_CANVAS_WIDTH     = 1000;
-const DEFAULT_CANVAS_WIDTH = MAX_CANVAS_WIDTH ;
+const DEFAULT_CANVAS_WIDTH = MAX_CANVAS_WIDTH / 2;
 
 // Grid parameters
 const MIN_PATH_WIDTH     = Math.floor(0.01 * MAX_CANVAS_WIDTH);
 const MAX_PATH_WIDTH     = Math.floor(0.10 * MAX_CANVAS_WIDTH);
-const DEFAULT_PATH_WIDTH = 20;
+const DEFAULT_PATH_WIDTH = Math.floor(0.05 * DEFAULT_CANVAS_WIDTH);
 
 // All string messages
 const strings = {

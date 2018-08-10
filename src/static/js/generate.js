@@ -3,7 +3,47 @@
  */
 function generate() {
 
-  console.log('generating');
+  // Reset the grid
+  if (generated) {
+
+    init();
+  }
+
+  loop();
+}
+
+//------------------------------------------------------------------------------
+
+function dfs() {
+
+  for (let i = 0; i < grid.length; i++) {
+
+    grid[i].show();
+  }
+
+  current.visited = true;
+
+  current.highlight();
+
+  let next = current.checkNeighbors();
+
+  if (next) {
+
+    next.visited = true;
+
+    stack.push(current);
+
+    removeWalls(current, next);
+
+    current = next;
+
+  } else if (stack.length > 0) {
+
+    current = stack.pop();
+  }
+
+  return stack.length == 0;
+
 }
 
 //------------------------------------------------------------------------------
@@ -16,9 +56,9 @@ function removeWalls(u, v) {
 
   // Left, right, top, bottom
   const T = 0;
-  const B = 1;
-  const R = 2;
-  const L = 3;
+  const B = 3;
+  const R = 1;
+  const L = 2;
 
   // Vertical and horizontal distances
   const x = u.i - v.i;

@@ -98,7 +98,7 @@ function Cell(i, j) {
     let y = this.j * w;
 
     stroke(BLACK);
-    strokeWeight(3);
+    strokeWeight(2);
 
     if (this.walls[0])
       line(x, y , x + w, y);
