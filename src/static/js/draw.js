@@ -1,37 +1,55 @@
-let action = dfs;
-
 /**
  * Main event loop that repeats forever.
  */
-function draw() {
+async function draw() {
 
-  // Don't draw if grid not
-  // initialized yet.
-  if (grid[0]) {
+  // Just show the grid
+  if (first) {
 
-    if (action == dfs) {
+    grid.forEach( c => c.show());
 
-        generated = action();
-    }
-
-    if (action === aStar && !solved) {
-
-      solved = action();
-    }
-
-
+    return;
   }
 
-  if (generated) {
+  // Are we generating?
+  if (action === dfs) {
 
-    let first = grid[0];
-    let last  = grid[grid.length - 1];
+    // Are we done?
+    if (generated) {
 
-    first.walls[3] = false
-    last.walls[1]  = false;
+      // Get the start and end cells
+      let first = grid[0];
+      let last  = grid[grid.length - 1];
 
-    first.show();
-    last.show();
+      // Remove the left and right
+      // walls respectively
+      first.walls[3] = false
+      last.walls[1]  = false;
+
+      // Re-paint to screen
+      first.show();
+      last.show();
+
+    // In progress
+    } else {
+
+      generated = action();
+    }
+
+  // Are we solving?
+  } else {
+
+    // Not done
+    if (!solved) {
+
+      solved = action();
+
+    // Solved
+    } else {
+
+      // NOTE - What to do?
+    }
+
   }
 
 }

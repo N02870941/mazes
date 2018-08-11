@@ -3,92 +3,101 @@
  */
 function generate() {
 
-  if (action !== dfs && !solved) {
+  // Are we generating?
+  if (action === dfs || first) {
 
+    // Done generating?
+    if (generated || first) {
 
-    init();
+      // This is a one time flag used,
+      // for all other subsequent executions
+      // this flag should be set to false
+      first = false;
+
+      // Change main event loop's
+      // primary action back to
+      // depth-first search, and
+      // reinitialize the grid
+      action = dfs;
+
+      init();
+
+    // In progress
+    } else {
+
+      notify(strings.WAIT_FOR_MAZE);
+    }
+
+  // Or solving?
+  } else {
+
+    // Done solving?
+    if (solved) {
+
+      // Change main event loop's
+      // primary action back to
+      // depth-first search, and
+      // reinitialize the grid
+      action = dfs;
+
+      init();
+
+    // In progress
+    } else {
+
+      notify(strings.WAIT_TO_SOLVE);
+    }
+
   }
-
-  action = dfs;
-
-  // Reset the grid
-  if (generated) {
-
-    init();
-  }
-
-  loop();
-}
-
-//------------------------------------------------------------------------------
-
-function dfs() {
-
-  // Draw each cell onto canvas
-  grid.forEach(c => c.show());
-
-  current.visited = true;
-
-  current.highlight();
-
-  let next = current.checkNeighbors();
-
-  if (next) {
-
-    next.visited = true;
-
-    stack.push(current);
-
-    removeWalls(current, next);
-
-    current = next;
-
-  } else if (stack.length > 0) {
-
-    current = stack.pop();
-  }
-
-  return stack.length == 0;
 }
 
 //------------------------------------------------------------------------------
 
 /**
- * Removes the wall between two adjacent
- * vertices to create a path between them.
+ * Modified depth-first search that
+ * continuously removes boundaries
+ * between adjacent cells to create
+ * one continuous path.
  */
-function removeWalls(u, v) {
+function dfs() {
 
-  // Left, right, top, bottom
-  const T = 0;
-  const B = 3;
-  const R = 1;
-  const L = 2;
+  // Draw each cell onto canvas
+  grid.forEach(c => c.show());
 
-  // Vertical and horizontal distances
-  const x = u.i - v.i;
-  const y = u.j - v.j;
+  // Mark as visited
+  current.visited = true;
 
-  if (x === 1) {
+  // Show on screen
+  current.flash();
 
-    u.walls[3] = false;
-    v.walls[1] = false;
+  // Get neighbors
+  let next = current.checkNeighbors();
 
-  } else if (x === -1) {
+  // Did one come back?
+  if (next) {
 
-    u.walls[1] = false;
-    v.walls[3] = false;
+    // Mark as visited
+    next.visited = true;
+
+    // Push current onto stack
+    // for backtracking purposes
+    stack.push(current);
+
+    // Remove the wall between
+    // these two adjacent vertices
+    Cell.pave(current, next);
+
+    // Shift the pointers
+    current = next;
+
+  // We have reached maximum depth
+  // so we start back tracking
+  } else if (stack.length > 0) {
+
+    current = stack.pop();
   }
 
-  if (y === 1) {
-
-    u.walls[0] = false;
-    v.walls[2] = false;
-
-  } else if (y === -1) {
-
-    u.walls[2] = false;
-    v.walls[0] = false;
-  }
-
+  // Indicated where or not
+  // all nodes have been processed.
+  return stack.length === 0;
 }

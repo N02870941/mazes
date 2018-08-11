@@ -1,84 +1,32 @@
-let cols;
-let rows;
-let current;
 
-// UI element
-// associative arrays
-let buttons = [];
-let sliders = [];
-let labels  = [];
-
-// Main canvas
-let canvas;
-
-let w     = DEFAULT_PATH_WIDTH;
-let grid  = [];
-let stack = [];
-
-let generated = false;
-let solved    = false;
-let costs     = [];
 
 // TODO - https://stackoverflow.com/questions/39711941/p5-js-manually-call-setup-and-draw
 // TODO - https://mobiforge.com/design-development/html5-mobile-web-canvas
-
-//------------------------------------------------------------------------------
 
 /**
  * Initial one time setup.
  */
 function setup() {
 
-  // Get references to UI elements
+  // Sliders
+  parameters();
 
-  // The sliders
-  sliders[keys.CANVAS] = $("#canvas-width-slider").slider();
-  sliders[keys.PATH]   = $("#path-width-slider").slider();
-  sliders[keys.FRAMES] = $("#frame-rate-slider").slider();
+  // Buttons
+  actions();
 
-  // The buttons
-  buttons[keys.GENERATE] = $('#button-generate');
-  buttons[keys.SOLVE]    = $('#button-solve');
-  buttons[keys.EXPORT]   = $('#button-export');
+  // Canvas
+  page();
 
-  // The labels
-  labels[keys.CANVAS] = $("#canvas-width-slider-value");
-  labels[keys.WIDTH]  = $("#canvas-height-slider-value");
-  labels[keys.HEIGHT] = $("#canvas-width-slider-value");
-  labels[keys.PATH]   = $("#path-width-slider-value");
-  labels[keys.FRAMES] = $("#frame-rate-slider-value");
+  // Grid
+  init();
 
-  // Add functionality to UI elements
+  // Stop animating
+  noLoop();
+}
 
-  // Setup the canvas width sliders
-  sliders[keys.CANVAS].on(events.SLIDE, (e) => {
+//------------------------------------------------------------------------------
 
-    labels[keys.WIDTH].text(e.value);
-    labels[keys.HEIGHT].text(e.value);
-  });
-
-  // Setup the path width slider
-  sliders[keys.PATH].on(events.SLIDE, (e) => {
-
-    labels[keys.PATH].text(e.value);
-  });
-
-  // Setup the frame rate slider
-  sliders[keys.FRAMES].on(events.SLIDE, (e) => {
-
-    let x = abs(int(e.value));
-
-    frameRate(x);
-
-    labels[keys.FRAMES].text(e.value)
-  });
-
-  // Setup generate, solve, and export buttons
-  buttons[keys.GENERATE].click(generate);
-  buttons[keys.SOLVE].click(solve);
-  buttons[keys.EXPORT].click(download);
-
-  // Initialize the canvas
+function page() {
 
   // Create p5 canvas object
   canvas = createCanvas(
@@ -89,14 +37,61 @@ function setup() {
 
   // Assign to inline html element
   canvas.parent('sketch-holder');
+}
 
-  // Compute dimension of grid
-  cols = floor(width / w);
-  rows = floor(height / w);
+//------------------------------------------------------------------------------
 
-  init();
+function parameters() {
 
-  noLoop();
+  // The sliders
+  sliders[keys.CANVAS] = $("#canvas-width-slider").slider();
+  sliders[keys.PATH]   = $("#path-width-slider").slider();
+  sliders[keys.FRAMES] = $("#frame-rate-slider").slider();
+
+  // The labels
+  labels[keys.CANVAS] = $("#canvas-width-slider-value");
+  labels[keys.WIDTH]  = $("#canvas-height-slider-value");
+  labels[keys.HEIGHT] = $("#canvas-width-slider-value");
+  labels[keys.PATH]   = $("#path-width-slider-value");
+  labels[keys.FRAMES] = $("#frame-rate-slider-value");
+
+  // Canvas width slider event
+  sliders[keys.CANVAS].on(events.SLIDE, (e) => {
+
+    labels[keys.WIDTH].text(e.value);
+    labels[keys.HEIGHT].text(e.value);
+  });
+
+  // Path width slider event
+  sliders[keys.PATH].on(events.SLIDE, (e) => {
+
+    labels[keys.PATH].text(e.value);
+  });
+
+  // Frame rate slider event
+  sliders[keys.FRAMES].on(events.SLIDE, (e) => {
+
+    let x = abs(int(e.value));
+
+    frameRate(x);
+
+    labels[keys.FRAMES].text(e.value)
+  });
+}
+
+//------------------------------------------------------------------------------
+
+function actions() {
+
+  // The buttons
+  buttons[keys.GENERATE] = $('#button-generate');
+  buttons[keys.SOLVE]    = $('#button-solve');
+  buttons[keys.EXPORT]   = $('#button-export');
+
+  // Setup click events for buttons
+  buttons[keys.GENERATE].click(generate);
+  buttons[keys.SOLVE].click(solve);
+  buttons[keys.EXPORT].click(download);
 }
 
 //------------------------------------------------------------------------------
@@ -106,29 +101,58 @@ function setup() {
  */
 function init() {
 
+  // Compute dimension of grid
+  cols = floor(width  / w);
+  rows = floor(height / w);
+
   generated = false;
   solved    = false;
 
-  grid  = [];
+  // Reinit the grid
+  // and the vertex stack
   stack = [];
+  grid  = [];
 
-  let last = new Cell(rows - 1, cols - 1);
+  // Pre-compute heuristic matrix
+  costs = heuristics(rows, cols);
 
-  costs = new Array(rows);
+  // Start at first cell
+  current = grid[0];
 
-  for (let j = 0; j < rows; j++) {
+  loop();
+}
 
-    costs[j] = new Array(cols);
+//------------------------------------------------------------------------------
 
-    for (let i = 0; i < cols; i++) {
+/**
+ * Pre-computes matrix of heuristics
+ * for later use in A* search algorithm.
+ */
+function heuristics(r, c) {
 
+  let last;
+  let h;
+
+  // Create (heuristic) cost matrix
+  last = new Cell(r - 1, c - 1);
+  h    = new Array(r);
+
+  // Rows
+  for (let j = 0; j < r; j++) {
+
+    // Make a new row
+    h[j] = new Array(c);
+
+    // Cols
+    for (let i = 0; i < c; i++) {
+
+      // New cell
       grid.push(new Cell(i, j));
 
-      costs[j][i] = grid[grid.length - 1].euclidian(last);
+      // Compute heuristic using euclidian distance
+      h[j][i] = Cell.euclidian(grid[grid.length - 1], last);
     }
   }
 
-
-  current = grid[0];
-
+  return h;
 }

@@ -19,6 +19,7 @@ function notify(msg) {
     message: msg,
     size: 'small'
   });
+
 }
 
 //------------------------------------------------------------------------------
@@ -39,31 +40,37 @@ function confirm(msg, yes, no, always) {
     buttons: {
 
         confirm: {
-            label: 'Yes',
+            label: strings.YES,
             className: 'btn-success'
         },
 
         cancel: {
-            label: 'No',
+            label: strings.NO,
             className: 'btn-danger'
         }
     },
 
+    // Function que ejecuta
+    // despues de que se cierre
+    // el dialogo
     callback: (result) => {
 
-        if (result && yes) {
+      // Si el usuario dijo que si
+      if (result && yes) {
 
-          yes();
+        yes();
 
-        } else if (no) {
+      // Si dijo que no
+      } else if (no) {
 
-          no();
-        }
+        no();
+      }
 
-        if (always) {
+      // No importa que dijo
+      if (always) {
 
-          always();
-        }
+        always();
+      }
     }
   });
 }

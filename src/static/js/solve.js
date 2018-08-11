@@ -1,49 +1,75 @@
 /**
- * Solves the maze
+ * Solves the maze.
  */
 function solve() {
 
-  if (generated && action !== aStar) {
+  // Are we solving?
+  if (action === aStar) {
 
-    action = aStar;
+    // Are we done?
+    if (solved) {
 
-    grid.forEach(c => c.visited = false);
+      notify(strings.ALREADY_SOLVED);
 
-    current = grid[0];
+    // Or still solving
+    } else {
 
-    loop();
+      notify(strings.WAIT_TO_SOLVE);
+    }
 
-  } else if (action === aStar && !solved) {
-
-    notify("Please wait for the maze to be completely solved");
-
-  } else if (action === aStar && solved) {
-
-    notify("The maze is already solved");
-
+  // Or generating?
   } else {
 
-    unprepared()
+    // Maze fully generated?
+    if (generated) {
+
+      // Change main event loop's
+      // primary action back to
+      // A* search algorithm,
+      // mark all nodes as unvited,
+      // then solve the maze
+      action = aStar;
+
+      grid.forEach(c => c.visited = false);
+
+      // Start at first cell
+      current = grid[0];
+
+      loop();
+
+    // In progress
+    } else {
+
+      unprepared();
+    }
+
   }
 
 }
 
 //------------------------------------------------------------------------------
 
+/**
+ * Modified A* search algorithm
+ * that finds the shortest path from
+ * the first cell to the last cell.
+ */
 function aStar() {
 
   grid.forEach(c => c.show());
 
   current.visited = true;
 
-  current.highlight();
+  // current.highlight();
 
-  if (costs[current.i][current.j] === 0) {
+  current.flash();
 
-    return true;
-  }
+  // if (costs[current.i][current.j] === 0) {
+  //
+  //   return true;
+  // }
 
-  let next = current.nextNeighbor();
+  let next = current.next();
 
   if (next) {
 

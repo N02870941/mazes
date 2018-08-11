@@ -7,15 +7,13 @@ const app      = express();
 
 //------------------------------------------------------------------------------
 
+// Serve static site, and node_module dependencies
 app.use("/", express.static(template));
 app.use("/scripts", express.static(scripts));
 
 //------------------------------------------------------------------------------
 
-// TODO - Endpoint to save img, call jar file to solve maze
-
-//------------------------------------------------------------------------------
-
+// Serve on specified port
 app.listen(port, () => {
 
   console.log(`Listening on port ${port}`);

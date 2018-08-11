@@ -3,6 +3,8 @@
  */
 function download() {
 
+  // Do not export
+  // if we are not ready
   if (!generated) {
 
     unprepared();
