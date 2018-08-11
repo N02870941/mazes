@@ -9,7 +9,7 @@ const MAX_FRAME_RATE = 30;
 // Canvas parameters
 const MIN_CANVAS_WIDTH     = 200;
 const MAX_CANVAS_WIDTH     = 1000;
-const DEFAULT_CANVAS_WIDTH = MAX_CANVAS_WIDTH;
+const DEFAULT_CANVAS_WIDTH = MAX_CANVAS_WIDTH / 2;
 
 // Grid parameters
 const MIN_PATH_WIDTH     = Math.floor(0.01 * MAX_CANVAS_WIDTH);
@@ -46,7 +46,8 @@ const keys = {
   GENERATE : 'generate',
   SOLVE    : 'solve',
   EXPORT   : 'export',
-  FRAMES   : 'frame-rate'
+  FRAMES   : 'frame-rate',
+  SLIDER   : 'slider'
 };
 
 // Jquery event strings

@@ -3,6 +3,10 @@
  */
 function solve() {
 
+  notify("Coming soon!")
+
+  return;
+
   // Are we solving?
   if (action === aStar) {
 

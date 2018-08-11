@@ -14,9 +14,6 @@ function setup() {
   // Buttons
   actions();
 
-  // Canvas
-  page();
-
   // Grid
   init();
 
@@ -26,13 +23,13 @@ function setup() {
 
 //------------------------------------------------------------------------------
 
-function page() {
+function page(dimension) {
 
   // Create p5 canvas object
   canvas = createCanvas(
 
-    DEFAULT_CANVAS_WIDTH,
-    DEFAULT_CANVAS_WIDTH
+    dimension,
+    dimension
   );
 
   // Assign to inline html element
@@ -54,6 +51,18 @@ function parameters() {
   labels[keys.HEIGHT] = $("#canvas-width-slider-value");
   labels[keys.PATH]   = $("#path-width-slider-value");
   labels[keys.FRAMES] = $("#frame-rate-slider-value");
+
+  // Set min and max for canvas width
+  sliders[keys.CANVAS].slider('setAttribute', 'min', MIN_CANVAS_WIDTH)
+  sliders[keys.CANVAS].slider('setAttribute', 'max', MAX_CANVAS_WIDTH)
+  sliders[keys.CANVAS].slider('setAttribute', 'value', DEFAULT_CANVAS_WIDTH);
+  sliders[keys.CANVAS].slider('refresh');
+
+  // Set min and max for path width
+  sliders[keys.PATH].slider('setAttribute', 'min', MIN_PATH_WIDTH)
+  sliders[keys.PATH].slider('setAttribute', 'max', MAX_PATH_WIDTH)
+  sliders[keys.PATH].slider('setAttribute', 'value', DEFAULT_PATH_WIDTH);
+  sliders[keys.PATH].slider('refresh');
 
   // Canvas width slider event
   sliders[keys.CANVAS].on(events.SLIDE, (e) => {
@@ -77,6 +86,18 @@ function parameters() {
 
     labels[keys.FRAMES].text(e.value)
   });
+
+  let v;
+
+  v = sliders[keys.CANVAS].data('slider').getValue();
+
+  // Set initial value
+  labels[keys.WIDTH].text(v);
+  labels[keys.HEIGHT].text(v);
+
+  v = sliders[keys.PATH].data('slider').getValue();
+
+  labels[keys.PATH].text(v);
 }
 
 //------------------------------------------------------------------------------
@@ -100,6 +121,12 @@ function actions() {
  * Initializes the grid
  */
 function init() {
+
+  width = sliders[keys.CANVAS].data('slider').getValue();
+  w     = sliders[keys.PATH].data('slider').getValue();
+
+  // Canvas
+  page(width);
 
   // Compute dimension of grid
   cols = floor(width  / w);
