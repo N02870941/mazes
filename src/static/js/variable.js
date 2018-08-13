@@ -12,10 +12,7 @@ const MAX_CANVAS_WIDTH = 1000;
 
 // Grid parameters
 const MIN_PATH_WIDTH = Math.floor(0.01 * MAX_CANVAS_WIDTH);
-// const MAX_PATH_WIDTH = Math.floor(0.05 * MAX_CANVAS_WIDTH);
-
-const MAX_PATH_WIDTH = Math.floor(0.20 * MAX_CANVAS_WIDTH);
-
+const MAX_PATH_WIDTH = Math.floor(0.05 * MAX_CANVAS_WIDTH);
 
 // All string messages
 const strings = {

@@ -57,7 +57,7 @@ function parameters() {
     // Set min and max for path width
     sliders[keys.PATH].slider(SET_ATTRIBUTE, attributes.MIN, lo)
     sliders[keys.PATH].slider(SET_ATTRIBUTE, attributes.MAX, hi)
-    sliders[keys.PATH].slider(SET_ATTRIBUTE, attributes.VALUE, Math.floor( (hi + lo) / 2 ));
+    sliders[keys.PATH].slider(SET_ATTRIBUTE, Math.floor(1.5 * lo));
     sliders[keys.PATH].slider(events.REFRESH);
   }
 
@@ -76,7 +76,7 @@ function parameters() {
   // Set min and max width for canvas width
   sliders[keys.CANVAS].slider(SET_ATTRIBUTE, attributes.MIN, MIN_CANVAS_WIDTH)
   sliders[keys.CANVAS].slider(SET_ATTRIBUTE, attributes.MAX, MAX_CANVAS_WIDTH)
-  sliders[keys.CANVAS].slider(SET_ATTRIBUTE, attributes.VALUE, Math.floor( (MAX_CANVAS_WIDTH + MIN_CANVAS_WIDTH) / 2 ));
+  sliders[keys.CANVAS].slider(SET_ATTRIBUTE, attributes.VALUE, Math.floor(1.5 * MIN_CANVAS_WIDTH));
   sliders[keys.CANVAS].slider(events.REFRESH);
 
   path();
