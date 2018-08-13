@@ -27,6 +27,17 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
+   * Returns the Cell's
+   * unique key.
+   */
+  key() {
+
+    return `${this.i}-${this.j}`;
+  }
+
+//------------------------------------------------------------------------------
+
+  /**
    * Returns the index of cell
    * in the 1D grid provided it's
    * 2D coordinates.
@@ -224,7 +235,7 @@ class Cell {
 
     this.color(
 
-      255, 0, 0, 255,
+      255, 0, 0, 100,
       this.i * this.w,
       this.j * this.w,
       this.w,  this.w
@@ -267,6 +278,7 @@ class Cell {
         x, y,
         w, w
       );
+
     }
 
   }

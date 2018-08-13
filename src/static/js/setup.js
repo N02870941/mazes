@@ -156,8 +156,10 @@ function init() {
 
   // Reinit the grid array
   // and the vertex stack
-  stack = [];
-  grid  = [];
+  // and best path map
+  stack   = [];
+  grid    = [];
+  parents = [];
 
   // Pre-compute heuristic matrix
   costs = heuristics(rows, cols, w);

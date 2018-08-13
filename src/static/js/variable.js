@@ -120,6 +120,7 @@ let solution;
 //
 let grid;
 let stack;
+let parents;
 
 // Boolean flags
 let generated = false;

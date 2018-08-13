@@ -67,6 +67,7 @@ function aStar() {
 
   current.highlight();
 
+  // We have founce the target vertex
   if (costs[current.i][current.j] === 0) {
 
     return true;
