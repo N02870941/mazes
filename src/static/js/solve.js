@@ -3,9 +3,9 @@
  */
 function solve() {
 
-  notify("Coming soon!")
-
-  return;
+  // notify("Coming soon!")
+  //
+  // return;
 
   // Are we solving?
   if (action === aStar) {
@@ -63,15 +63,14 @@ function aStar() {
   grid.forEach(c => c.show());
 
   current.visited = true;
+  current.optimal = true;
 
-  // current.highlight();
+  current.highlight();
 
-  current.flash();
+  if (costs[current.i][current.j] === 0) {
 
-  // if (costs[current.i][current.j] === 0) {
-  //
-  //   return true;
-  // }
+    return true;
+  }
 
   let next = current.next();
 

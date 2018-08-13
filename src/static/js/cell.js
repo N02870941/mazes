@@ -9,10 +9,11 @@ class Cell {
    * Constructs a new cell
    * at location (i,j)
    */
-  constructor(i, j) {
+  constructor(i, j, w) {
 
     this.i       = i;
     this.j       = j;
+    this.w       = w;
     this.optimal = false;
     this.visited = false;
     this.walls   = [
@@ -46,6 +47,26 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  potentials() {
+
+    return [
+
+      // Top
+      grid[this.index(this.i,   this.j-1)],
+
+      // Right
+      grid[this.index(this.i+1, this.j)],
+
+      // Bottom
+      grid[this.index(this.i,   this.j+1)],
+
+      // Left
+      grid[this.index(this.i-1, this.j)]
+    ];
+  }
+
+//------------------------------------------------------------------------------
+
   /**
    * Returns adjacent vertices.
    */
@@ -54,13 +75,7 @@ class Cell {
     let neighbors  = [];
 
     // All "potential" vertices
-    let potentials = [
-
-      grid[this.index(this.i,    this.j-1)],
-      grid[this.index(this.i+1,  this.j)],
-      grid[this.index(this.i,    this.j+1)],
-      grid[this.index(this.i-1, this.j)]
-    ];
+    let potentials = this.potentials();
 
     // Only store truthy neighbors
     potentials.forEach( (c) => {
@@ -136,14 +151,14 @@ class Cell {
   next() {
     let neighbors  = [];
     let distances  = [];
-    let potentials = this.neighbors();
+    let potentials = this.potentials();
     let p;
 
     for (let i = 0; i < potentials.length; i++) {
 
       p = potentials[i];
 
-      if (p && !p.visited) {
+      if (p && !this.walls[i] && !p.visited) {
 
         neighbors.push(p);
         distances.push(costs[p.i][p.j]);
@@ -210,34 +225,12 @@ class Cell {
     this.color(
 
       255, 0, 0, 255,
-      this.i * w,
-      this.j * w,
-      w, w
+      this.i * this.w,
+      this.j * this.w,
+      this.w,  this.w
     );
 
   }
-
-//------------------------------------------------------------------------------
-
-flash() {
-
-  this.color(
-
-    255, 0, 0, 255,
-    this.i * w,
-    this.j * w,
-    w, w
-  );
-
-  this.color(
-
-    255, 255, 255, 100,
-    this.i * w,
-    this.j * w,
-    w, w
-  );
-
-}
 
 //------------------------------------------------------------------------------
 
@@ -247,26 +240,27 @@ flash() {
    */
   show() {
 
-    let x = this.i * w;
-    let y = this.j * w;
+    const w = this.w;
+    const x = this.i * w;
+    const y = this.j * w;
 
     stroke(BLACK);
     strokeWeight(2);
 
-    if (this.walls[0])
+    if (this.walls[TOP])
       line(x, y , x + w, y);
 
-    if (this.walls[1])
+    if (this.walls[RIGHT])
       line(x + w, y  , x + w, y + w);
 
-    if (this.walls[2])
+    if (this.walls[BOTTOM])
       line(x + w, y + w, x , y + w);
 
-    if (this.walls[3])
+    if (this.walls[LEFT])
       line(x , y + w, x , y);
 
     // Set visited to white
-    if (this.visited) {
+    if (this.visited && !this.optimal) {
 
       this.color(
         255, 255, 255, 100,
@@ -286,8 +280,8 @@ flash() {
    */
   static euclidian(src, dst) {
 
-    let a = abs(dst.j - src.j);
-    let b = abs(dst.i - src.i);
+    const a = abs(dst.j - src.j);
+    const b = abs(dst.i - src.i);
 
     return sqrt( sq(a) + sq(b) );
   }
@@ -306,24 +300,24 @@ flash() {
 
     if (x === 1) {
 
-      u.walls[3] = false;
-      v.walls[1] = false;
+      u.walls[LEFT]  = false;
+      v.walls[RIGHT] = false;
 
     } else if (x === -1) {
 
-      u.walls[1] = false;
-      v.walls[3] = false;
+      u.walls[RIGHT] = false;
+      v.walls[LEFT]  = false;
     }
 
     if (y === 1) {
 
-      u.walls[0] = false;
-      v.walls[2] = false;
+      u.walls[TOP]    = false;
+      v.walls[BOTTOM] = false;
 
     } else if (y === -1) {
 
-      u.walls[2] = false;
-      v.walls[0] = false;
+      u.walls[BOTTOM] = false;
+      v.walls[TOP]    = false;
     }
 
   }

@@ -1,9 +1,12 @@
-let gulp     = require('gulp');
-let browser  = require('browser-sync').create();
-var exec     = require('child_process').exec;
+let gulp    = require('gulp');
+let browser = require('browser-sync').create();
+let exec    = require('child_process').exec;
 
 //------------------------------------------------------------------------------
 
+/**
+ * Runs a commandline command asynchronously.
+ */
 function bash(command) {
 
   exec(command, (err, stdout, stderr) => {
@@ -14,7 +17,7 @@ function bash(command) {
     }
 
     if (stderr) {
-      
+
       console.log(stderr);
     }
 
@@ -23,6 +26,9 @@ function bash(command) {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Watch changes on all static files.
+ */
 gulp.task('watch-changes', () => {
 
   gulp.watch("./static/**/*.html", ['reload']);
@@ -33,6 +39,9 @@ gulp.task('watch-changes', () => {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Refreshes we browser.
+ */
 gulp.task('reload', () => {
 
   browser.reload();
@@ -40,6 +49,10 @@ gulp.task('reload', () => {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Starts serving page on
+ * port 8080 with browser synch.
+ */
 gulp.task('dev', () => {
 
   let port   = 8080;

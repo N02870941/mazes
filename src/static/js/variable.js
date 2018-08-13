@@ -4,21 +4,18 @@ let WHITE    = 255;
 
 // Frame rate parameters
 const MIN_FRAME_RATE = 1;
-const MAX_FRAME_RATE = 30;
+const MAX_FRAME_RATE = 60;
 
 // Canvas parameters
-const MIN_CANVAS_WIDTH     = 200;
-const MAX_CANVAS_WIDTH     = 1000;
-const DEFAULT_CANVAS_WIDTH = MAX_CANVAS_WIDTH / 2;
+const MIN_CANVAS_WIDTH = 200;
+const MAX_CANVAS_WIDTH = 1000;
 
 // Grid parameters
-const MIN_PATH_WIDTH     = Math.floor(0.01 * MAX_CANVAS_WIDTH);
-const MAX_PATH_WIDTH     = Math.floor(0.10 * MAX_CANVAS_WIDTH);
-// const DEFAULT_PATH_WIDTH = Math.floor(0.1 * DEFAULT_CANVAS_WIDTH);
+const MIN_PATH_WIDTH = Math.floor(0.01 * MAX_CANVAS_WIDTH);
+// const MAX_PATH_WIDTH = Math.floor(0.05 * MAX_CANVAS_WIDTH);
 
-const DEFAULT_PATH_WIDTH = Math.floor(0.05 * DEFAULT_CANVAS_WIDTH);
+const MAX_PATH_WIDTH = Math.floor(0.20 * MAX_CANVAS_WIDTH);
 
-// const DEFAULT_PATH_WIDTH = Math.floor(0.01 * DEFAULT_CANVAS_WIDTH);
 
 // All string messages
 const strings = {
@@ -50,20 +47,62 @@ const keys = {
   SLIDER   : 'slider'
 };
 
+// UI element ids
+const elements = {
+
+  button : {
+
+    GENERATE : '#button-generate',
+    SOLVE    : '#button-solve',
+    EXPORT   : '#button-export'
+
+  },
+
+  slider : {
+
+    CANVAS : '#canvas-width-slider',
+    PATH   : '#path-width-slider',
+    FRAMES : '#frame-rate-slider'
+  },
+
+  label : {
+
+    CANVAS_W : '#canvas-width-slider-value',
+    CANVAS_H : '#canvas-height-slider-value',
+    PATH     : '#path-width-slider-value',
+    FRAMES   : '#frame-rate-slider-value'
+  },
+
+  canvas : {
+
+    MAIN : 'sketch-holder'
+  }
+};
+
+// HTML element attributes
+const attributes = {
+
+  MIN   : 'min',
+  MAX   : 'max',
+  VALUE : 'value'
+
+};
+
 // Jquery event strings
 const events = {
 
-  SLIDE : 'slide',
-  CLICK : 'click'
+  SLIDE   : 'slide',
+  CLICK   : 'click',
+  REFRESH : 'refresh'
 };
 
 // Numbers for top, bottom,
 // right, and left walls for
 // a given cell's wall array.
-const T = 0;
-const B = 3;
-const R = 1;
-const L = 2;
+const TOP    = 0;
+const RIGHT  = 1;
+const BOTTOM = 2;
+const LEFT   = 3;
 
 // Dimensions of grid
 let cols;
@@ -76,10 +115,12 @@ let buttons = [];
 let sliders = [];
 let labels  = [];
 
-// Main canvas
+// Canvas, images
 let canvas;
+let maze;
+let solution;
 
-let w     = DEFAULT_PATH_WIDTH;
+//
 let grid;
 let stack;
 

@@ -1,5 +1,3 @@
-
-
 // TODO - https://stackoverflow.com/questions/39711941/p5-js-manually-call-setup-and-draw
 // TODO - https://mobiforge.com/design-development/html5-mobile-web-canvas
 
@@ -17,12 +15,15 @@ function setup() {
   // Grid
   init();
 
-  // Stop animating
+  // Stop p5 main event loop
   noLoop();
 }
 
 //------------------------------------------------------------------------------
 
+/**
+ * Sets up P5 canvas on the page.
+ */
 function page(dimension) {
 
   // Create p5 canvas object
@@ -32,43 +33,62 @@ function page(dimension) {
     dimension
   );
 
-  // Assign to inline html element
-  canvas.parent('sketch-holder');
+  // Assign canvas to inline html element
+  canvas.parent(elements.canvas.MAIN);
 }
 
 //------------------------------------------------------------------------------
 
+/**
+ * Set up event listeners for sliders.
+ */
 function parameters() {
 
+  const SET_ATTRIBUTE = 'setAttribute';
+
+  let path = () => {
+
+    let curr = sliders[keys.CANVAS].data(keys.SLIDER).getValue();
+
+    // Update path width boundaries
+    let lo = Math.max(MIN_PATH_WIDTH, Math.floor(0.01 * curr));
+    let hi = Math.min(MAX_PATH_WIDTH, Math.floor(0.20 * curr));
+
+    // Set min and max for path width
+    sliders[keys.PATH].slider(SET_ATTRIBUTE, attributes.MIN, lo)
+    sliders[keys.PATH].slider(SET_ATTRIBUTE, attributes.MAX, hi)
+    sliders[keys.PATH].slider(SET_ATTRIBUTE, attributes.VALUE, Math.floor( (hi + lo) / 2 ));
+    sliders[keys.PATH].slider(events.REFRESH);
+  }
+
   // The sliders
-  sliders[keys.CANVAS] = $("#canvas-width-slider").slider();
-  sliders[keys.PATH]   = $("#path-width-slider").slider();
-  sliders[keys.FRAMES] = $("#frame-rate-slider").slider();
+  sliders[keys.CANVAS] = $(elements.slider.CANVAS).slider();
+  sliders[keys.PATH]   = $(elements.slider.PATH).slider();
+  sliders[keys.FRAMES] = $(elements.slider.FRAMES).slider();
 
   // The labels
-  labels[keys.CANVAS] = $("#canvas-width-slider-value");
-  labels[keys.WIDTH]  = $("#canvas-height-slider-value");
-  labels[keys.HEIGHT] = $("#canvas-width-slider-value");
-  labels[keys.PATH]   = $("#path-width-slider-value");
-  labels[keys.FRAMES] = $("#frame-rate-slider-value");
+  labels[keys.CANVAS] = $(elements.label.CANVAS_W);
+  labels[keys.WIDTH]  = $(elements.label.CANVAS_W);
+  labels[keys.HEIGHT] = $(elements.label.CANVAS_H);
+  labels[keys.PATH]   = $(elements.label.PATH);
+  labels[keys.FRAMES] = $(elements.label.FRAMES);
 
-  // Set min and max for canvas width
-  sliders[keys.CANVAS].slider('setAttribute', 'min', MIN_CANVAS_WIDTH)
-  sliders[keys.CANVAS].slider('setAttribute', 'max', MAX_CANVAS_WIDTH)
-  sliders[keys.CANVAS].slider('setAttribute', 'value', DEFAULT_CANVAS_WIDTH);
-  sliders[keys.CANVAS].slider('refresh');
+  // Set min and max width for canvas width
+  sliders[keys.CANVAS].slider(SET_ATTRIBUTE, attributes.MIN, MIN_CANVAS_WIDTH)
+  sliders[keys.CANVAS].slider(SET_ATTRIBUTE, attributes.MAX, MAX_CANVAS_WIDTH)
+  sliders[keys.CANVAS].slider(SET_ATTRIBUTE, attributes.VALUE, Math.floor( (MAX_CANVAS_WIDTH + MIN_CANVAS_WIDTH) / 2 ));
+  sliders[keys.CANVAS].slider(events.REFRESH);
 
-  // Set min and max for path width
-  sliders[keys.PATH].slider('setAttribute', 'min', MIN_PATH_WIDTH)
-  sliders[keys.PATH].slider('setAttribute', 'max', MAX_PATH_WIDTH)
-  sliders[keys.PATH].slider('setAttribute', 'value', DEFAULT_PATH_WIDTH);
-  sliders[keys.PATH].slider('refresh');
+  path();
 
   // Canvas width slider event
   sliders[keys.CANVAS].on(events.SLIDE, (e) => {
 
+    // Update label
     labels[keys.WIDTH].text(e.value);
     labels[keys.HEIGHT].text(e.value);
+
+    path();
   });
 
   // Path width slider event
@@ -87,27 +107,26 @@ function parameters() {
     labels[keys.FRAMES].text(e.value)
   });
 
-  let v;
+  let t = sliders[keys.CANVAS].data(keys.SLIDER).getValue();
+  let v = sliders[keys.PATH].data(keys.SLIDER).getValue();
 
-  v = sliders[keys.CANVAS].data('slider').getValue();
-
-  // Set initial value
-  labels[keys.WIDTH].text(v);
-  labels[keys.HEIGHT].text(v);
-
-  v = sliders[keys.PATH].data('slider').getValue();
-
+  // Set initial values
+  labels[keys.WIDTH].text(t);
+  labels[keys.HEIGHT].text(t);
   labels[keys.PATH].text(v);
 }
 
 //------------------------------------------------------------------------------
 
+/**
+ * Set up event listeners for buttons.
+ */
 function actions() {
 
   // The buttons
-  buttons[keys.GENERATE] = $('#button-generate');
-  buttons[keys.SOLVE]    = $('#button-solve');
-  buttons[keys.EXPORT]   = $('#button-export');
+  buttons[keys.GENERATE] = $(elements.button.GENERATE);
+  buttons[keys.SOLVE]    = $(elements.button.SOLVE);
+  buttons[keys.EXPORT]   = $(elements.button.EXPORT);
 
   // Setup click events for buttons
   buttons[keys.GENERATE].click(generate);
@@ -118,12 +137,12 @@ function actions() {
 //------------------------------------------------------------------------------
 
 /**
- * Initializes the grid
+ * (Re)initializes the grid.
  */
 function init() {
 
-  width = sliders[keys.CANVAS].data('slider').getValue();
-  w     = sliders[keys.PATH].data('slider').getValue();
+  let width = sliders[keys.CANVAS].data(keys.SLIDER).getValue()
+  let w     = sliders[keys.PATH].data(keys.SLIDER).getValue();
 
   // Canvas
   page(width);
@@ -135,17 +154,18 @@ function init() {
   generated = false;
   solved    = false;
 
-  // Reinit the grid
+  // Reinit the grid array
   // and the vertex stack
   stack = [];
   grid  = [];
 
   // Pre-compute heuristic matrix
-  costs = heuristics(rows, cols);
+  costs = heuristics(rows, cols, w);
 
   // Start at first cell
   current = grid[0];
 
+  // Start p5 main event loop
   loop();
 }
 
@@ -155,7 +175,7 @@ function init() {
  * Pre-computes matrix of heuristics
  * for later use in A* search algorithm.
  */
-function heuristics(r, c) {
+function heuristics(r, c, w) {
 
   let last;
   let h;
@@ -174,7 +194,7 @@ function heuristics(r, c) {
     for (let i = 0; i < c; i++) {
 
       // New cell
-      grid.push(new Cell(i, j));
+      grid.push(new Cell(i, j, w));
 
       // Compute heuristic using euclidian distance
       h[j][i] = Cell.euclidian(grid[grid.length - 1], last);

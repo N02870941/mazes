@@ -68,7 +68,7 @@ function dfs() {
   current.visited = true;
 
   // Show on screen
-  // current.flash();
+  // current.highlight();
 
   // Get neighbors
   let next = current.checkNeighbors();
