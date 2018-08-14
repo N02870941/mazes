@@ -1,29 +1,7 @@
 # Mazes
 [![Build Status](https://travis-ci.com/N02870941/mazes.svg?branch=master)](https://travis-ci.com/N02870941/mazes)
 
-A simple maze generator and solver available in the form of a docker based web app.
-You can test the [online version][site].
-
-# How to run
-Ensure you have docker installed before running the following commands:
-
-```
-docker pull jabaridash/mazes
-
-docker run -p 8080:80 jabaridash/mazes
-```
-
-You can also run it from source if you have git and node 8+ installed:
-
-```
-git clone https://github.com/N02870941/mazes.git
-
-cd mazes/src
-
-npm install
-
-gulp dev
-```
+A simple maze generator and solver available in the form of a [web app][site].
 
 # Intuition
 Maze generating and solving can be described in terms of graph theory. For the
@@ -145,9 +123,9 @@ are the absence of edges, or area that does not allow us to go from one vertex t
 
 Now that we have framed the problem we can see some of the algorithms used to do this.
 
-# Randomized depth-first search
+# Randomized Depth-first search
 
-The [Randomized depth-first search][wiki] follows:
+The [Randomized Depth-first search][wiki] follows:
 
 1. Make the initial cell the current cell and mark it as visited
 2. While there are unvisited cells
@@ -165,27 +143,103 @@ In essence, this algorithm starts at a vertex `u`, randomly visits an adjacent
 vertex `v` that has not been visited yet - destroying barriers (walls of pixels) between
 the current and previous vertex to create an edge, and repeats this until all vertices are visited and we have a spanning tree.
 
-# Maze solving
-Now that we have generated a maze, we want to solve it. Solving the maze can be done
-in several ways. We will use the A* algorithm to solve it. A* is a single source
-shortest path algorithm. In the case of our maze, we will have a starting point
-specified by a pixel's location in the image and a target pixel location to get to.
-We will then run A* on the maze to find shortest path between the two vertices (pixels).
-Pseudo code for A* follows:
+# Randomized Prim's algorithm
 
-It is worth noting that A* is not the only way to solve this problem. We could have
-just done another modified depth-first search, stopping once we come across the
-target vertex, then backtracking. However, this is a brute force method that would take a lot longer
-and would not result in an optimal solution (if there were more than one path). We can optimize
-that by running Dijkstra's algorithm with is a generic shortest path algorithm for weighted graphs. However,
-Dijkstra's algorithm is a greedy algorithm that takes steps that may be optimal for
-*intermediate* steps, but do not contribute to the *overall* solutions, thus warranting a longer
-runtime by potentially going down too many sub-optimal paths before generating the overall
-best solution.
+Prim's algorithm is an algorithm used to fine what's called the **minimum spanning tree** (MST). Just like the normal spanning tree, an MST contains a number of edges `|E|` such that `|E| = |V| - 1`. It also has the added property that the sum of the selected edges is minimum while still satisfying the connected property. It goes as follows:
 
-For these reason we use A*, which can be considered a generalization of Dijkstra's algorithm
-that uses the heuristic value (specific to the problem) that helps make more intelligent intermediate
-steps that lead to the overall optimal solution more quickly.
+1. Start with a grid full of walls
+2. Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
+3. While there are walls in the list:
+	1. Pick a random wall from the list. If only one of the two cells that the wall divides is visited, then:
+		1. Make the wall a passage and mark the unvisited cell as part of the maze
+		2. Add the neighboring walls of the cell to the wall list
+2. Remove the wall from the list
+
+**Note:** Since we have decided that all edge weights are uniform for this implementation, all spanning trees are minimum spanning trees because there will **always** be `|V| - 1` edges, each of which has a weight of one, resulting in a total cost of `|V| - 1` for all spanning trees.
+
+# Solving with Depth-first search
+
+A modified depth-first search can be used, stopping once we come across the
+target vertex, then back tracking to discover the path from source to destination. This is a brute force method that would take a lot longer
+and may not always result in the optimal solution if there were more than one path from beginning to end. Pseudo code follows:
+
+```javascript
+dfs(src, dst) {
+
+	var unvisited = []	// Stack
+	var neighbors = []	// Set
+	var parents   = []	// Map
+	var current
+	
+	// The start vertex has no parent
+	parents[src.key] = null
+	
+	// Start with source
+	visited.push(src);
+	
+	// Process each vertex
+	while (unvisited.length > 0) {
+	
+		// Get next vertex
+		current = unvisited.pop()
+		
+		// We found the target
+		if (current == dst) {
+			
+			break
+		}
+		
+		// If first time visiting
+		if (!current.visited) {
+		
+			// Label is visited
+			current.visited = true
+					
+			// Get it's neighbors
+			neighbors = current.neighbors()
+			
+			// Push all unvisited neighbors to stack
+			neighbors.forEach( neighbor => {
+			
+				// If there is no path to this vertex yet
+				if (!neighbor.visited && !parents[neighbor.key]) {
+				
+					// Create a mapping for backtracking
+					parents[neighbor.key] = current.key
+				
+					// Add to start for processing
+					unvisited.push(neighbor)
+				}
+			
+			})
+		}
+	}
+	
+	// Start at destination	
+	current = dst
+	
+	// Backtrack highlighting the path
+	while (current) {
+	
+		current.highlight()
+		
+		current = parents[current.key]
+	}
+
+}
+```
+
+# Solving with Dijkstra's algorithm
+
+We can improve the above by running Dijkstra's algorithm, which is a generic shortest path algorithm for weighted graphs. Instead of blindly visiting each unvisited adjacent vertex until we have found our target, we will give them a priority. We will visit adjacent verticies that have **lower** cost first. However,
+This is a greedy approach that takes steps that may be optimal for
+*intermediate* solutions, but not optimal for the *overall* solution. This may result in a quicker runtime if decreasing edge weight allows us to approach our target. But the runtime will be just as bad as depth-first search if this is not true and we end up going down too many sub-optimal paths before generating the overall best solution. The latter is generally true for **randomly generated uniform edge-weight** graphs as the cost is directly correlated with the path length, and nothing can be assumed about this.
+
+# Solving with A* search
+
+The limitations of Dijkstra's algorithm is the reason we use A* (A Star). It can be considered a generalization of Dijkstra's algorithm
+that uses a heuristic value (specific to the problem) that helps make more intelligent intermediate
+steps that lead to the overall optimal solution more quickly. We can also say Dijkstra's algorithm is a specific case of A* where the heuristic of all adjacent vertices are equal or zero - thus having no impact on decision making. The heuristic is an easy-to-compute value computed per iteration (or beforehand) that we use to determine whether or not we are approaching our target. The heuristic is a problem-specific computation because for generic graphs (a set of edges and vertices) we do not have any information about how "close" we are. In terms of a grid, a good choice for the heuristic is the (euclidian or manhattan) distance between the current pixel and the target. We then make our choice to visit a particular vertex that no only minimizes overall cost, but also shrinks the distance between the current vertex in the search and the target vertex.
 
 # Time complexity analysis
 We will explore the runtime of both generating the maze, and solving it. But, before we do that
@@ -253,8 +307,26 @@ pushed on to the stack before any popping (visiting) occurs.
 
 **Generating the maze required** `O(|V|)` space.
 
-## Solving the maze
+# How to run
+Ensure you have docker installed before running the following commands:
 
+```
+docker pull jabaridash/mazes
+
+docker run -p 8080:80 jabaridash/mazes
+```
+
+You can also run it from source if you have git and node 8+ installed:
+
+```
+git clone https://github.com/N02870941/mazes.git
+
+cd mazes/src
+
+npm install
+
+gulp dev
+```
 
 [site]: http://mazes.jabaridash.com
 [wiki]: https://en.wikipedia.org/wiki/Maze_generation_algorithm
