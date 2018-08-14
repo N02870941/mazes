@@ -65,7 +65,7 @@ do not need to make it directed because from pixels have uniform size, thus a
 uniform distance if they are adjacent.
 
 <p align="center">
-  <img src="img/grid.png">
+  <img src="img/png/grid.png">
 </p>
 
 *A 30 x 30 square grid that represents a connected graph.*
@@ -86,7 +86,7 @@ search is an algorithm used to **traverse** a graph. Traversing the graph means 
 **connected** then there exists a path from each vertex to every other vertex in the graph.
 
 <p align="center">
-  <img src="img/unweighted-undirected-graph.png">
+  <img src="img/png/unweighted-undirected-graph.png">
 </p>
 
 *A connected unweighted graph.*
@@ -101,7 +101,7 @@ still maintaining our connected property. This will result in a maze that leaves
 The result is called a **spanning tree**.
 
 <p align="center">
-  <img src="img/spanning-tree.png">
+  <img src="img/png/spanning-tree.png">
 </p>
 
 *A spanning tree of the above graph.*
@@ -122,7 +122,7 @@ in the graph. Black pixels that are left over will be the walls of the maze. The
 are the absence of edges, or area that cannot be visited.
 
 <p align="center">
-  <img src="img/maze.png">
+  <img src="img/png/maze.png">
 </p>
 
 *Our result once the correct amount of walls is removed will look like this.*
