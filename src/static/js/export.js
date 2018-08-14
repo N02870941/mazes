@@ -17,11 +17,7 @@ function download() {
 
   if (solved) {
 
-    confirm(strings.DOWNLOAD_MSG, () => save(canvas, 'maze-solution', 'png'));
-
-  } else {
-
-    
+    confirm(strings.DOWNLOAD_MSG, () => save(solution, 'maze-solution', 'png'));
   }
 
 }

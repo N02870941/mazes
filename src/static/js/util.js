@@ -119,6 +119,8 @@ function solving() {
 
 function complete() {
 
+  solution = canvas.get();
+
   buttons[keys.GENERATE].trigger(events.SOLVED);
   buttons[keys.EXPORT].trigger(events.SOLVED);
 }
