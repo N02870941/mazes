@@ -58,15 +58,13 @@ function solve() {
  */
 function aStar() {
 
-  grid.forEach(c => c.show());
-
   current.visited = true;
-  current.optimal = true;
-
-  current.blink();
+  current.clear();
 
   // We have founce the target vertex
   if (costs[current.i][current.j] === 0) {
+
+    current.highlight();
 
     return true;
   }
@@ -76,7 +74,6 @@ function aStar() {
   if (next) {
 
     next.visited = true;
-    next.optimal = true;
 
     if (parents[next.key()] === undefined) {
 
@@ -84,6 +81,8 @@ function aStar() {
     }
 
     stack.push(current);
+
+    current.highlight();
 
     current = next;
 

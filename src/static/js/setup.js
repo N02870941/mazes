@@ -51,13 +51,13 @@ function parameters() {
     let curr = sliders[keys.CANVAS].data(keys.SLIDER).getValue();
 
     // Update path width boundaries
-    let lo = Math.max(MIN_PATH_WIDTH, Math.floor(0.01 * curr));
-    let hi = Math.min(MAX_PATH_WIDTH, Math.floor(0.20 * curr));
+    let lo = MIN_PATH_WIDTH
+    let hi = MAX_PATH_WIDTH
 
     // Set min and max for path width
     sliders[keys.PATH].slider(SET_ATTRIBUTE, attributes.MIN, lo)
     sliders[keys.PATH].slider(SET_ATTRIBUTE, attributes.MAX, hi)
-    sliders[keys.PATH].slider(SET_ATTRIBUTE, Math.floor(1.5 * lo));
+    sliders[keys.PATH].slider(SET_ATTRIBUTE, Math.floor(lo + hi) / 2);
     sliders[keys.PATH].slider(events.REFRESH);
   }
 
@@ -76,7 +76,7 @@ function parameters() {
   // Set min and max width for canvas width
   sliders[keys.CANVAS].slider(SET_ATTRIBUTE, attributes.MIN, MIN_CANVAS_WIDTH)
   sliders[keys.CANVAS].slider(SET_ATTRIBUTE, attributes.MAX, MAX_CANVAS_WIDTH)
-  sliders[keys.CANVAS].slider(SET_ATTRIBUTE, attributes.VALUE, Math.floor(1.5 * MIN_CANVAS_WIDTH));
+  sliders[keys.CANVAS].slider(SET_ATTRIBUTE, attributes.VALUE, DEFAULT_CANVAS_WIDTH);
   sliders[keys.CANVAS].slider(events.REFRESH);
 
   path();
@@ -169,6 +169,9 @@ function init() {
 
   // Start p5 main event loop
   loop();
+
+  // Show each grid cell in white
+  grid.forEach(c => c.clear());
 }
 
 //------------------------------------------------------------------------------

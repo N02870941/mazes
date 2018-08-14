@@ -6,8 +6,6 @@ async function draw() {
   // Just show the grid
   if (first) {
 
-    grid.forEach(c => c.show());
-
     return;
   }
 
@@ -27,8 +25,8 @@ async function draw() {
       last.walls[1]  = false;
 
       // Re-paint to screen
-      first.show();
-      last.show();
+      first.clear();
+      last.clear();
 
     // In progress
     } else {
@@ -52,14 +50,6 @@ async function draw() {
       action = highlight;
     }
 
-  } else if (action === highlight) {
-
-    if (action()) {
-
-      action = null;
-
-      noLoop();
-    }
   }
 
 }

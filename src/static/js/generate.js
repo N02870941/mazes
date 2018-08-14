@@ -1,3 +1,5 @@
+let previous;
+
 /**
  * Generates the maze.
  */
@@ -61,14 +63,11 @@ function generate() {
  */
 function dfs() {
 
-  // Draw each cell onto canvas
-  grid.forEach(c => c.show());
-
   // Mark as visited
   current.visited = true;
 
-  // Show on screen
-  current.blink();
+  // Set back to white
+  current.clear();
 
   // Get neighbors
   let next = current.checkNeighbors();
@@ -86,6 +85,13 @@ function dfs() {
     // Remove the wall between
     // these two adjacent vertices
     Cell.pave(current, next);
+
+    // Show in white
+    current.clear();
+    next.clear();
+
+    // Highlight end of path
+    current.highlight();
 
     // Shift the pointers
     current = next;

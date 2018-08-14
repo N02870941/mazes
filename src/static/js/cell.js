@@ -217,63 +217,15 @@ class Cell {
    */
   color(r, g, b, a) {
 
-    this.fill(r, g, b, a,
-      this.i * this.w,
-      this.j * this.w,
-      this.w, this.w)
-  }
-
-//------------------------------------------------------------------------------
-
-  /**
-   * Highlights the current node
-   * as it is being processed.
-   */
-  highlight() {
-
-    this.color(
-
-      255, 0, 0, 100,
-      this.i * this.w,
-      this.j * this.w,
-      this.w,  this.w
-    );
-
-  }
-
-  blink() {
-
-    this.color(
-
-      255, 0, 0, 255,
-      this.i * this.w,
-      this.j * this.w,
-      this.w,  this.w
-    );
-
-    this.show();
-
-    this.clear();
-
-    this.show();
-  }
-
-  clear() {
-
-    this.color(255, 255, 255, 100);
-  }
-
-//------------------------------------------------------------------------------
-
-  /**
-   * Displays the cell in
-   * it's initial state.
-   */
-  show() {
-
     const w = this.w;
     const x = this.i * w;
     const y = this.j * w;
+
+    this.fill(
+      r, g, b, a,
+      x, y,
+      w, w
+    )
 
     stroke(BLACK);
     strokeWeight(2);
@@ -289,13 +241,24 @@ class Cell {
 
     if (this.walls[LEFT])
       line(x , y + w, x , y);
+  }
 
-    // Set visited to white
-    if (this.visited) {
+//------------------------------------------------------------------------------
 
-      this.clear();
-    }
+  /**
+   * Highlights the current node
+   * as it is being processed.
+   */
+  highlight() {
 
+    this.color(0, 0, 255, 50);
+  }
+
+//------------------------------------------------------------------------------
+
+  clear() {
+
+    this.color(255, 255, 255, 255);
   }
 
 //------------------------------------------------------------------------------
