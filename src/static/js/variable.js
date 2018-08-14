@@ -1,6 +1,6 @@
 // Colors
-let BLACK    = 0;
-let WHITE    = 255;
+let BLACK = 0;
+let WHITE = 255;
 
 // Frame rate parameters
 const MIN_FRAME_RATE = 1;
@@ -82,7 +82,6 @@ const attributes = {
   MIN   : 'min',
   MAX   : 'max',
   VALUE : 'value'
-
 };
 
 // Jquery event strings
@@ -129,6 +128,7 @@ let first     = true;
 
 // Matrix of heuristic
 let costs;
+let cost;
 
 // Repeated action in draw()
 // and main event loop

@@ -27,8 +27,7 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Returns the Cell's
-   * unique key.
+   * Returns the Cell's unique key.
    */
   key() {
 
@@ -83,7 +82,7 @@ class Cell {
    */
   neighbors() {
 
-    let neighbors  = [];
+    let neighbors = [];
 
     // All "potential" vertices
     let potentials = this.potentials();
@@ -95,7 +94,7 @@ class Cell {
 
         neighbors.push(c);
       }
-    })
+    });
 
     return neighbors;
   }
@@ -202,13 +201,13 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
-  /**
-   * Returns a boolean value that
-   * indicates where not a wall exists
-   * between two adjacent vertices.
-   */
-  wall(cell) {
+  fill(r, g, b, a, x, y, l, w) {
 
+    noStroke();
+
+    fill(r, g, b, a);
+
+    rect(x, y, w, w);
   }
 
 //------------------------------------------------------------------------------
@@ -216,13 +215,12 @@ class Cell {
   /**
    * Colors the cell a specified color
    */
-  color(r, g, b, a, x, y, l, w) {
+  color(r, g, b, a) {
 
-    noStroke();
-
-    fill(r, g, b, a);
-
-    rect(x, y, w, w);
+    this.fill(r, g, b, a,
+      this.i * this.w,
+      this.j * this.w,
+      this.w, this.w)
   }
 
 //------------------------------------------------------------------------------
@@ -241,6 +239,28 @@ class Cell {
       this.w,  this.w
     );
 
+  }
+
+  blink() {
+
+    this.color(
+
+      255, 0, 0, 255,
+      this.i * this.w,
+      this.j * this.w,
+      this.w,  this.w
+    );
+
+    this.show();
+
+    this.clear();
+
+    this.show();
+  }
+
+  clear() {
+
+    this.color(255, 255, 255, 100);
   }
 
 //------------------------------------------------------------------------------
@@ -271,14 +291,9 @@ class Cell {
       line(x , y + w, x , y);
 
     // Set visited to white
-    if (this.visited && !this.optimal) {
+    if (this.visited) {
 
-      this.color(
-        255, 255, 255, 100,
-        x, y,
-        w, w
-      );
-
+      this.clear();
     }
 
   }

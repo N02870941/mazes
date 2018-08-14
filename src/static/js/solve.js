@@ -3,10 +3,6 @@
  */
 function solve() {
 
-  // notify("Coming soon!")
-  //
-  // return;
-
   // Are we solving?
   if (action === aStar) {
 
@@ -39,6 +35,8 @@ function solve() {
       // Start at first cell
       current = grid[0];
 
+      parents[current.key()] = null;
+
       loop();
 
     // In progress
@@ -65,7 +63,7 @@ function aStar() {
   current.visited = true;
   current.optimal = true;
 
-  current.highlight();
+  current.blink();
 
   // We have founce the target vertex
   if (costs[current.i][current.j] === 0) {
@@ -80,6 +78,11 @@ function aStar() {
     next.visited = true;
     next.optimal = true;
 
+    if (parents[next.key()] === undefined) {
+
+      parents[next.key()] = current.key();
+    }
+
     stack.push(current);
 
     current = next;
@@ -90,4 +93,34 @@ function aStar() {
   }
 
   return stack.length == 0;
+}
+
+//------------------------------------------------------------------------------
+
+function highlight() {
+
+  if (!current) {
+
+    return true;
+  }
+
+  current.highlight();
+
+  let s = parents[current.key()];
+
+  if (s) {
+
+    let a = s.split('-');
+
+    let i = parseInt(a[0]);
+    let j = parseInt(a[1]);
+
+    let parent = grid[current.index(i, j)];
+
+    current = parent;
+
+    return false;
+  }
+
+  return true;
 }

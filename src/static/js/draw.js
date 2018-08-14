@@ -6,7 +6,7 @@ async function draw() {
   // Just show the grid
   if (first) {
 
-    grid.forEach( c => c.show());
+    grid.forEach(c => c.show());
 
     return;
   }
@@ -18,8 +18,8 @@ async function draw() {
     if (generated) {
 
       // Get the start and end cells
-      let first = grid[0];
-      let last  = grid[grid.length - 1];
+      const first = grid[0];
+      const last  = grid[grid.length - 1];
 
       // Remove the left and right
       // walls respectively
@@ -37,7 +37,7 @@ async function draw() {
     }
 
   // Are we solving?
-  } else {
+  } else if (action == aStar) {
 
     // Not done
     if (!solved) {
@@ -47,9 +47,19 @@ async function draw() {
     // Solved
     } else {
 
-      // NOTE - What to do?
+      current = grid[grid.length-1];
+
+      action = highlight;
     }
 
+  } else if (action === highlight) {
+
+    if (action()) {
+
+      action = null;
+
+      noLoop();
+    }
   }
 
 }

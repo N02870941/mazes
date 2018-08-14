@@ -141,8 +141,8 @@ function actions() {
  */
 function init() {
 
-  let width = sliders[keys.CANVAS].data(keys.SLIDER).getValue()
-  let w     = sliders[keys.PATH].data(keys.SLIDER).getValue();
+  const width = sliders[keys.CANVAS].data(keys.SLIDER).getValue()
+  const w     = sliders[keys.PATH].data(keys.SLIDER).getValue();
 
   // Canvas
   page(width);
