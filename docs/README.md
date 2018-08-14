@@ -66,9 +66,9 @@ uniform distance if they are adjacent.
 
 <p align="center">
   <img src="img/png/grid.png">
-</p>
 
-*A 30 x 30 square grid that represents a connected graph.*
+  <i>A 30 x 30 square grid that represents a connected graph.</i>
+</p>
 
 It is worth noting for the JavaScript particular implementation, we will have a
 tad of redundancy where each cell in the grid has information regarding all 4
@@ -87,9 +87,9 @@ search is an algorithm used to **traverse** a graph. Traversing the graph means 
 
 <p align="center">
   <img src="img/png/unweighted-undirected-graph.png">
-</p>
 
-*A connected unweighted graph.*
+  <i>A connected unweighted graph.</i>
+</p>
 
 In the case of an `n x n` image where `n` is the width (and height) of the image
 in pixels, the image *always* represents a connected graph. The reason is that
@@ -102,9 +102,9 @@ The result is called a **spanning tree**.
 
 <p align="center">
   <img src="img/png/spanning-tree.png">
-</p>
 
-*A spanning tree of the above graph.*
+  <i>A spanning tree of the above graph.</i>
+</p>
 
 A spanning tree `S` is a sub-graph of a graph `G = {V, E}` that contains the minimum
 number of edges required to connect all vertices in `G`. If we denote the number of
@@ -115,17 +115,17 @@ at a specified vertex `v` and follow an alternating sequence of vertices and edg
 where edge `ei` connects `vi` and `vi+1` and visit the vertex twice. In other words, there
 are no loops.
 
-For simplicity, we will consider white (squares of )pixels valid vertices, and black (lines of)
-pixels the absence of a vertex. This means, as we go through our graph removing walls, we will
+For simplicity, we will consider white (squares of) pixels valid vertices, and black (lines of)
+pixels the absence of a connecting edge. This means, as we go through our graph removing walls, we will
 be generating a continuous path of white pixels that represent traversable vertices
 in the graph. Black pixels that are left over will be the walls of the maze. They
-are the absence of edges, or area that cannot be visited.
+are the absence of edges, or area that does not allow us to go from one vertex to another.
 
 <p align="center">
   <img src="img/png/maze.png">
-</p>
 
-*Our result once the correct amount of walls is removed will look like this.*
+  <i>Our result once the correct amount of walls is removed will look like this.</i>
+</p>
 
 Now that we have framed the problem we can see the [algorithm][wiki]:
 

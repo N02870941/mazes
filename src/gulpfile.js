@@ -58,7 +58,7 @@ gulp.task('dev', () => {
   let port   = 8080;
   let config = {proxy: "localhost:" + port};
 
-  bash('node index.js ' + port);
+  bash('node app.js ' + port);
 
   browser.init(config);
 
