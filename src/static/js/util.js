@@ -100,8 +100,9 @@ function generating() {
 
 function prepared() {
 
-  noLoop();
+  maze = canvas.get();
 
+  buttons[keys.GENERATE].trigger(events.GENERATED);
   buttons[keys.SOLVE].trigger(events.GENERATED);
   buttons[keys.EXPORT].trigger(events.GENERATED);
 }
@@ -126,7 +127,7 @@ function complete() {
 
 function cancel() {
 
-  confirm('Are you sure you want to cancel?', () => {
+  confirm(strings.CONFIRM_CANCEL, () => {
 
     const prev = action;
 

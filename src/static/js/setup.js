@@ -26,6 +26,12 @@ function setup() {
  */
 function page(dimension) {
 
+  maze = createCanvas(
+
+    dimension,
+    dimension
+  );
+
   // Create p5 canvas object
   canvas = createCanvas(
 
@@ -145,6 +151,12 @@ function actions() {
   buttons[keys.EXPORT].on(events.GENERATING, function(event) {
 
     $(this).prop(attributes.DISABLED, true);
+  });
+
+  // Enable generate button once generating is done
+  buttons[keys.GENERATE].on(events.GENERATED, function(event) {
+
+    $(this).prop(attributes.DISABLED, false);
   });
 
   // Enable solve button once generating is done

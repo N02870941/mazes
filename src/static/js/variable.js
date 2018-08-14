@@ -26,6 +26,7 @@ const strings = {
   WAIT_FOR_MAZE   : 'Please wait until the maze is fully generated.',
   WAIT_TO_SOLVE   : 'Please wait util the maze is be fully solved',
   ALREADY_SOLVED  : 'The maze it already solved',
+  CONFIRM_CANCEL  : 'Are you sure you want to cancel?',
   YES             : 'Yes',
   NO              : 'No'
 };
