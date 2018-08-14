@@ -56,7 +56,6 @@ const elements = {
     SOLVE    : '#button-solve',
     EXPORT   : '#button-export',
     CANCEL   : '#button-cancel'
-
   },
 
   slider : {
@@ -72,6 +71,10 @@ const elements = {
     CANVAS_H : '#canvas-height-slider-value',
     PATH     : '#path-width-slider-value',
     FRAMES   : '#frame-rate-slider-value'
+  },
+
+  checkbox : {
+    
   },
 
   canvas : {
@@ -140,3 +143,6 @@ let costs;
 // Repeated action in draw()
 // and main event loop
 let action;
+
+const solvers    = [];
+const generators = [];

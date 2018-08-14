@@ -136,7 +136,7 @@ function cancel() {
     action = null;
 
     // Were we solving
-    if (prev === aStar) {
+    if (solver(prev)) {
 
       grid.forEach(c => c.clear());
 
@@ -177,4 +177,34 @@ function download() {
     confirm(strings.DOWNLOAD_MSG, () => save(solution, 'maze-solution', 'png'));
   }
 
+}
+
+//------------------------------------------------------------------------------
+
+function contains(array, element) {
+
+  for (let i = 0; i < array.length; i++) {
+
+    if (array[i] === element) {
+
+      return true;
+    }
+  }
+
+  return false;
+
+}
+
+//------------------------------------------------------------------------------
+
+function generator(f) {
+
+  return contains(generators, f);
+}
+
+//------------------------------------------------------------------------------
+
+function solver(f) {
+
+  return contains(solvers, f);
 }

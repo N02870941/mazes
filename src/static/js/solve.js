@@ -6,7 +6,7 @@ function solve() {
   solving();
 
   // Are we solving?
-  if (action === aStar) {
+  if (solver(action)) {
 
     // Are we done?
     if (solved) {
@@ -112,7 +112,6 @@ function highlight() {
   if (s) {
 
     let a = s.split('-');
-
     let i = parseInt(a[0]);
     let j = parseInt(a[1]);
 

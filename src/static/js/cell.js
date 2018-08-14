@@ -137,7 +137,7 @@ class Cell {
     if (neighbors.length > 0) {
 
       // Pick one at random and return it
-      let r = Math.floor(random(0, neighbors.length));
+      let r = floor(random(0, neighbors.length));
 
       return neighbors[r];
 
@@ -200,15 +200,6 @@ class Cell {
   }
 
 //------------------------------------------------------------------------------
-
-  // fill(r, g, b, a, x, y, l, w) {
-  //
-  //   noStroke();
-  //
-  //   fill(r, g, b, a);
-  //
-  //   rect(x, y, w, w);
-  // }
 
   fill(r, g, b, a, x, y, l, w) {
 
@@ -279,10 +270,10 @@ class Cell {
    */
   static euclidian(src, dst) {
 
-    const a = Math.abs(dst.j - src.j);
-    const b = Math.abs(dst.i - src.i);
+    const a = abs(dst.j - src.j);
+    const b = abs(dst.i - src.i);
 
-    return Math.sqrt( Math.pow(a, 2) + Math.pow(b, 2) );
+    return sqrt( sq(a) + sq(b) );
   }
 
 //------------------------------------------------------------------------------

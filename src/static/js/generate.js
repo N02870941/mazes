@@ -6,7 +6,7 @@ let previous;
 function generate() {
 
   // Are we generating?
-  if (action === dfs || !action) {
+  if (!action || generator(action)) {
 
     // Done generating?
     if (generated || !action) {

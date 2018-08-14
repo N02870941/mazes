@@ -4,13 +4,11 @@ html, body {
   margin : 0;
 }
 
-/* Centers the canvas */
 #sketch-holder {
 
   display: inline;
 }
 
-/* Centers text */
 .container, .centered {
 
   margin     : auto;
@@ -35,4 +33,9 @@ html, body {
 .row, .col-md-3 {
 
   padding: 2%;
+}
+
+.algo-select {
+
+  padding: 3%;
 }

@@ -27,12 +27,12 @@ gulp dev
 
 # Intuition
 Maze generating and solving can be described in terms of graph theory. For the
-purpose of clarity, we will use the words maze and graph interchangeably. If You
+purpose of clarity, we will use the words maze and graph interchangeably. If you
 are not familiar with graph theory, here is a **brief** explanation of the information
 relevant to understand this problem.
 
 A graph `G` is a pair denoted as `G = {V, E}` where `V` is a set of vertices and
-`E` is a set of edges that where each edges connects vertices two in the set `V`. A vertex is an abstract
+`E` is a set of edges that where each edges connects in the set `V`. A vertex is an abstract
 *node* in a network. An edge is a *branch* that links two vertices or nodes. Graphs
 come in various ways:
 
@@ -46,10 +46,19 @@ You can have any combination:
 3. Unweighted and directed
 4. Unweighted and undirected
 
+
+<p align="center">
+  <img src="img/png/weighted-unweighted.png"><br>
+</p>
+
 A weighted graph is a graph where edges have a specified **weight** or **cost** associated
 with branching two vertices. For example, if we represent a country as a graph where
 cities are vertices and roads are edges, the weight of an edge might be the distance between
 each city.
+
+<p align="center">
+  <img src="img/png/directed-undirected.png"><br>
+</p>
 
 A directed graph is a graph where an edge `e`  from vertex `u` to
 `v` is not equal to an edge `f` from `v` to `u`. For example, in our city
@@ -57,20 +66,24 @@ example, we may have an edge from New York to Chicago with weight 200 miles.
 But, the edge going from Chicago to New York may be 250 miles because that
 edges represent a different roads.
 
+<p align="center">
+  <img src="img/png/undirected-weighted.png"><br>
+  <i>Undirected, weighted graph with uniform costs that represents a 2 x 2 pixel image.</i>
+</p>
+
 For the purpose of representing a maze, we will use an undirected weighted graph.
-We will consider vertices pixels (or square groups of pixels) and an edge will be
-placed between two adjacent pixels. Edges will have a uniform weight of 1 which
+We will consider vertices white pixels (or square groups of pixels) and edges will be
+placed between adjacent pixels. A vertex is considered adjacent or having an edge with another vertex if there is **no** barrier (black pixels) between them. Edges will have a uniform weight of 1 which
 just indicates that two vertices are one pixel away from each other (adjacent). We
-do not need to make it directed because from pixels have uniform size, thus a
+do not need to make it directed because pixels have uniform size, thus a
 uniform distance if they are adjacent.
 
 <p align="center">
-  <img src="img/png/grid.png">
-
-  <i>A 30 x 30 square grid that represents a connected graph.</i>
+  <img src="img/png/grid.png"><br>
+  <i>A 30 x 30 square grid that represents a graph with <strong>no</strong> edges.</i>
 </p>
 
-It is worth noting for the JavaScript particular implementation, we will have a
+It is worth noting for this particular implementation, we will have a
 tad of redundancy where each cell in the grid has information regarding all 4
 adjacent vertices. This causes overlap in that for a vertex `u` that is to the
 left of vertex `v`, `u`'s `right` vertex is the same as `v`'s `left` vertex pointer.
@@ -86,23 +99,20 @@ search is an algorithm used to **traverse** a graph. Traversing the graph means 
 **connected** then there exists a path from each vertex to every other vertex in the graph.
 
 <p align="center">
-  <img src="img/png/unweighted-undirected-graph.png">
-
+  <img src="img/png/unweighted-undirected-graph.png"><br>
   <i>A connected unweighted graph.</i>
 </p>
 
-In the case of an `n x n` image where `n` is the width (and height) of the image
-in pixels, the image *always* represents a connected graph. The reason is that
+In the case of a **blank** `n x n` image where `n` is the width (and height) of the image
+in pixels, the image *always* represents connected graph. The reason is that
 there are no missing pixels assuming your photo is not corrupted. So, in terms of
 traversing the image, there exist a path from each pixel to each other pixel - this too many
-in fact. Our goal is to traverse our image and **remove** as many edges as possible while
-still maintaining our connected property. This will result in a maze that leaves a
+in fact. This is why we have black lines to represent **absence** of an edge, or a boundary that terminates a particular path. But, in the case of our full grid, we have too many boundaries as well - resulting in zero paths. Our goal is to traverse our image full of boundaries and **remove** as many as possible but still resulting in a graph that has the connected property. This will result in a maze that leaves a
 **path** from any vertex to any other vertex, but in a much less cluttered way.
 The result is called a **spanning tree**.
 
 <p align="center">
-  <img src="img/png/spanning-tree.png">
-
+  <img src="img/png/spanning-tree.png"><br>
   <i>A spanning tree of the above graph.</i>
 </p>
 
@@ -110,10 +120,17 @@ A spanning tree `S` is a sub-graph of a graph `G = {V, E}` that contains the min
 number of edges required to connect all vertices in `G`. If we denote the number of
 vertices as `|V|` and number of edges as `|E|`, then for graph `S`, `|V|`
 remains the same, and `|E| = |V| - 1`. It also turns out that graph `S` meets the
-criteria of an **acyclic** graph. A graph is acyclic if there is *no way* to start
+criteria of an **acyclic** graph. 
+
+<p align="center">
+  <img src="img/png/cyclic-acyclic.png"><br>
+  <i>A cyclic graph, and it's acyclic sub-graph.</i>
+</p>
+
+A graph is acyclic if there is *no way* to start
 at a specified vertex `v` and follow an alternating sequence of vertices and edges `v1, e1, v2, e2...`
-where edge `ei` connects `vi` and `vi+1` and visit the vertex twice. In other words, there
-are no loops.
+where edge `ei` connects `vi` and `vi+1` and visit the same vertex twice. In other words, there
+are no loops or repitition.
 
 For simplicity, we will consider white (squares of) pixels valid vertices, and black (lines of)
 pixels the absence of a connecting edge. This means, as we go through our graph removing walls, we will
@@ -122,12 +139,15 @@ in the graph. Black pixels that are left over will be the walls of the maze. The
 are the absence of edges, or area that does not allow us to go from one vertex to another.
 
 <p align="center">
-  <img src="img/png/maze.png">
-
+  <img src="img/png/maze.png"><br>
   <i>Our result once the correct amount of walls is removed will look like this.</i>
 </p>
 
-Now that we have framed the problem we can see the [algorithm][wiki]:
+Now that we have framed the problem we can see some of the algorithms used to do this.
+
+# Randomized depth-first search
+
+The [Randomized depth-first search][wiki] follows:
 
 1. Make the initial cell the current cell and mark it as visited
 2. While there are unvisited cells
@@ -143,7 +163,7 @@ Now that we have framed the problem we can see the [algorithm][wiki]:
 
 In essence, this algorithm starts at a vertex `u`, randomly visits an adjacent
 vertex `v` that has not been visited yet - destroying barriers (walls of pixels) between
-the current and previous vertex, and repeats this until all vertices are visited.
+the current and previous vertex to create an edge, and repeats this until all vertices are visited and we have a spanning tree.
 
 # Maze solving
 Now that we have generated a maze, we want to solve it. Solving the maze can be done

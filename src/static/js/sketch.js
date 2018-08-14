@@ -129,6 +129,10 @@ function parameters() {
  */
 function actions() {
 
+  generators.push(dfs);
+
+  solvers.push(aStar);
+
   // The buttons
   buttons[keys.GENERATE] = $(elements.button.GENERATE);
   buttons[keys.SOLVE]    = $(elements.button.SOLVE);
@@ -283,7 +287,7 @@ function heuristics(r, c, w) {
 async function draw() {
 
   // Are we generating?
-  if (action === dfs) {
+  if (generator(action)) {
 
     // Are we done?
     if (generated) {
@@ -311,7 +315,7 @@ async function draw() {
     }
 
   // Are we solving?
-  } else if (action === aStar) {
+} else if (solver(action)) {
 
     // Not done
     if (!solved) {
