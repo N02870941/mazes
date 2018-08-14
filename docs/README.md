@@ -32,8 +32,8 @@ are not familiar with graph theory, here is a **brief** explanation of the infor
 relevant to understand this problem.
 
 A graph `G` is a pair denoted as `G = {V, E}` where `V` is a set of vertices and
-`E` is a set of edges that associates vertices in the set `V`. A vertex is an abstract
-*node* in a network. A vertex is a *branch* that links two vertices or nodes. Graphs
+`E` is a set of edges that where each edges connects vertices two in the set `V`. A vertex is an abstract
+*node* in a network. An edge is a *branch* that links two vertices or nodes. Graphs
 come in various ways:
 
 1. Weighted
@@ -64,18 +64,32 @@ just indicates that two vertices are one pixel away from each other (adjacent). 
 do not need to make it directed because from pixels have uniform size, thus a
 uniform distance if they are adjacent.
 
+<p align="center">
+  <img src="img/grid.png">
+</p>
+
+*A 30 x 30 square grid that represents a connected graph.*
+
 It is worth noting for the JavaScript particular implementation, we will have a
 tad of redundancy where each cell in the grid has information regarding all 4
 adjacent vertices. This causes overlap in that for a vertex `u` that is to the
 left of vertex `v`, `u`'s `right` vertex is the same as `v`'s `left` vertex pointer.
-This can be optimized if an abstract "`Graph`" object were created in memory. But,
-for the scope of this problem, is unnecessary.
+So from a technical coding standpoint, it will be directed, but edges `{u,v}` and `{v,u}` will
+be treated the same. So if we delete one, we delete the other. So we still consider it undirected.
+This can be optimized if an abstract "`Graph`" object were created in memory. But, that
+is unnecessary for the scope of this problem.
 
 # Maze generating
 Generating a maze requires a modified depth-first search of the graph. A depth-first
 search is an algorithm used to **traverse** a graph. Traversing the graph means to
 *visit* each node (usually) from a specified starting vertex. If an undirected graph is
 **connected** then there exists a path from each vertex to every other vertex in the graph.
+
+<p align="center">
+  <img src="img/unweighted-undirected-graph.png">
+</p>
+
+*A connected unweighted graph.*
 
 In the case of an `n x n` image where `n` is the width (and height) of the image
 in pixels, the image *always* represents a connected graph. The reason is that
@@ -86,6 +100,12 @@ still maintaining our connected property. This will result in a maze that leaves
 **path** from any vertex to any other vertex, but in a much less cluttered way.
 The result is called a **spanning tree**.
 
+<p align="center">
+  <img src="img/spanning-tree.png">
+</p>
+
+*A spanning tree of the above graph.*
+
 A spanning tree `S` is a sub-graph of a graph `G = {V, E}` that contains the minimum
 number of edges required to connect all vertices in `G`. If we denote the number of
 vertices as `|V|` and number of edges as `|E|`, then for graph `S`, `|V|`
@@ -95,11 +115,17 @@ at a specified vertex `v` and follow an alternating sequence of vertices and edg
 where edge `ei` connects `vi` and `vi+1` and visit the vertex twice. In other words, there
 are no loops.
 
-For simplicity, we will consider white pixels valid vertices, and black pixels the
-absence of a vertex. This means, as we go through our graph removing walls, we will
+For simplicity, we will consider white (squares of )pixels valid vertices, and black (lines of)
+pixels the absence of a vertex. This means, as we go through our graph removing walls, we will
 be generating a continuous path of white pixels that represent traversable vertices
 in the graph. Black pixels that are left over will be the walls of the maze. They
 are the absence of edges, or area that cannot be visited.
+
+<p align="center">
+  <img src="img/maze.png">
+</p>
+
+*Our result once the correct amount of walls is removed will look like this.*
 
 Now that we have framed the problem we can see the [algorithm][wiki]:
 
