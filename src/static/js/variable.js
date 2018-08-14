@@ -53,7 +53,8 @@ const elements = {
 
     GENERATE : '#button-generate',
     SOLVE    : '#button-solve',
-    EXPORT   : '#button-export'
+    EXPORT   : '#button-export',
+    CANCEL   : '#button-cancel'
 
   },
 
@@ -81,17 +82,22 @@ const elements = {
 // HTML element attributes
 const attributes = {
 
-  MIN   : 'min',
-  MAX   : 'max',
-  VALUE : 'value'
+  MIN      : 'min',
+  MAX      : 'max',
+  VALUE    : 'value',
+  DISABLED : 'disabled'
 };
 
 // Jquery event strings
 const events = {
 
-  SLIDE   : 'slide',
-  CLICK   : 'click',
-  REFRESH : 'refresh'
+  SLIDE      : 'slide',
+  CLICK      : 'click',
+  REFRESH    : 'refresh',
+  GENERATED  : 'generated',
+  GENERATING : 'generating',
+  SOLVED     : 'solved',
+  SOLVING    : 'solving'
 };
 
 // Numbers for top, bottom,
@@ -126,11 +132,9 @@ let parents;
 // Boolean flags
 let generated = false;
 let solved    = false;
-let first     = true;
 
 // Matrix of heuristic
 let costs;
-let cost;
 
 // Repeated action in draw()
 // and main event loop

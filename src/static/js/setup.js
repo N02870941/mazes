@@ -127,11 +127,61 @@ function actions() {
   buttons[keys.GENERATE] = $(elements.button.GENERATE);
   buttons[keys.SOLVE]    = $(elements.button.SOLVE);
   buttons[keys.EXPORT]   = $(elements.button.EXPORT);
+  buttons[keys.CANCEL]   = $(elements.button.CANCEL);
 
   // Setup click events for buttons
   buttons[keys.GENERATE].click(generate);
   buttons[keys.SOLVE].click(solve);
   buttons[keys.EXPORT].click(download);
+  buttons[keys.CANCEL].click(cancel);
+
+  // Disable solve button while generating happening
+  buttons[keys.SOLVE].on(events.GENERATING, function(event) {
+
+    $(this).prop(attributes.DISABLED, true);
+  });
+
+  // Disable export button while generating happening
+  buttons[keys.EXPORT].on(events.GENERATING, function(event) {
+
+    $(this).prop(attributes.DISABLED, true);
+  });
+
+  // Enable solve button once generating is done
+  buttons[keys.SOLVE].on(events.GENERATED, function(event) {
+
+    $(this).prop(attributes.DISABLED, false);
+  });
+
+  // Enable export button once generating is done
+  buttons[keys.EXPORT].on(events.GENERATED, function(event) {
+
+    $(this).prop(attributes.DISABLED, false);
+  });
+
+  // Disable generate button until solving is done
+  buttons[keys.GENERATE].on(events.SOLVING, function(event) {
+
+    $(this).prop(attributes.DISABLED, true);
+  });
+
+  // Disable generate button until solving is done
+  buttons[keys.EXPORT].on(events.SOLVING, function(event) {
+
+    $(this).prop(attributes.DISABLED, true);
+  });
+
+  // Enable generate button when solving is done
+  buttons[keys.GENERATE].on(events.SOLVED, function(event) {
+
+    $(this).prop(attributes.DISABLED, false);
+  });
+
+  // Enable generate button when solving is done
+  buttons[keys.EXPORT].on(events.SOLVED, function(event) {
+
+    $(this).prop(attributes.DISABLED, false);
+  });
 }
 
 //------------------------------------------------------------------------------
@@ -143,6 +193,10 @@ function init() {
 
   const width = sliders[keys.CANVAS].data(keys.SLIDER).getValue()
   const w     = sliders[keys.PATH].data(keys.SLIDER).getValue();
+
+  buttons[keys.GENERATE].prop(attributes.DISABLED, false);
+  buttons[keys.SOLVE].prop(attributes.DISABLED, true);
+  buttons[keys.EXPORT].prop(attributes.DISABLED, true);
 
   // Canvas
   page(width);

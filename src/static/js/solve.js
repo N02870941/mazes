@@ -3,6 +3,8 @@
  */
 function solve() {
 
+  solving();
+
   // Are we solving?
   if (action === aStar) {
 

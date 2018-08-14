@@ -31,3 +31,8 @@ html, body {
 
   float: right;
 }
+
+.row, .col-md-3 {
+
+  padding: 2%;
+}

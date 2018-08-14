@@ -6,15 +6,13 @@ let previous;
 function generate() {
 
   // Are we generating?
-  if (action === dfs || first) {
+  if (action === dfs || !action) {
 
     // Done generating?
-    if (generated || first) {
+    if (generated || !action) {
 
-      // This is a one time flag used,
-      // for all other subsequent executions
-      // this flag should be set to false
-      first = false;
+      // Fire generating event
+      generating();
 
       // Change main event loop's
       // primary action back to
@@ -35,6 +33,9 @@ function generate() {
 
     // Done solving?
     if (solved) {
+
+      // Fire generating event
+      generating();
 
       // Change main event loop's
       // primary action back to

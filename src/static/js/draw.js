@@ -3,17 +3,14 @@
  */
 async function draw() {
 
-  // Just show the grid
-  if (first) {
-
-    return;
-  }
-
   // Are we generating?
   if (action === dfs) {
 
     // Are we done?
     if (generated) {
+
+      // Trigger generated event
+      prepared();
 
       // Get the start and end cells
       const first = grid[0];
@@ -35,19 +32,16 @@ async function draw() {
     }
 
   // Are we solving?
-  } else if (action == aStar) {
+  } else if (action === aStar) {
 
     // Not done
     if (!solved) {
 
       solved = action();
 
-    // Solved
     } else {
 
-      current = grid[grid.length-1];
-
-      action = highlight;
+      complete();
     }
 
   }

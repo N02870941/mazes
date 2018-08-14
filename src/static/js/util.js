@@ -87,3 +87,65 @@ function unprepared() {
 
   notify(strings.WAIT_FOR_MAZE);
 }
+
+//------------------------------------------------------------------------------
+
+function generating() {
+
+  buttons[keys.SOLVE].trigger(events.GENERATING);
+  buttons[keys.EXPORT].trigger(events.GENERATING);
+}
+
+//------------------------------------------------------------------------------
+
+function prepared() {
+
+  noLoop();
+
+  buttons[keys.SOLVE].trigger(events.GENERATED);
+  buttons[keys.EXPORT].trigger(events.GENERATED);
+}
+
+//------------------------------------------------------------------------------
+
+function solving() {
+
+  buttons[keys.GENERATE].trigger(events.SOLVING);
+  buttons[keys.EXPORT].trigger(events.SOLVING);
+}
+
+//------------------------------------------------------------------------------
+
+function complete() {
+
+  buttons[keys.GENERATE].trigger(events.SOLVED);
+  buttons[keys.EXPORT].trigger(events.SOLVED);
+}
+
+//------------------------------------------------------------------------------
+
+function cancel() {
+
+  confirm('Are you sure you want to cancel?', () => {
+
+    const prev = action;
+
+    action = null;
+
+    // Were we solving
+    if (prev === aStar) {
+
+      grid.forEach(c => c.clear());
+
+      prepared();
+
+      solved = false;
+
+    // Or generating
+    } else {
+
+      init();
+    }
+
+  });
+}
