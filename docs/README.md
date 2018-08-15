@@ -123,27 +123,75 @@ are the absence of edges, or area that does not allow us to go from one vertex t
 
 Now that we have framed the problem we can see some of the algorithms used to do this.
 
-# Randomized Depth-first search
+# Notes on runtime and space analysis
+
+We will explore the runtime of both generating the maze, and solving it. But, before we do that
+we must prove a few things and understand that runtime analysis on graphs is often times
+dependent on **how** the graph is implemented. Let's explore the worst case scenario.
+
+As stated, a graph `G = {V, E}` can have a vertex set with cardinality `|V|` of vertices. Provided
+that each vertex can be connected to at most, every other vertex, the cardinality of the edge set
+`E` can be expressed as `|E| ≈ |V|²`. **However, for this particular problem, we can assert otherwise**.
+
+The reason is because we are working on an image where edges only exist between **adjacent** pixels. A pixel can only be adjacent to at most 4 other vertices.
+Consider a grid composed of n x n pixels or n² vertices. We are only considering adjacent vertices.
+A vertex has at most 4 adjacent vertices:
+
+1. Top
+2. Bottom
+3. Left
+4. Right
+
+We can also visualize each vertex from 0,0 to 0,k where k = n-1 as follows:
+
+
+<p align="center">
+  <img src="img/png/branching-factor.png">
+</p>
+
+
+We observe, that each vertex has 4 edges that point to the top, bottom, left, and right
+adjacent vertices. In total, for `|V|` vertices we have 4 * `|V|` edges. `|E|` is linear with respect to `|V|`.
+Although typically we say `O(|E|) = O(|V|²)`, for **this particular problem** we can say `O(|E|) = O(|V|) = O(n²)` where `n` is the number of boxes in our grid.
+
+# Generating with Randomized Depth-first search
 
 The [Randomized Depth-first search][wiki] follows:
 
 1. Make the initial cell the current cell and mark it as visited
 2. While there are unvisited cells
     1. If the current cell has any neighbors which have not been visited
-      1. Choose randomly one of the unvisited neighbors
-      2. Push the current cell to the stack
-      3. Remove the wall between the current cell and the chosen cell
-      4. Make the chosen cell the current cell and mark it as visited
+        1. Choose randomly one of the unvisited neighbors
+        2. Push the current cell to the stack
+        3. Remove the wall between the current cell and the chosen cell
+        4. Make the chosen cell the current cell and mark it as visited
 
     2.Else if stack is not empty
-      1. Pop a cell from the stack
-      2. Make it the current cell
+        1. Pop a cell from the stack
+        2. Make it the current cell
 
 In essence, this algorithm starts at a vertex `u`, randomly visits an adjacent
 vertex `v` that has not been visited yet - destroying barriers (walls of pixels) between
 the current and previous vertex to create an edge, and repeats this until all vertices are visited and we have a spanning tree.
 
-# Randomized Prim's algorithm
+## Time complexity with DFS
+As noted, we are using depth-first search to generate the graph. To *traverse* a graph
+we visit each node once, which is `O(|V|)`. But, we also must check all adjacent vertices per vertex.
+This we can do in `O(1)` time because edges are simply stored as boolean values per grid cell.
+We must check all four (top, bottom, left and right) edges, per vertex. This is `4 * O(1)`
+which is still `O(1)`. So, we are doing `|V|` loop iterations, each of which does `O(1)` work.
+
+**Generating the maze is done in** `O(|V|)` **or** `O(n²)` **time.**
+
+## Space complexity with DFS
+The only auxiliary space we use is the stack
+structure for queuing vertices for processing. In the worst case, the depth-first search
+traverses the entire graph without repetition / backtracking. This would mean all `|V|` vertices are
+pushed on to the stack before any popping (visiting) occurs.
+
+**Generating the maze required** `O(|V|)` **or** `O(n²)` **space.**
+
+# Generating with Randomized Prim's algorithm
 
 Prim's algorithm is an algorithm used to fine what's called the **minimum spanning tree** (MST). Just like the normal spanning tree, an MST contains a number of edges `|E|` such that `|E| = |V| - 1`. It also has the added property that the sum of the selected edges is minimum while still satisfying the connected property. It goes as follows:
 
@@ -156,6 +204,7 @@ Prim's algorithm is an algorithm used to fine what's called the **minimum spanni
 2. Remove the wall from the list
 
 **Note:** Since we have decided that all edge weights are uniform for this implementation, all spanning trees are minimum spanning trees because there will **always** be `|V| - 1` edges, each of which has a weight of one, resulting in a total cost of `|V| - 1` for all spanning trees.
+
 
 # Solving with Depth-first search
 
@@ -229,83 +278,66 @@ dfs(src, dst) {
 }
 ```
 
+## Time complexity of DFS
+
+Depth-first search visits all `|V|` vertices in the outer loop. Each loop iteration visits at most all of that vertex's edges, which for a grid is always 4.
+
+**The runtime of DFS is** `O(|V|)`.
+
+## Space complexity of DFS
+
+This depth-first search uses a stack of unvisitd vertices. In the worst case, we
+push all `|V|` vertices before popping. This is the case where we visit **all** vertices in a single walk before hitting a dead end. The map used for backtracking in the worst case will hold references to all `|V|` vertices in the path from source to destination - also using at most `O(|V|)` space.
+
+**The space complexity is** `O(|V|)`.
+
 # Solving with Dijkstra's algorithm
 
-We can improve the above by running Dijkstra's algorithm, which is a generic shortest path algorithm for weighted graphs. Instead of blindly visiting each unvisited adjacent vertex until we have found our target, we will give them a priority. We will visit adjacent verticies that have **lower** cost first. However,
-This is a greedy approach that takes steps that may be optimal for
-*intermediate* solutions, but not optimal for the *overall* solution. This may result in a quicker runtime if decreasing edge weight allows us to approach our target. But the runtime will be just as bad as depth-first search if this is not true and we end up going down too many sub-optimal paths before generating the overall best solution. The latter is generally true for **randomly generated uniform edge-weight** graphs as the cost is directly correlated with the path length, and nothing can be assumed about this.
+We can improve the above DFS by running Dijkstra's algorithm, which is a generic shortest path algorithm for arbitrary weighted graphs. Instead of blindly visiting each unvisited adjacent vertex until we have found our target, we will give them a priority. We will visit adjacent verticies that have **lower** cost first. However,
+this is a greedy approach that takes steps that may be optimal for
+**intermediate** solutions, but not optimal for the **overall** solution. 
+
+This may result in a quicker runtime the edges we visit all happen to getting us closer to our target. But the runtime will be just as bad as depth-first search if this is not true and we end up going down too many sub-optimal paths before generating the overall best solution. The latter is generally true for **randomly generated uniform edge-weight** graphs as the cost is directly correlated with the path length, which provided it's random nature, we have no information about.
+
+## Time complexity of Dijkstra
+
+For an arbitrary graph, Dijkstra's algorithm runs in `O(|V|²)` time (assuming an adjacency matrix is used). This is because we visit each vertex once - `O(|V|)`, and each potential edge for each vertex, which is `|V|` edges per vertex - `|V| * |V| = |V|²` . We improve this by
+storing each vertex's adjacency list in a min-priority queue (Fibonacci Heap). This improves the runtime to `O(|E| + |V| * log |V|)`. 
+
+However, as previously noted, for this problem, `|E| = 4 * |V|`. So, if we were to use a fibonacci heap for **this particular problem**, our runtime would be `O(|V| + |V| * log |V|)` or simply `O(|V| * log |V|)`. The `|V| * log |V|` portion comes from. The `extractMin()` operation which runs in `log |V|` times is called `|V|` times. 
+
+Fortunately, we do not even need to sort our edges in a heap because there is **always exactly 4 potential adjacent vertices per vertex** no matter how many vertices we have in the entire graph. For an adjacency list of exactly 4 everytime, `extractMin()` is run in `O(1)` time. That being said, we make `|V|` calls to an `O(1)` operation.
+
+**The runtime of DFS is** `O(|V|) = O(n²)`.
+
+## Space complexity of Dijkstra
+
+Dijkstra's algorithm uses a stack to process unvisited vertices. In the worst case we will push `|V|` vertices before our first pop. We also use a map for backtracking to discover the path from source to destination. Since we are **only working with spanning trees**, the max size of a path is `|V| - 1`. So the map cannot grow greater than `O(|V|)`. Lastly, Dijkstra uses another map that assocates each visited vertex with it's cost to get there. This grows no greater than the number of vertices `|V|`. So, summing all utilized space, we use `O(|V| + |V| + |V|) = O(3 * |V|) = O(|V|)`.
+
+**The space complexity is** `O(|V|) = O(n²)`.
 
 # Solving with A* search
 
-The limitations of Dijkstra's algorithm is the reason we use A* (A Star). It can be considered a generalization of Dijkstra's algorithm
-that uses a heuristic value (specific to the problem) that helps make more intelligent intermediate
-steps that lead to the overall optimal solution more quickly. We can also say Dijkstra's algorithm is a specific case of A* where the heuristic of all adjacent vertices are equal or zero - thus having no impact on decision making. The heuristic is an easy-to-compute value computed per iteration (or beforehand) that we use to determine whether or not we are approaching our target. The heuristic is a problem-specific computation because for generic graphs (a set of edges and vertices) we do not have any information about how "close" we are. In terms of a grid, a good choice for the heuristic is the (euclidian or manhattan) distance between the current pixel and the target. We then make our choice to visit a particular vertex that no only minimizes overall cost, but also shrinks the distance between the current vertex in the search and the target vertex.
+The limitations of Dijkstra's algorithm is the reason we use A* (A Star) as our primary approach in **path finding**. It can be considered a generalization of Dijkstra's algorithm
+that uses a heuristic value (specific to the problem) that prevents us from straying away on non-optimal paths and helps make more intelligent intermediate
+steps that lead to the overall optimal solution. We can also say Dijkstra's algorithm is a specific case of A* where the heuristic of all adjacent vertices are equal or zero - thus having no impact on decision making. The heuristic is an easy-to-compute value computed per iteration (or beforehand) that we use to determine whether or not we are approaching our target. 
 
-# Time complexity analysis
-We will explore the runtime of both generating the maze, and solving it. But, before we do that
-we must prove a few things and understand that runtime analysis on graphs is often times
-dependent on **how** the graph is implemented. Let's explore the worst case scenario.
+The heuristic is a problem-specific computation because for arbitrary graphs (a set of edges and vertices) we do not have any information about how "close" we are. Since we have our graph in terms of a grid, a good choice for the heuristic is the (euclidian or manhattan) distance between the current pixel and the target. 
 
-As stated, a graph `G = {V, E}` can have a vertex set with cardinality `|V|` of vertices. Provided
-that each vertex can be connected to at most, every other vertex, the cardinality of the edge set
-`E` can be expressed as `|E| ≈ |V|²`. **However, for this particular problem, we can assert otherwise**.
+Although we may not always have a **direct** path, we know we are getting closer if the euclidian distance is shrinking. With this new tool at our disposal, we make our choice to visit a particular vertex that not only minimizes overall cost, but also shrinks the distance between the current vertex in the search and the target vertex - this assures us we are "getting closer."
 
-The reason is because we are working on an image where edges only exist for **adjacent** pixels.
-Consider a grid composed of n x n pixels or n² vertices. We are only considering adjacent vertices.
-A vertex has at most 4 adjacent vertices:
+## Time complexity of A*
 
-1. Top
-2. Bottom
-3. Left
-4. Right
+For all intents and purposes, if the heuristic underestimates every time or returns the same value for every vertex, A* degrades to a uniform cost search - aka Dijkstra's algorithm, which will explore each vertex, and in **this case** is `O(|V|)`. Even if our heuristic does estimate well (which it does with euclidian and manhattan distance), in the worst case, we still visit all `|E|` edges which we have proven to be `4 * |V|` for a grid where only adjacent pixels can have edges.
 
-We can also visualize each vertex from 0,0 to 0,k where k = n-1 as follows:
+**Solving the maze with A* is done in** `O(|E|) = O(|V|)` **or** `O(n²)` **time.**
 
-```
-   |       |       |           |
--(0,0)- -(0,1)- -(0,2)- ... -(0,k)-
-   |       |       |           |
-   |       |       |           |
--(1,0)- -(1,1)- -(1,2)- ... -(1,k)-
-   |       |       |           |
-   .       .       .           .
-   .       .       .    ...    .
-   .       .       .           .
-   |       |       |           |
--(k,0)- -(k,1)- -(k,2)- ... -(k,k)-
-   |       |       |           |
-```
+## Space complexity of A*
 
-We observe, that each vertex has 4 edges that point to the top, bottom, left, and right
-adjacent vertices. In total, for `|V|` vertices we have 4 * `|V|` edges. |E| is linear with respect to `|V|`.
-Although typically we say `O(|E|) = O(|V|²)`, for **this particular problem** we can say `O(|E|) = O(|V|)`.
+A* uses a stack of unvisited vertices. In the worst case, we
+push all `|V|` vertices before popping. This is the case where we visit **all** vertices in a single walk before hitting a dead end. The map used for backtracking in the worst case will hold references to all `|V|` vertices in the path from source to destination - also using at most `O(|V|)` space. Lastly, if we pre-compute our heuristics for easy lookup (one per vertex), we will need `O(|V|)` extra space - still resulting in linear space.
 
-## Generating the maze
-As noted, we are using depth-first search to generate the graph. To *traverse* a graph
-we visit each node once, which is `O(|V|)`. But, we also must check all adjacent vertices per vertex.
-This we can do in `O(1)` time because edges are simply stored as boolean values per grid cell.
-We must check all four (top, bottom, left and right) edges, per vertex. This is `4 * O(1)`
-which is still `O(1)`. So, we are doing `|V|` loop iterations, each of which does `O(1)` work.
-
-**Generating the maze is done in** `O(|V|)` **time.**
-
-## Solving the maze
-Running A* in the worst case visits all edges. So the run time is `O(|E|)`. For this problem
-we have already proven `|E| = 4 * |V|`.
-
-**Solving the maze is done in** `O(|V|)` **time.**
-
-# Space complexity analysis
-The space complexities are generally consistent with the standard space complexities of both
-graph algorithms used in this problem.
-
-## Generating the maze
-Not including space allocated to store the graph, the only auxiliary space we use is the stack
-structure for queuing vertices for processing. In the worst case, the depth-first search
-traverses the entire graph without repetition / backtracking. This would mean all `|V|` vertices are
-pushed on to the stack before any popping (visiting) occurs.
-
-**Generating the maze required** `O(|V|)` space.
+**The space complexity of A* is** `O(|V|)`.
 
 # How to run
 Ensure you have docker installed before running the following commands:
