@@ -96,6 +96,13 @@ function search(getter, show) {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Performs search using the minNeighbor()
+ * function for specifying graph traversal
+ * order. The minNeighbor function always visits
+ * the vertex with the lowest estimated heuristic cost
+ * first.
+ */
 function aStar() {
 
   return search(minNeighbor)
@@ -110,6 +117,13 @@ function dijkstra() {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Performs search using the unvisitedNeighbor()
+ * function for specifying graph traversal
+ * order. The unvisitedNeighbor function randomly
+ * selects an adjacent vertex, resulting in a randomized
+ * depth first search.
+ */
 function DFS() {
 
   return search(unvisitedNeighbor)
@@ -118,11 +132,16 @@ function DFS() {
 //------------------------------------------------------------------------------
 
 /**
- * Selects unvisited adjacent
- * vertices based on minimum
- * distance for A* algorithm
+ * Takes in a cell and a selector function
+ * which has two arguments - neighbors and
+ * distances. They are both arrays of the same
+ * length where distance[i] represents the distance
+ * to get to neighbors[i]. The selector function must
+ * return a single value from neighbors. This selector
+ * function specifies the order of graph traversal
  */
-function minNeighbor(cell) {
+function next(cell, selector) {
+
   let neighbors  = [];
   let distances  = [];
   let potentials = cell.potentials();
@@ -139,7 +158,19 @@ function minNeighbor(cell) {
     }
   }
 
-  if (neighbors.length > 0) {
+  return selector(neighbors, distances)
+}
+
+//------------------------------------------------------------------------------
+
+/**
+ * Selects unvisited adjacent
+ * vertices based on minimum
+ * distance for A* algorithm
+ */
+function minNeighbor(cell) {
+
+  return next(cell, (neighbors, distances) => {
 
     let min = 0;
 
@@ -153,49 +184,20 @@ function minNeighbor(cell) {
 
     return neighbors[min];
 
-  // Otherwise, there is no
-  // more work to do from the
-  // current source vertex
-  } else {
-
-    return undefined;
-  }
-
+  })
 }
 
 //------------------------------------------------------------------------------
 
 function unvisitedNeighbor(cell) {
 
-  let neighbors  = [];
-  let distances  = [];
-  let potentials = cell.potentials();
-  let p;
+  return next(cell, (n, distances) => {
 
-  for (let i = 0; i < potentials.length; i++) {
+    let r = floor(random(0, n.length));
 
-    p = potentials[i];
+    return n[r];
 
-    if (p && !cell.walls[i] && !p.visited) {
-
-      neighbors.push(p);
-      distances.push(costs[p.i][p.j]);
-    }
-  }
-
-  if (neighbors.length > 0) {
-
-    let r = floor(random(0, neighbors.length));
-
-    return neighbors[r];
-
-  // Otherwise, there is no
-  // more work to do from the
-  // current source vertex
-  } else {
-
-    return undefined;
-  }
+  })
 }
 
 //------------------------------------------------------------------------------

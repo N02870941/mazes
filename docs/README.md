@@ -191,21 +191,6 @@ pushed on to the stack before any popping (visiting) occurs.
 
 **Generating the maze required** `O(|V|)` **or** `O(n²)` **space.**
 
-# Generating with Randomized Prim's algorithm
-
-Prim's algorithm is an algorithm used to fine what's called the **minimum spanning tree** (MST). Just like the normal spanning tree, an MST contains a number of edges `|E|` such that `|E| = |V| - 1`. It also has the added property that the sum of the selected edges is minimum while still satisfying the connected property. It goes as follows:
-
-1. Start with a grid full of walls
-2. Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
-3. While there are walls in the list:
-	1. Pick a random wall from the list. If only one of the two cells that the wall divides is visited, then:
-		1. Make the wall a passage and mark the unvisited cell as part of the maze
-		2. Add the neighboring walls of the cell to the wall list
-2. Remove the wall from the list
-
-**Note:** Since we have decided that all edge weights are uniform for this implementation, all spanning trees are minimum spanning trees because there will **always** be `|V| - 1` edges, each of which has a weight of one, resulting in a total cost of `|V| - 1` for all spanning trees.
-
-
 # Solving with Depth-first search
 
 A modified depth-first search can be used, stopping once we come across the

@@ -3,27 +3,74 @@
  */
 function generate() {
 
-  // Are we generating?
-  if (!action || generator(action)) {
+  // Are we still generating?
+  if (generator(action) && !generated) {
 
-    // Done generating? Start over
-    if (generated || !action) {
+    notify(strings.WAIT_FOR_MAZE);
 
-      // Fire generating event
-      let algorithm = generating();
+  // Cancel whatever we are doing
+  // and start generating a new maze
+  } else {
 
-      // Change main event loop
-      // action to specified algorithm
-      action = algorithm;
+    // Fire generating event
+    let algorithm = generating();
 
-      init();
+    // Change main event loop
+    // action to specified algorithm
+    action = algorithm;
 
-    // In progress
-    } else {
-
-      notify(strings.WAIT_FOR_MAZE);
-    }
+    init();
   }
+
+}
+
+//------------------------------------------------------------------------------
+
+function make(getter, bfs) {
+
+  // Mark as visited
+  current.visited = true;
+
+  // Set back to white
+  current.clear();
+
+  // Get random neighbor
+  let next = getter(current);
+
+  // Did one come back?
+  if (next) {
+
+    // Mark as visited
+    next.visited = true;
+
+    // Push current onto stack
+    // for backtracking purposes
+    stack.push(current);
+
+    // Remove the wall between
+    // these two adjacent vertices
+    Cell.pave(current, next);
+
+    // Show in white
+    current.clear();
+    next.clear();
+
+    // Highlight end of path
+    current.highlight();
+
+    // Shift the pointers
+    current = next;
+
+  // We have reached maximum depth
+  // so we start back tracking
+  } else if (stack.length > 0) {
+
+    current = bfs ? stack.shift() : stack.pop();
+  }
+
+  // Indicated where or not
+  // all nodes have been processed.
+  return stack.length === 0;
 }
 
 //------------------------------------------------------------------------------
@@ -36,98 +83,17 @@ function generate() {
  */
 function dfs() {
 
-  // Mark as visited
-  current.visited = true;
-
-  // Set back to white
-  current.clear();
-
-  // Get random neighbor
-  let next = randomNeighbor(current);
-
-  // Did one come back?
-  if (next) {
-
-    // Mark as visited
-    next.visited = true;
-
-    // Push current onto stack
-    // for backtracking purposes
-    stack.push(current);
-
-    // Remove the wall between
-    // these two adjacent vertices
-    Cell.pave(current, next);
-
-    // Show in white
-    current.clear();
-    next.clear();
-
-    // Highlight end of path
-    current.highlight();
-
-    // Shift the pointers
-    current = next;
-
-  // We have reached maximum depth
-  // so we start back tracking
-  } else if (stack.length > 0) {
-
-    current = stack.pop();
-  }
-
-  // Indicated where or not
-  // all nodes have been processed.
-  return stack.length === 0;
+  return make(randomNeighbor);
 }
 
 //------------------------------------------------------------------------------
 
-function prim() {
+/**
+ * Randomizes Prim's algorithm
+ */
+function bfs() {
 
-  // Mark as visited
-  current.visited = true;
-
-  // Set back to white
-  current.clear();
-
-  // Get random neighbor
-  let next = randomNeighbor(current);
-
-  // Did one come back?
-  if (next) {
-
-    // Mark as visited
-    next.visited = true;
-
-    // Push current onto stack
-    // for backtracking purposes
-    stack.push(current);
-
-    // Remove the wall between
-    // these two adjacent vertices
-    Cell.pave(current, next);
-
-    // Show in white
-    current.clear();
-    next.clear();
-
-    // Highlight end of path
-    current.highlight();
-
-    // Shift the pointers
-    current = next;
-
-  // We have reached maximum depth
-  // so we start back tracking
-  } else if (stack.length > 0) {
-
-    current = stack.pop();
-  }
-
-  // Indicated where or not
-  // all nodes have been processed.
-  return stack.length === 0;
+  return make(randomNeighbor, true);
 }
 
 //------------------------------------------------------------------------------
@@ -139,23 +105,21 @@ function prim() {
  */
 function randomNeighbor(cell) {
 
+  // Get unvisited neighbors
   let neighbors = cell.unvisited();
 
-  // There is at least one unvisited
-  // adjacent vertex to visit
-  if (neighbors.length > 0) {
+  // Random index
+  let r = floor(random(0, neighbors.length));
 
-    // Pick one at random and return it
-    let r = floor(random(0, neighbors.length));
+  // Return random neighbor
+  return neighbors[r];
+}
 
-    return neighbors[r];
+//------------------------------------------------------------------------------
 
-  // Otherwise, there is no
-  // more work to do from the
-  // current source vertex
-  } else {
+function closestNeighbor(cell) {
 
-    return undefined;
-  }
+  let neighbors = cell.unvisited();
 
+  return neighbors[0];
 }

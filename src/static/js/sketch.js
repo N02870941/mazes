@@ -136,13 +136,13 @@ function actions() {
   // TODO - Make cleaner somehow
 
   generators.push(dfs);
-  generators.push(prim);
+  generators.push(bfs);
 
   solvers.push(aStar);
   solvers.push(DFS);
 
   // Generators
-  generators['prim'] = prim;
+  generators['bfs'] = bfs;
   generators['dfs']  = dfs;
 
   // Solvers
