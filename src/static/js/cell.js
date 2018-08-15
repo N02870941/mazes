@@ -16,6 +16,7 @@ class Cell {
     this.w       = w;
     this.optimal = false;
     this.visited = false;
+    this.highlighted = false;
     this.walls   = [
       true,
       true,
@@ -123,84 +124,6 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
-  /**
-   * Selects unvisited adjacent
-   * vertices are random for processing
-   * in the depth-first search.
-   */
-  checkNeighbors() {
-
-    let neighbors = this.unvisited();
-
-    // There is at least one unvisited
-    // adjacent vertex to visit
-    if (neighbors.length > 0) {
-
-      // Pick one at random and return it
-      let r = floor(random(0, neighbors.length));
-
-      return neighbors[r];
-
-    // Otherwise, there is no
-    // more work to do from the
-    // current source vertex
-    } else {
-
-      return undefined;
-    }
-
-  }
-
-//------------------------------------------------------------------------------
-
-  /**
-   * Selects unvisited adjacent
-   * vertices based on minimum
-   * distance for A* algorithm
-   */
-  next() {
-    let neighbors  = [];
-    let distances  = [];
-    let potentials = this.potentials();
-    let p;
-
-    for (let i = 0; i < potentials.length; i++) {
-
-      p = potentials[i];
-
-      if (p && !this.walls[i] && !p.visited) {
-
-        neighbors.push(p);
-        distances.push(costs[p.i][p.j]);
-      }
-    }
-
-    if (neighbors.length > 0) {
-
-      let min = 0;
-
-      for (let i = 0; i < distances.length; i++)  {
-
-        if (distances[i] < distances[min]) {
-
-          min = i;
-        }
-      }
-
-      return neighbors[min];
-
-    // Otherwise, there is no
-    // more work to do from the
-    // current source vertex
-    } else {
-
-      return undefined;
-    }
-
-  }
-
-//------------------------------------------------------------------------------
-
   fill(r, g, b, a, x, y, l, w) {
 
     noStroke();
@@ -245,13 +168,29 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  shade() {
+
+    this.clear();
+
+    this.color(255, 0, 255, 100);
+  }
+
+//------------------------------------------------------------------------------
+
   /**
    * Highlights the current node
    * as it is being processed.
    */
   highlight() {
 
-    this.color(0, 0, 255, 50);
+    if (!this.highlighted) {
+
+      this.color(0, 0, 255, 50);
+
+      this.highlighted = true;
+    }
+
+
   }
 
 //------------------------------------------------------------------------------
@@ -259,6 +198,8 @@ class Cell {
   clear() {
 
     this.color(255, 255, 255, 255);
+
+    this.highlighted = false;
   }
 
 //------------------------------------------------------------------------------

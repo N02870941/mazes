@@ -120,6 +120,13 @@ function parameters() {
   labels[keys.WIDTH].text(t);
   labels[keys.HEIGHT].text(t);
   labels[keys.PATH].text(v);
+
+  // Dropowns
+  dropdowns[keys.GENERATE] = $(elements.dropdown.GENERATE);
+  dropdowns[keys.SOLVE]    = $(elements.dropdown.SOLVE);
+
+  // Checkboxes
+  checkboxes[keys.HIGHLIGHT] = $(elements.checkbox.HIGHLIGHT);
 }
 
 //------------------------------------------------------------------------------
@@ -132,6 +139,10 @@ function actions() {
   generators.push(dfs);
 
   solvers.push(aStar);
+  solvers.push(DFS);
+
+  solvers['aStar'] = aStar;
+  solvers['dfs']   = DFS;
 
   // The buttons
   buttons[keys.GENERATE] = $(elements.button.GENERATE);
@@ -315,18 +326,26 @@ async function draw() {
     }
 
   // Are we solving?
-} else if (solver(action)) {
+  } else if (solver(action)) {
 
     // Not done
     if (!solved) {
 
       solved = action();
 
+    // Highlight the result
     } else {
+
+      action = highlight
+    }
+
+  // Are we highlighting?
+  } else if (action === highlight) {
+
+    if (action()) {
 
       complete();
     }
-
   }
 
 }

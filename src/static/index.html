@@ -98,7 +98,7 @@
         <div class='col-md-6 algo-select'>
           <div>Generator algorithm:</div>
 
-          <select class="form-control form-control-sm">
+          <select id='dropdown-generator' class="form-control form-control-sm">
             <option>Depth-first search</option>
             <option>Prim's Algorithm</option>
           </select>
@@ -108,10 +108,9 @@
         <div class='col-md-6 algo-select'>
           <div>Solver algorithm:</div>
 
-          <select class="form-control form-control-sm">
-            <option>A*</option>
-            <option>Depth-first search</option>
-            <option>Dijkstra's Algorithm</option>
+          <select id='dropdown-solver' class="form-control form-control-sm">
+            <option value='aStar'>A*</option>
+            <option value='dfs'>Depth-first search</option>
           </select>
         </div>
 
@@ -121,7 +120,7 @@
       <div class='row'>
         <div class='col form-check'>
 
-          <input id="checkbox-highlight" class="form-check-input" type="checkbox">
+          <input id="checkbox-highlight-visited" class="form-check-input" type="checkbox">
           <label class="form-check-label" for="defaultCheck1">
             Color all visited nodes in solution
           </label>

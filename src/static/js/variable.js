@@ -36,19 +36,26 @@ const strings = {
 // of UI elements
 const keys = {
 
-  CANVAS   : 'canvas',
-  PATH     : 'path',
-  WIDTH    : 'width',
-  HEIGHT   : 'height',
-  GENERATE : 'generate',
-  SOLVE    : 'solve',
-  EXPORT   : 'export',
-  FRAMES   : 'frame-rate',
-  SLIDER   : 'slider'
+  CANVAS    : 'canvas',
+  PATH      : 'path',
+  WIDTH     : 'width',
+  HEIGHT    : 'height',
+  GENERATE  : 'generate',
+  SOLVE     : 'solve',
+  EXPORT    : 'export',
+  FRAMES    : 'frame-rate',
+  SLIDER    : 'slider',
+  HIGHLIGHT : 'highlight'
 };
 
 // UI element ids
 const elements = {
+
+  dropdown : {
+
+    GENERATE : '#dropdown-generator',
+    SOLVE    : '#dropdown-solver'
+  },
 
   button : {
 
@@ -74,7 +81,8 @@ const elements = {
   },
 
   checkbox : {
-    
+
+    HIGHLIGHT : '#checkbox-highlight-visited'
   },
 
   canvas : {
@@ -119,9 +127,11 @@ let current;
 
 // UI element
 // associative arrays
-let buttons = [];
-let sliders = [];
-let labels  = [];
+let buttons    = [];
+let sliders    = [];
+let labels     = [];
+let dropdowns  = [];
+let checkboxes = [];
 
 // Canvas, images
 let canvas;

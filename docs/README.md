@@ -210,7 +210,9 @@ Prim's algorithm is an algorithm used to fine what's called the **minimum spanni
 
 A modified depth-first search can be used, stopping once we come across the
 target vertex, then back tracking to discover the path from source to destination. This is a brute force method that would take a lot longer
-and may not always result in the optimal solution if there were more than one path from beginning to end. Pseudo code follows:
+and may not always result in the optimal solution if there were more than one path from beginning to end. 
+
+Pseudo code follows:
 
 ```javascript
 dfs(src, dst) {
@@ -293,11 +295,107 @@ push all `|V|` vertices before popping. This is the case where we visit **all** 
 
 # Solving with Dijkstra's algorithm
 
-We can improve the above DFS by running Dijkstra's algorithm, which is a generic shortest path algorithm for arbitrary weighted graphs. Instead of blindly visiting each unvisited adjacent vertex until we have found our target, we will give them a priority. We will visit adjacent verticies that have **lower** cost first. However,
-this is a greedy approach that takes steps that may be optimal for
-**intermediate** solutions, but not optimal for the **overall** solution. 
+We can (theoretically) improve the above DFS by running a variant of Dijkstra's algorithm, which is a generic shortest path algorithm for arbitrary weighted graphs. Instead of blindly visiting each unvisited adjacent vertex until we have found our target, we will give them a priority. We will visit adjacent verticies that have **lower** cost first. This is a greedy approach that takes steps that may be optimal for
+**intermediate** solutions, but not optimal for the **overall** solution. So we run the risk of diverging off on to many sub-optimal paths.
 
-This may result in a quicker runtime the edges we visit all happen to getting us closer to our target. But the runtime will be just as bad as depth-first search if this is not true and we end up going down too many sub-optimal paths before generating the overall best solution. The latter is generally true for **randomly generated uniform edge-weight** graphs as the cost is directly correlated with the path length, which provided it's random nature, we have no information about.
+In fact, since each adjacent vertex has the same cost to visit, if the graph only has **one solution**, Dijkstra will behave exactly like DFS. The only way we get a speed boost is if there are **multiple ways** to get to the same vertex because that way we could actually **compare** and update costs if a **better** route is found. With this in mind, it makes it clear that the added benefit of Dijkstra's algorithm is null and void unless the maze has multiple solutions. 
+
+Pseudo code follows:
+
+```javascript
+dijkstra(src, dst) {
+
+    const infinity = Number.POSITIVE_INFINITY
+
+	var unvisited = []	// Stack
+	var neighbors = []	// Set
+	var parents   = []	// Map
+	var costs     = []  // Map 
+	var current
+	var cost
+	
+	// The start vertex has no parent
+	parents[src.key] = null
+	
+	// Cost to get to start is 0
+	costs[src.key] = 0
+	
+	// Start with source
+	visited.push(src);
+	
+	// Process each vertex
+	while (unvisited.length > 0) {
+	
+		// Get next vertex
+		current = unvisited.pop()
+		
+		// We found the target
+		if (current == dst) {
+			
+			break
+		}
+		
+		// If first time visiting
+		if (!current.visited) {
+		
+			// Label is visited
+			current.visited = true
+					
+			// Get it's neighbors
+			neighbors = current.neighbors()
+			
+			// Compute cost to go over one vertex
+			cost = costs[current.key] + 1
+			
+			// Push all unvisited neighbors to stack.
+			// Note, since the cost to get to any 
+			// adjacent vertex is always 1 + the cost
+			// of our current position, sorting has no
+			// effect. Any vertex is equally optimal.
+			// This is the shortcoming of Dijkstra.
+			// We may go down sub-optimal paths.
+			neighbors.forEach( neighbor => {
+			
+				 // Do not revisit
+			    if (neighbor.visited) {
+			    
+			    	return
+			    }
+			    
+			    // Add to priority queue to continue graph traversal
+			    unvisited.push(neighbor)
+			
+				// Does this beat the previous cost to get there?
+				// If no path exists, then the distance is infinite
+				// and this will evaluate to true, and make a new entry.
+				// This happens on first discovery of a vertex,
+				// otherwise only if a better path is found
+				if (cost < costs[neighbor.key] || infinity) {
+				
+					// Save new lowest cost
+					costs[neighbor.key] = cost
+					
+					// Update path map to indicate new parent vertex
+					parents[neighbor.key] = current.key
+				}
+			
+			})
+		}
+	}
+	
+	// Start at destination	
+	current = dst
+	
+	// Backtrack highlighting the path
+	while (current) {
+	
+		current.highlight()
+		
+		current = parents[current.key]
+	}
+
+}
+```
 
 ## Time complexity of Dijkstra
 
@@ -306,13 +404,15 @@ storing each vertex's adjacency list in a min-priority queue (Fibonacci Heap). T
 
 However, as previously noted, for this problem, `|E| = 4 * |V|`. So, if we were to use a fibonacci heap for **this particular problem**, our runtime would be `O(|V| + |V| * log |V|)` or simply `O(|V| * log |V|)`. The `|V| * log |V|` portion comes from. The `extractMin()` operation which runs in `log |V|` times is called `|V|` times. 
 
-Fortunately, we do not even need to sort our edges in a heap because there is **always exactly 4 potential adjacent vertices per vertex** no matter how many vertices we have in the entire graph. For an adjacency list of exactly 4 everytime, `extractMin()` is run in `O(1)` time. That being said, we make `|V|` calls to an `O(1)` operation.
+Fortunately, we do not even need to sort our edges in a heap because there is **always exactly 4 potential adjacent vertices per vertex with equal cost** no matter how many vertices we have in the entire graph. For an adjacency list of exactly 4 everytime, `extractMin()` is run in `O(1)` time. That being said, we make `|V|` calls to an `O(1)` operation.
 
 **The runtime of DFS is** `O(|V|) = O(n²)`.
 
 ## Space complexity of Dijkstra
 
-Dijkstra's algorithm uses a stack to process unvisited vertices. In the worst case we will push `|V|` vertices before our first pop. We also use a map for backtracking to discover the path from source to destination. Since we are **only working with spanning trees**, the max size of a path is `|V| - 1`. So the map cannot grow greater than `O(|V|)`. Lastly, Dijkstra uses another map that assocates each visited vertex with it's cost to get there. This grows no greater than the number of vertices `|V|`. So, summing all utilized space, we use `O(|V| + |V| + |V|) = O(3 * |V|) = O(|V|)`.
+Dijkstra's algorithm uses a array or priority queue to process unvisited vertices. In the worst case we will push `|V|` vertices before our first pop. We also use a map for backtracking to discover the path from source to destination. Since we are **only working with spanning trees**, the max size of a path is `|V| - 1`. In fact, no **path** in a graph can have more than `|V|` vertices because a path by definition says a vertex cannot be repeated.
+
+So the map cannot grow greater than `O(|V|)`. Lastly, Dijkstra uses another map that assocates each visited vertex with it's cost to get there. This grows no greater than the number of vertices `|V|` because each vertex has a single cost. So, summing all utilized space, we use `O(|V| + |V| + |V|) = O(3 * |V|) = O(|V|)`.
 
 **The space complexity is** `O(|V|) = O(n²)`.
 
@@ -320,11 +420,15 @@ Dijkstra's algorithm uses a stack to process unvisited vertices. In the worst ca
 
 The limitations of Dijkstra's algorithm is the reason we use A* (A Star) as our primary approach in **path finding**. It can be considered a generalization of Dijkstra's algorithm
 that uses a heuristic value (specific to the problem) that prevents us from straying away on non-optimal paths and helps make more intelligent intermediate
-steps that lead to the overall optimal solution. We can also say Dijkstra's algorithm is a specific case of A* where the heuristic of all adjacent vertices are equal or zero - thus having no impact on decision making. The heuristic is an easy-to-compute value computed per iteration (or beforehand) that we use to determine whether or not we are approaching our target. 
+steps that lead to the overall optimal solution. We can also say Dijkstra's algorithm is a specific case of A* where the heuristic of all adjacent vertices are equal or zero - thus having no impact on decision making. This fact, along with the fact that edge weights are all equal is why Dijkstra for simple (single solutions) mazes degrades to DFS.
 
-The heuristic is a problem-specific computation because for arbitrary graphs (a set of edges and vertices) we do not have any information about how "close" we are. Since we have our graph in terms of a grid, a good choice for the heuristic is the (euclidian or manhattan) distance between the current pixel and the target. 
+The heuristic is an easy-to-compute value computed per iteration (or beforehand) that we use to determine whether or not we are getting closer to our target. It is a problem-specific computation because for arbitrary graphs (a set of edges and vertices) we do not have any information about how "close" we are. Since we have our graph in terms of a grid, a good choice for the heuristic is the (euclidian or manhattan) distance between the current pixel and the target. 
 
-Although we may not always have a **direct** path, we know we are getting closer if the euclidian distance is shrinking. With this new tool at our disposal, we make our choice to visit a particular vertex that not only minimizes overall cost, but also shrinks the distance between the current vertex in the search and the target vertex - this assures us we are "getting closer."
+Although we may not always know the **direct** path, we know we are getting closer if the euclidian distance is shrinking. With this new tool at our disposal, we make our choice to visit a particular vertex that not only minimizes overall cost, but also shrinks the distance between the current vertex in the search and the target vertex - this assures us we are "getting closer."
+
+Again, algorithms like Dijkstra's or A* have limited benefit if there is only one solution. However, A* allows us to make more **informed** decisions in our search via heuristics.
+
+Pseudo code follows:
 
 ## Time complexity of A*
 
@@ -334,7 +438,7 @@ For all intents and purposes, if the heuristic underestimates every time or retu
 
 ## Space complexity of A*
 
-A* uses a stack of unvisited vertices. In the worst case, we
+A* uses a array or priority queue of unvisited vertices. In the worst case, we
 push all `|V|` vertices before popping. This is the case where we visit **all** vertices in a single walk before hitting a dead end. The map used for backtracking in the worst case will hold references to all `|V|` vertices in the path from source to destination - also using at most `O(|V|)` space. Lastly, if we pre-compute our heuristics for easy lookup (one per vertex), we will need `O(|V|)` extra space - still resulting in linear space.
 
 **The space complexity of A* is** `O(|V|)`.

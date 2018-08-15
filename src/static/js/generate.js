@@ -70,8 +70,8 @@ function dfs() {
   // Set back to white
   current.clear();
 
-  // Get neighbors
-  let next = current.checkNeighbors();
+  // Get random neighbor
+  let next = randomNeighbor(current);
 
   // Did one come back?
   if (next) {
@@ -107,4 +107,34 @@ function dfs() {
   // Indicated where or not
   // all nodes have been processed.
   return stack.length === 0;
+}
+
+//------------------------------------------------------------------------------
+
+/**
+ * Selects unvisited adjacent
+ * vertices are random for processing
+ * in the depth-first search.
+ */
+function randomNeighbor(cell) {
+
+  let neighbors = cell.unvisited();
+
+  // There is at least one unvisited
+  // adjacent vertex to visit
+  if (neighbors.length > 0) {
+
+    // Pick one at random and return it
+    let r = floor(random(0, neighbors.length));
+
+    return neighbors[r];
+
+  // Otherwise, there is no
+  // more work to do from the
+  // current source vertex
+  } else {
+
+    return undefined;
+  }
+
 }

@@ -111,8 +111,14 @@ function prepared() {
 
 function solving() {
 
+  solved = false;
+
+  let val = dropdowns[keys.SOLVE].val();
+
   buttons[keys.GENERATE].trigger(events.SOLVING);
   buttons[keys.EXPORT].trigger(events.SOLVING);
+
+  return solvers[val];
 }
 
 //------------------------------------------------------------------------------
@@ -192,7 +198,6 @@ function contains(array, element) {
   }
 
   return false;
-
 }
 
 //------------------------------------------------------------------------------
@@ -207,4 +212,9 @@ function generator(f) {
 function solver(f) {
 
   return contains(solvers, f);
+}
+
+function showHighlights() {
+
+  return checkboxes[keys.HIGHLIGHT].prop('checked')
 }
