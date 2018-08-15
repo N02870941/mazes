@@ -92,8 +92,14 @@ function unprepared() {
 
 function generating() {
 
+  generated = false;
+
   buttons[keys.SOLVE].trigger(events.GENERATING);
   buttons[keys.EXPORT].trigger(events.GENERATING);
+
+  let val = dropdowns[keys.GENERATE].val();
+
+  return generators[val];
 }
 
 //------------------------------------------------------------------------------
@@ -213,6 +219,8 @@ function solver(f) {
 
   return contains(solvers, f);
 }
+
+//------------------------------------------------------------------------------
 
 function showHighlights() {
 

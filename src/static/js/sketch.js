@@ -1,6 +1,3 @@
-// TODO - https://stackoverflow.com/questions/39711941/p5-js-manually-call-setup-and-draw
-// TODO - https://mobiforge.com/design-development/html5-mobile-web-canvas
-
 /**
  * Initial one time setup.
  */
@@ -136,11 +133,19 @@ function parameters() {
  */
 function actions() {
 
+  // TODO - Make cleaner somehow
+
   generators.push(dfs);
+  generators.push(prim);
 
   solvers.push(aStar);
   solvers.push(DFS);
 
+  // Generators
+  generators['prim'] = prim;
+  generators['dfs']  = dfs;
+
+  // Solvers
   solvers['aStar'] = aStar;
   solvers['dfs']   = DFS;
 
