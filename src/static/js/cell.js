@@ -106,9 +106,16 @@ class Cell {
 
     noStroke();
 
-    fill(r, g, b, a);
+    if (typeof r === 'string') {
 
-    rect(x, y, w, w);
+      fill(r);
+      rect(g, b, a, x);
+
+    } else {
+
+      fill(r, g, b, a);
+      rect(x, y, w, w);
+    }
   }
 
 //------------------------------------------------------------------------------
@@ -148,7 +155,15 @@ class Cell {
     const x = this.i * w;
     const y = this.j * w;
 
-    this.fill(r, g, b, a, x, y, w, w);
+    if (typeof r === 'string') {
+
+      this.fill(r, x, y, w, w);
+
+    } else {
+
+      this.fill(r, g, b, a, x, y, w, w);
+    }
+
     this.outline(x, y, w);
   }
 
@@ -166,6 +181,30 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  gradient() {
+
+    // References to first
+    // and last vertices in grid
+    let first = grid[0];
+    let last  = grid[grid.length - 1];
+
+    // Max distance
+    let max = Cell.manhattan(first, last);
+
+    // Current distance
+    let d = Cell.manhattan(this, last);
+
+    // How much percent are we?
+    let ratio = d / max;
+
+    // Get a color that reflects that
+    let color = Cell.makeColor(1 - ratio);
+
+    this.color(color);
+  }
+
+//------------------------------------------------------------------------------
+
   /**
    * Highlights the current node
    * as it is being processed.
@@ -174,7 +213,9 @@ class Cell {
 
     if (!this.highlighted) {
 
-      this.color(0, 0, 255, 50);
+      // this.color(0, 0, 255, 50);
+
+      this.gradient();
 
       this.highlighted = true;
     }
@@ -279,5 +320,50 @@ class Cell {
     }
 
   }
+
+  /**
+   * Return hex color from scalar
+   * value between 0 and 1.
+   */
+  static makeColor(val) {
+
+    // https://stackoverflow.com/questions/4161369/html-color-codes-red-to-yellow-to-green
+
+    /**
+     * Converts integer to a hexidecimal
+     * code, prepad's single
+     * digit hex codes with 0 to
+     * always return a two digit code.
+     */
+    let hex = (i) => {
+
+      let hex = parseInt(i).toString(16);
+
+      return (hex.length < 2) ? "0" + hex : hex;
+    }
+
+    // value must be between [0, 510]
+    val = min(max(0, val), 1) * 510;
+
+    let red;
+    let gre;
+
+    if (val < 255) {
+
+        red = 255;
+        gre = sqrt(val) * 16;
+        gre = round(gre);
+
+    } else {
+
+      gre = 255;
+      val = val - 255;
+      red = 255 - (sq(val) / 255);
+      red = round(red);
+    }
+
+    return "#" + hex(red) + hex(gre) + "00";
+  }
+
 
 }
