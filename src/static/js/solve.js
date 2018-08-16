@@ -25,11 +25,13 @@ function solve() {
     // Start at first cell
     current = grid[0];
 
+    // Indicates beginning of path
     parents.set(current.key, null);
 
     // If we want to do it
     // in the background, execute it,
-    // then execute highlight as a callback
+    // then execute highlight as the
+    // callback to highlight the path
     if (!animated()) {
 
       execute(action, () => {

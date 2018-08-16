@@ -3,6 +3,10 @@
  */
 function setup() {
 
+  // Stop infinite loop
+  // of draw()
+  noLoop();
+
   // Sliders
   parameters();
 
@@ -11,9 +15,6 @@ function setup() {
 
   // Grid
   init();
-
-  // Stop p5 main event loop
-  noLoop();
 }
 
 //------------------------------------------------------------------------------
@@ -263,9 +264,6 @@ function init() {
   // Start at first cell
   current = grid[0];
 
-  // Start p5 main event loop
-  loop();
-
   // Show each grid cell in white
   grid.forEach(c => c.clear());
 }
@@ -273,7 +271,8 @@ function init() {
 //------------------------------------------------------------------------------
 
 /**
- * Main event loop that repeats forever.
+ * Main event loop
+ * that repeats forever.
  */
 function draw() {
 
@@ -281,7 +280,7 @@ function draw() {
   if (generator(action)) {
 
     // Are we done?
-    if (generated && callback) {
+    if (generated) {
 
       callback();
 
@@ -294,23 +293,16 @@ function draw() {
   // Are we solving?
   } else if (solver(action)) {
 
-    // Not done
-    if (!solved) {
+    // Done
+    if (action()) {
 
-      solved = action();
-
-    // Highlight the result
-    } else {
-
-      action = highlight
+      action = callback
     }
 
   // Are we highlighting?
   } else if (visualizer(action)) {
 
     if (action()) {
-
-      noLoop();
 
       complete();
     }

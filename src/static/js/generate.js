@@ -27,17 +27,26 @@ function generate() {
     if (!animated()) {
 
       execute(action, callback);
+
+    // Start animating  
+    } else {
+
+      loop();
     }
 
-    // Otherwise, do nothing because action()
-    // will automatically get picked up and called
-    // by the main event loop draw()
   }
 
 }
 
 //-----------------------------------------------------------------------------
 
+/**
+ * This function is used as a callback
+ * for when the maze is generated. It
+ * fires the 'generated' event, and makes
+ * a few changes to the maze so that the starting
+ * point and end point are more noticeable.
+ */
 function postGenerate() {
 
   // Trigger generated event
@@ -184,10 +193,10 @@ function hybrid() {
     let n = floor(random(1, 101));
 
     if (n % 2 === 0)
-      return s.shift()
+      return s.shift();
 
     else
-      return s.pop()
+      return s.pop();
 
   });
 

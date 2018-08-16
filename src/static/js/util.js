@@ -128,6 +128,8 @@ function solving() {
 
 function prepared() {
 
+  generated = true;
+
   maze = canvas.get();
 
   noLoop();
@@ -142,6 +144,8 @@ function prepared() {
 function complete() {
 
   solution = canvas.get();
+
+  noLoop();
 
   buttons[keys.GENERATE].trigger(events.SOLVED);
   buttons[keys.EXPORT].trigger(events.SOLVED);

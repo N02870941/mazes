@@ -5,6 +5,10 @@
  * file. They should all be local to functions.
  */
 
+ // Colors
+ const BLACK = 0;
+ const LINE_WIDTH = 2;
+
 // Frame rate parameters
 const MIN_FRAME_RATE = 1;
 const MAX_FRAME_RATE = 60;
@@ -165,6 +169,11 @@ const solvers     = [];
 const generators  = [];
 const visualizers = [];
 
+// Used in graph traversal
+const grid    = [];
+const stack   = [];
+const parents = new Map();
+
 // Dimensions of grid
 let cols;
 let rows;
@@ -174,11 +183,6 @@ let current;
 let canvas;
 let maze;
 
-// Used in graph traversal
-const grid    = [];
-const stack   = [];
-const parents = new Map();
-
 // Boolean flags
 let generated = false;
 let solved    = false;
@@ -187,9 +191,3 @@ let solved    = false;
 // and main event loop
 let action;
 let callback;
-
-// Colors
-let BLACK = 0;
-
-
-const LINE_WIDTH = 2;
