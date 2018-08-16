@@ -1,6 +1,9 @@
-// Colors
-let BLACK = 0;
-let WHITE = 255;
+/*
+ * This file holds all constant and variable
+ * values that reflect the 'state' of the application.
+ * No global value should be declared outside of this
+ * file. They should all be local to functions.
+ */
 
 // Frame rate parameters
 const MIN_FRAME_RATE = 1;
@@ -45,10 +48,11 @@ const keys = {
   EXPORT    : 'export',
   FRAMES    : 'frame-rate',
   SLIDER    : 'slider',
-  HIGHLIGHT : 'highlight'
+  HIGHLIGHT : 'highlight',
+  ANIMATE   : 'animate'
 };
 
-// UI element ids
+// UI element selector ids
 const elements = {
 
   dropdown : {
@@ -82,7 +86,8 @@ const elements = {
 
   checkbox : {
 
-    HIGHLIGHT : '#checkbox-highlight-visited'
+    HIGHLIGHT : '#checkbox-highlight-visited',
+    ANIMATE   : '#checkbox-animate'
   },
 
   canvas : {
@@ -91,7 +96,7 @@ const elements = {
   }
 };
 
-// HTML element attributes
+// HTML element attributes / states
 const attributes = {
 
   MIN      : 'min',
@@ -112,6 +117,31 @@ const events = {
   SOLVING    : 'solving'
 };
 
+// Names of supported algorithms
+const algorithms = {
+
+  generator : {
+
+    BFS    : 'bfs',
+    DFS    : 'dfs',
+    HYBRID : 'hybrid'
+  },
+
+  solver : {
+
+    BFS      : 'BFS',
+    DFS      : 'DFS',
+    A_STAR   : 'aStar',
+    DIJKSTRA : 'dijkstra'
+  },
+
+  visualizer : {
+
+    HIGHLIGHT : 'highlight'
+  }
+
+};
+
 // Numbers for top, bottom,
 // right, and left walls for
 // a given cell's wall array.
@@ -120,39 +150,46 @@ const RIGHT  = 1;
 const BOTTOM = 2;
 const LEFT   = 3;
 
+// UI element
+// associative arrays
+const buttons    = [];
+const sliders    = [];
+const labels     = [];
+const dropdowns  = [];
+const checkboxes = [];
+
+// Arrays of functions
+// used for generating,
+// solving, and visualizing
+const solvers     = [];
+const generators  = [];
+const visualizers = [];
+
 // Dimensions of grid
 let cols;
 let rows;
 let current;
 
-// UI element
-// associative arrays
-let buttons    = [];
-let sliders    = [];
-let labels     = [];
-let dropdowns  = [];
-let checkboxes = [];
-
 // Canvas, images
 let canvas;
 let maze;
-let solution;
 
-//
-let grid;
-let stack;
-let parents;
+// Used in graph traversal
+const grid    = [];
+const stack   = [];
+const parents = new Map();
 
 // Boolean flags
 let generated = false;
 let solved    = false;
 
-// Matrix of heuristic
-let costs;
-
 // Repeated action in draw()
 // and main event loop
 let action;
+let callback;
 
-const solvers    = [];
-const generators = [];
+// Colors
+let BLACK = 0;
+
+
+const LINE_WIDTH = 2;

@@ -92,14 +92,36 @@ function unprepared() {
 
 function generating() {
 
-  generated = false;
-
+  // Disable appropriate buttons
   buttons[keys.SOLVE].trigger(events.GENERATING);
   buttons[keys.EXPORT].trigger(events.GENERATING);
 
+  // Flag to false
+  generated = false;
+
+  // Get generator algorithm name
   let val = dropdowns[keys.GENERATE].val();
 
+  // Return correct algorithm
   return generators[val];
+}
+
+//------------------------------------------------------------------------------
+
+function solving() {
+
+  // Disable appropriate buttons
+  buttons[keys.GENERATE].trigger(events.SOLVING);
+  buttons[keys.EXPORT].trigger(events.SOLVING);
+
+  // Flag to false
+  solved = false;
+
+  // Get solver algorithm name
+  let val = dropdowns[keys.SOLVE].val();
+
+  // Return correct algorithm
+  return solvers[val];
 }
 
 //------------------------------------------------------------------------------
@@ -108,23 +130,11 @@ function prepared() {
 
   maze = canvas.get();
 
+  noLoop();
+
   buttons[keys.GENERATE].trigger(events.GENERATED);
   buttons[keys.SOLVE].trigger(events.GENERATED);
   buttons[keys.EXPORT].trigger(events.GENERATED);
-}
-
-//------------------------------------------------------------------------------
-
-function solving() {
-
-  solved = false;
-
-  let val = dropdowns[keys.SOLVE].val();
-
-  buttons[keys.GENERATE].trigger(events.SOLVING);
-  buttons[keys.EXPORT].trigger(events.SOLVING);
-
-  return solvers[val];
 }
 
 //------------------------------------------------------------------------------
@@ -193,14 +203,11 @@ function download() {
 
 //------------------------------------------------------------------------------
 
-function contains(array, element) {
+function funcInMap(func, map) {
 
-  for (let i = 0; i < array.length; i++) {
+  if (func && typeof func == 'function' && map) {
 
-    if (array[i] === element) {
-
-      return true;
-    }
+    return map[func.name] ? true : false;
   }
 
   return false;
@@ -210,19 +217,40 @@ function contains(array, element) {
 
 function generator(f) {
 
-  return contains(generators, f);
+  return funcInMap(f, generators);
 }
 
 //------------------------------------------------------------------------------
 
 function solver(f) {
 
-  return contains(solvers, f);
+  return funcInMap(f, solvers);
 }
 
 //------------------------------------------------------------------------------
 
-function showHighlights() {
+function visualizer(f) {
 
-  return checkboxes[keys.HIGHLIGHT].prop('checked')
+  return funcInMap(f, visualizers);
+}
+
+//------------------------------------------------------------------------------
+
+function checked(element) {
+
+  return element.prop('checked');
+}
+
+//------------------------------------------------------------------------------
+
+function highlighted() {
+
+  return checked(checkboxes[keys.HIGHLIGHT]);
+}
+
+//------------------------------------------------------------------------------
+
+function animated() {
+
+  return checked(checkboxes[keys.ANIMATE]);
 }

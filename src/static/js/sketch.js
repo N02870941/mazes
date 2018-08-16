@@ -19,30 +19,6 @@ function setup() {
 //------------------------------------------------------------------------------
 
 /**
- * Sets up P5 canvas on the page.
- */
-function page(dimension) {
-
-  maze = createCanvas(
-
-    dimension,
-    dimension
-  );
-
-  // Create p5 canvas object
-  canvas = createCanvas(
-
-    dimension,
-    dimension
-  );
-
-  // Assign canvas to inline html element
-  canvas.parent(elements.canvas.MAIN);
-}
-
-//------------------------------------------------------------------------------
-
-/**
  * Set up event listeners for sliders.
  */
 function parameters() {
@@ -51,11 +27,13 @@ function parameters() {
 
   let path = () => {
 
+    // TODO - Implement?
+
     let curr = sliders[keys.CANVAS].data(keys.SLIDER).getValue();
 
     // Update path width boundaries
-    let lo = MIN_PATH_WIDTH
-    let hi = MAX_PATH_WIDTH
+    const lo = MIN_PATH_WIDTH
+    const hi = MAX_PATH_WIDTH
 
     // Set min and max for path width
     sliders[keys.PATH].slider(SET_ATTRIBUTE, attributes.MIN, lo)
@@ -124,6 +102,7 @@ function parameters() {
 
   // Checkboxes
   checkboxes[keys.HIGHLIGHT] = $(elements.checkbox.HIGHLIGHT);
+  checkboxes[keys.ANIMATE]   = $(elements.checkbox.ANIMATE);
 }
 
 //------------------------------------------------------------------------------
@@ -133,27 +112,43 @@ function parameters() {
  */
 function actions() {
 
-  // TODO - Make cleaner somehow
+  /*
+   * Here we are are creating key-value
+   * pairs between algorithm functions as
+   * values and their string names as keys.
+   * This way we can lookup function by name
+   * and always get the right algorithm based
+   * on the value in the dropdown.
+   */
 
-  generators.push(dfs);
-  generators.push(bfs);
+  // Generator algorithms
+  generators[algorithms.generator.BFS]    = bfs;
+  generators[algorithms.generator.DFS]    = dfs;
+  generators[algorithms.generator.HYBRID] = hybrid;
 
-  solvers.push(aStar);
-  solvers.push(DFS);
+  // Solver algorithms
+  solvers[algorithms.solver.DFS]    = DFS;
+  solvers[algorithms.solver.A_STAR] = aStar;
 
-  // Generators
-  generators['bfs'] = bfs;
-  generators['dfs']  = dfs;
+  // Visualizer algorithms
+  visualizers[algorithms.visualizer.HIGHLIGHT] = highlight;
 
-  // Solvers
-  solvers['aStar'] = aStar;
-  solvers['dfs']   = DFS;
+  /*
+   * References to buttons that perform
+   * three main actions. Generate, Solve,
+   * and Export.
+   */
 
   // The buttons
   buttons[keys.GENERATE] = $(elements.button.GENERATE);
   buttons[keys.SOLVE]    = $(elements.button.SOLVE);
   buttons[keys.EXPORT]   = $(elements.button.EXPORT);
   buttons[keys.CANCEL]   = $(elements.button.CANCEL);
+
+  /*
+   * Bind appropriate functions
+   * to their onclick events.
+   */
 
   // Setup click events for buttons
   buttons[keys.GENERATE].click(generate);
@@ -230,8 +225,15 @@ function init() {
   buttons[keys.SOLVE].prop(attributes.DISABLED, true);
   buttons[keys.EXPORT].prop(attributes.DISABLED, true);
 
-  // Canvas
-  page(width);
+  // Create p5 canvas object
+  canvas = createCanvas(
+
+    width,
+    width
+  );
+
+  // Assign canvas to inline html element
+  canvas.parent(elements.canvas.MAIN);
 
   // Compute dimension of grid
   cols = floor(width  / w);
@@ -243,12 +245,20 @@ function init() {
   // Reinit the grid array
   // and the vertex stack
   // and best path map
-  stack   = [];
-  grid    = [];
-  parents = [];
+  stack.length = 0;
+  grid.length  = 0;
+  parents.clear();
 
-  // Pre-compute heuristic matrix
-  costs = heuristics(rows, cols, w);
+  // Rows
+  for (let j = 0; j < rows; j++) {
+
+    // Cols
+    for (let i = 0; i < cols; i++) {
+
+      // New cell
+      grid.push(new Cell(i, j, w));
+    }
+  }
 
   // Start at first cell
   current = grid[0];
@@ -263,66 +273,17 @@ function init() {
 //------------------------------------------------------------------------------
 
 /**
- * Pre-computes matrix of heuristics
- * for later use in A* search algorithm.
- */
-function heuristics(r, c, w) {
-
-  let last;
-  let h;
-
-  // Create (heuristic) cost matrix
-  last = new Cell(r - 1, c - 1);
-  h    = new Array(r);
-
-  // Rows
-  for (let j = 0; j < r; j++) {
-
-    // Make a new row
-    h[j] = new Array(c);
-
-    // Cols
-    for (let i = 0; i < c; i++) {
-
-      // New cell
-      grid.push(new Cell(i, j, w));
-
-      // Compute heuristic using euclidian distance
-      h[j][i] = Cell.euclidian(grid[grid.length - 1], last);
-    }
-  }
-
-  return h;
-}
-
-//------------------------------------------------------------------------------
-
-/**
  * Main event loop that repeats forever.
  */
-async function draw() {
+function draw() {
 
   // Are we generating?
   if (generator(action)) {
 
     // Are we done?
-    if (generated) {
+    if (generated && callback) {
 
-      // Trigger generated event
-      prepared();
-
-      // Get the start and end cells
-      const first = grid[0];
-      const last  = grid[grid.length - 1];
-
-      // Remove the left and right
-      // walls respectively
-      first.walls[3] = false
-      last.walls[1]  = false;
-
-      // Re-paint to screen
-      first.clear();
-      last.clear();
+      callback();
 
     // In progress
     } else {
@@ -345,12 +306,42 @@ async function draw() {
     }
 
   // Are we highlighting?
-  } else if (action === highlight) {
+  } else if (visualizer(action)) {
 
     if (action()) {
+
+      noLoop();
 
       complete();
     }
   }
 
+}
+
+//------------------------------------------------------------------------------
+
+/**
+ * Executes loop behind the scenes.
+ * The first argument is a function with
+ * zero arguments. It returns true when
+ * it has met it's base case / exit condition.
+ * otherwise it continues to return false.
+ *
+ * The second function after() is an optional
+ * callback function that executes after the
+ * procedure has run it's course. after() does
+ * not return anything.
+ */
+function execute(procedure, after) {
+
+  let exit;
+
+  do {
+
+    exit = procedure();
+
+  } while (!exit);
+
+  if (after)
+    after();
 }

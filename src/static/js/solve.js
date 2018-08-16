@@ -11,22 +11,39 @@ function solve() {
     // Change main event loop's
     // primary action to specified
     // search algorithm
-    action = algorithm;
+    action   = algorithm;
+    callback = highlight;
 
     // Reset
     grid.forEach(c => {
 
-      c.visited = false
+      c.visited = false;
 
-      c.clear()
+      c.clear();
     });
 
     // Start at first cell
     current = grid[0];
 
-    parents[current.key()] = null;
+    parents.set(current.key, null);
 
-    loop();
+    // If we want to do it
+    // in the background, execute it,
+    // then execute highlight as a callback
+    if (!animated()) {
+
+      execute(action, () => {
+
+        solved = true;
+
+        execute(callback, complete);
+      });
+
+    // Start draw() loop
+    } else {
+
+      loop();
+    }
 
   // In progress
   } else {
@@ -38,27 +55,33 @@ function solve() {
 
 //------------------------------------------------------------------------------
 
-function search(getter, show) {
+/**
+ *
+ */
+function search(discover) {
 
   current.visited = true;
 
   // Do not leave visited
   // highlights on screen
-  if (!showHighlights()) {
+  if (!highlighted()) {
 
     current.clear();
   }
 
+  // TODO - Supply target as parameter?
+  let last = new Cell(rows - 1, cols - 1);
+
   // We have found the target vertex
   // So, no need to do any more work
-  if (costs[current.i][current.j] === 0) {
+  if (current.i === last.i && current.j === last.j) {
 
     return true;
   }
 
   // Get next vertex according to
   // the specified getter function
-  let next = getter(current);
+  let next = discover(current);
 
   if (next) {
 
@@ -67,9 +90,9 @@ function search(getter, show) {
 
     // Is the next vertex alreadty in the path?
     // If not, add it to map for later backtracking
-    if (parents[next.key()] === undefined) {
+    if (!parents.has(next.key)) {
 
-      parents[next.key()] = current.key();
+      parents.set(next.key, current);
     }
 
     // Push on to stack
@@ -91,7 +114,7 @@ function search(getter, show) {
   }
 
   // If true, search complete
-  return stack.length === 0;
+  return stack.length === 0 && current.unvisited().length === 0;
 }
 
 //------------------------------------------------------------------------------
@@ -104,6 +127,9 @@ function search(getter, show) {
  * first.
  */
 function aStar() {
+
+  // TODO - http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
+  // TODO - http://theory.stanford.edu/~amitp/GameProgramming/index.html
 
   return search(minNeighbor)
 }
@@ -140,12 +166,18 @@ function DFS() {
  * return a single value from neighbors. This selector
  * function specifies the order of graph traversal
  */
-function next(cell, selector) {
+function next(cell, heuristic, selector) {
+
+  // TODO - Accept heuristic as parameter?
 
   let neighbors  = [];
   let distances  = [];
   let potentials = cell.potentials();
   let p;
+
+  // TODO - As arg?
+  let last = new Cell(rows - 1, cols - 1);
+  let cost;
 
   for (let i = 0; i < potentials.length; i++) {
 
@@ -153,12 +185,14 @@ function next(cell, selector) {
 
     if (p && !cell.walls[i] && !p.visited) {
 
+      cost = heuristic ? heuristic(p, last) : 0;
+
       neighbors.push(p);
-      distances.push(costs[p.i][p.j]);
+      distances.push(cost);
     }
   }
 
-  return selector(neighbors, distances)
+  return selector(neighbors, distances);
 }
 
 //------------------------------------------------------------------------------
@@ -170,7 +204,7 @@ function next(cell, selector) {
  */
 function minNeighbor(cell) {
 
-  return next(cell, (neighbors, distances) => {
+  return next(cell, Cell.manhattan, (neighbors, distances) => {
 
     let min = 0;
 
@@ -189,9 +223,15 @@ function minNeighbor(cell) {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Returns a randomly selected
+ * unvisited adjacent vertex.
+ */
 function unvisitedNeighbor(cell) {
 
-  return next(cell, (n, distances) => {
+  let heuristic = Cell.euclidian;
+
+  return next(cell, null, (n, distances) => {
 
     let r = floor(random(0, n.length));
 
@@ -202,29 +242,28 @@ function unvisitedNeighbor(cell) {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Iteratively highlights the solution
+ * path going backwards from finish to start
+ * using the parents lookup table.
+ */
 function highlight() {
 
-  if (!current) {
+  let stop = true;
 
-    return true;
-  }
-
+  // Highlight current vertex
   current.shade();
 
-  let s = parents[current.key()];
+  current = parents.get(current.key);
 
-  if (s) {
+  // If one came back
+  if (current) {
 
-    let a = s.split('-');
-    let i = parseInt(a[0]);
-    let j = parseInt(a[1]);
-
-    let parent = grid[current.index(i, j)];
-
-    current = parent;
-
-    return false;
+    // Return false to indicate
+    // we still have more vertices
+    // in our path to highlight
+    stop = false;
   }
 
-  return true;
+  return stop;
 }

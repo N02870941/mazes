@@ -6,18 +6,33 @@
 class Cell {
 
   /**
-   * Constructs a new cell
-   * at location (i,j)
+   * Constructs a new cell at location (i,j) in grid.
    */
   constructor(i, j, w) {
 
-    this.i       = i;
-    this.j       = j;
-    this.w       = w;
-    this.optimal = false;
-    this.visited = false;
+    // Row and column numbers
+    this.i = i;
+    this.j = j;
+
+    // Unique key
+    this.key = `${this.i}-${this.j}`;
+
+    // Width of the cell
+    this.w = w;
+
+    // Boolean flags to indicate
+    // whether or not the cell
+    // has been visited and if
+    // in the is highlighted on screen
+    this.visited     = false;
     this.highlighted = false;
-    this.walls   = [
+
+    // Boolean values to
+    // indicate whether or
+    // not a wall is present
+    // for this particular cell.
+    // Order: top, right, bottom, left
+    this.walls = [
       true,
       true,
       true,
@@ -28,102 +43,65 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Returns the Cell's unique key.
+   * Returns an array of size 4 of
+   * potential adjacent cells. If the
+   * computed index is out of bounds (of gird),
+   * then undefined is placed for that particular
+   * space in the array.
    */
-  key() {
-
-    return `${this.i}-${this.j}`;
-  }
-
-//------------------------------------------------------------------------------
-
-  /**
-   * Returns the index of cell
-   * in the 1D grid provided it's
-   * 2D coordinates.
-   */
-  index(i, j) {
-
-    if (
-      i < 0      ||
-      j < 0      ||
-      i > cols-1 ||
-      j > rows-1) {
-
-      return -1;
-    }
-
-    return i + j * cols;
-  }
-
-//------------------------------------------------------------------------------
-
   potentials() {
 
     return [
 
       // Top
-      grid[this.index(this.i,   this.j-1)],
+      grid[Cell.index(this.i,   this.j-1)],
 
       // Right
-      grid[this.index(this.i+1, this.j)],
+      grid[Cell.index(this.i+1, this.j)],
 
       // Bottom
-      grid[this.index(this.i,   this.j+1)],
+      grid[Cell.index(this.i,   this.j+1)],
 
       // Left
-      grid[this.index(this.i-1, this.j)]
+      grid[Cell.index(this.i-1, this.j)]
     ];
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Returns adjacent vertices.
+   * Returns all adjacent vertices. This
+   * essential filters out all undefined /
+   * null neighbors returned from potentials().
    */
   neighbors() {
 
-    let neighbors = [];
-
-    // All "potential" vertices
-    let potentials = this.potentials();
-
-    // Only store truthy neighbors
-    potentials.forEach( (c) => {
-
-      if (c) {
-
-        neighbors.push(c);
-      }
-    });
-
-    return neighbors;
+    return this.potentials()
+               .filter(Boolean);
   }
 
 //------------------------------------------------------------------------------
 
   /**
    * Returns all unvisited adjacent vertices.
+   * This essentially filters ouf all adjacent
+   * vertices that have already been marked
+   * as visited.
    */
   unvisited() {
 
-    let unvisited = [];
-    let neighbors = this.neighbors();
-
-    neighbors.forEach( (c) => {
-
-      if (c && !c.visited) {
-
-        unvisited.push(c);
-      }
-
-    });
-
-    return unvisited;
+    return this.potentials()
+               .filter( (c) => c && !c.visited);
   }
 
 //------------------------------------------------------------------------------
 
+  /**
+   * Fill the grid square
+   * with some color. This will
+   * be blended with pixels that
+   * are already there.
+   */
   fill(r, g, b, a, x, y, l, w) {
 
     noStroke();
@@ -136,22 +114,13 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Colors the cell a specified color
+   * Draws the lines that represent
+   * the walls of this cell.
    */
-  color(r, g, b, a) {
-
-    const w = this.w;
-    const x = this.i * w;
-    const y = this.j * w;
-
-    this.fill(
-      r, g, b, a,
-      x, y,
-      w, w
-    )
+  outline(x, y, w) {
 
     stroke(BLACK);
-    strokeWeight(2);
+    strokeWeight(LINE_WIDTH);
 
     if (this.walls[TOP])
       line(x, y , x + w, y);
@@ -168,6 +137,26 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  /**
+   * Colors the cell a specified color
+   * and re-draws walls. So they maintain
+   * their opacity / darkness.
+   */
+  color(r, g, b, a) {
+
+    const w = this.w;
+    const x = this.i * w;
+    const y = this.j * w;
+
+    this.fill(r, g, b, a, x, y, w, w);
+    this.outline(x, y, w);
+  }
+
+//------------------------------------------------------------------------------
+
+  /**
+   *
+   */
   shade() {
 
     this.clear();
@@ -190,11 +179,14 @@ class Cell {
       this.highlighted = true;
     }
 
-
   }
 
 //------------------------------------------------------------------------------
 
+  /**
+   * Clears any coloring and
+   * resets cell color to white.
+   */
   clear() {
 
     this.color(255, 255, 255, 255);
@@ -211,10 +203,45 @@ class Cell {
    */
   static euclidian(src, dst) {
 
+    const a = dst.j - src.j;
+    const b = dst.i - src.i;
+
+    return sqrt( sq(a) + sq(b) );
+  }
+
+//------------------------------------------------------------------------------
+
+  /**
+   * Computes the manhattan distance
+   * between this cell and another cell.
+   */
+  static manhattan(src, dst) {
+
     const a = abs(dst.j - src.j);
     const b = abs(dst.i - src.i);
 
-    return sqrt( sq(a) + sq(b) );
+    return a + b
+  }
+
+//------------------------------------------------------------------------------
+
+  /**
+   * Returns the index of cell
+   * in the 1D grid provided it's
+   * 2D coordinates.
+   */
+  static index(i, j) {
+
+    if (
+      i < 0      ||
+      j < 0      ||
+      i > cols-1 ||
+      j > rows-1) {
+
+      return -1;
+    }
+
+    return i + j * cols;
   }
 
 //------------------------------------------------------------------------------

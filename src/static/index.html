@@ -95,28 +95,36 @@
 
       <!-- Generator algorithm selector -->
       <div class='row'>
+
         <div class='col-md-6 algo-select'>
+
+          <!-- Label -->
           <div>Generator algorithm:</div>
 
+          <!-- Dropdown -->
           <select id='dropdown-generator' class="form-control form-control-sm">
-            <option value='bfs'>Breadth-first search</option>
-            <option value='dfs'>Depth-first search</option>
+            <option value='bfs'>Breadth-first search (BFS)</option>
+            <option value='dfs'>Depth-first search (DFS)</option>
+            <option value='hybrid'>BFS DFS 50:50 Hybrid</option>
           </select>
         </div>
 
         <!-- Solver algorithm selector -->
         <div class='col-md-6 algo-select'>
+
+          <!-- Label -->
           <div>Solver algorithm:</div>
 
+          <!-- Dropdown -->
           <select id='dropdown-solver' class="form-control form-control-sm">
-            <option value='aStar'>A*</option>
-            <option value='dfs'>Depth-first search</option>
+            <option value='aStar'>A* search</option>
+            <option value='DFS'>Depth-first search (DFS)</option>
           </select>
         </div>
 
       </div>
 
-      <!-- Checkbox for highlighting solution -->
+      <!-- Checkbox for highlighting the solution -->
       <div class='row'>
         <div class='col form-check'>
 
@@ -127,7 +135,18 @@
         </div>
       </div>
 
-      <!-- Generate and export buttons -->
+      <!-- Checkbox for enabling animation -->
+      <div class='row'>
+        <div class='col form-check'>
+
+          <input id="checkbox-animate" class="form-check-input" type="checkbox">
+          <label class="form-check-label" for="defaultCheck1">
+            Animated
+          </label>
+        </div>
+      </div>
+
+      <!-- Buttons -->
       <div class='row'>
 
         <!-- Generate -->
@@ -155,8 +174,8 @@
       <div class='row'>
         <div class="col-sm">
           <p id="author-paragraph" class="paragraph">
-            By Jabari Dash. Code found on <a class="link" href="https://github.com/N02870941/mazes" target="_blank">GitHub.</a>
-            The documenation is available on <a class="link" href="https://n02870941.github.io/mazes/" target="_blank">GitHub Pages.</a>
+            By Jabari Dash. Code on <a class="link" href="https://github.com/N02870941/mazes" target="_blank">GitHub.</a>
+            Documented on <a class="link" href="https://n02870941.github.io/mazes/" target="_blank">GitHub Pages.</a>
           </p>
         </div>
       </div>
