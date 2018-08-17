@@ -154,6 +154,29 @@ const RIGHT  = 1;
 const BOTTOM = 2;
 const LEFT   = 3;
 
+// Bitmasks for setting
+// and unsetting boolean flags
+// for cell walls
+const masks = {
+
+  set : {
+
+    TOP    : 0b1000,
+    RIGHT  : 0b0100,
+    BOTTOM : 0b0010,
+    LEFT   : 0b0001
+  },
+
+  unset : {
+
+    TOP    : 0b0111,
+    RIGHT  : 0b1011,
+    BOTTOM : 0b1101,
+    LEFT   : 0b1110
+  }
+
+};
+
 // UI element
 // associative arrays
 const buttons    = [];
@@ -178,6 +201,8 @@ const parents = new Map();
 let cols;
 let rows;
 let current;
+let source;
+let target;
 
 // Canvas, images
 let canvas;

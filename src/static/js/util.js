@@ -9,6 +9,27 @@ async function sleep(ms) {
 
 //------------------------------------------------------------------------------
 
+function minimum(array) {
+
+  let min = 0;
+
+  let i = 0;
+
+  while (i < array.length) {
+
+    if (array[i] < array[min]) {
+
+      min = i;
+    }
+
+    i++;
+  }
+
+  return min;
+}
+
+//------------------------------------------------------------------------------
+
 /**
  * Displays an alert dialog
  * with a specified message.

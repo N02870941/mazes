@@ -219,16 +219,17 @@ function actions() {
  */
 function init() {
 
-  const width = sliders[keys.CANVAS].data(keys.SLIDER).getValue()
+  const width = sliders[keys.CANVAS].data(keys.SLIDER).getValue();
   const w     = sliders[keys.PATH].data(keys.SLIDER).getValue();
 
   buttons[keys.GENERATE].prop(attributes.DISABLED, false);
   buttons[keys.SOLVE].prop(attributes.DISABLED, true);
   buttons[keys.EXPORT].prop(attributes.DISABLED, true);
 
+  // TODO - Allow non-square mazes?
+
   // Create p5 canvas object
   canvas = createCanvas(
-
     width,
     width
   );
@@ -261,8 +262,14 @@ function init() {
     }
   }
 
-  // Start at first cell
-  current = grid[0];
+  // TODO - Allow user to click on the cell
+  source = grid[0];
+  target = grid[grid.length - 1];
+
+  // target = grid[floor(random(0, grid.length))];
+
+  // Start at source
+  current = source;
 
   // Show each grid cell in white
   grid.forEach(c => c.clear());
@@ -293,19 +300,13 @@ function draw() {
   // Are we solving?
   } else if (solver(action)) {
 
-    // Done
-    if (action()) {
+    // If done, switch to animate action
+    action = !action() ? action : callback;
 
-      action = callback
-    }
+  // Are we highlighting? Keep going, until done.
+  } else if (visualizer(action) && action()) {
 
-  // Are we highlighting?
-  } else if (visualizer(action)) {
-
-    if (action()) {
-
-      complete();
-    }
+    complete();
   }
 
 }

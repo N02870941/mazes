@@ -28,7 +28,7 @@ function generate() {
 
       execute(action, callback);
 
-    // Start animating  
+    // Start animating
     } else {
 
       loop();
@@ -52,18 +52,6 @@ function postGenerate() {
   // Trigger generated event
   prepared();
 
-  // Get the start and end cells
-  const first = grid[0];
-  const last  = grid[grid.length - 1];
-
-  // Remove the left and right
-  // walls respectively
-  first.walls[3] = false
-  last.walls[1]  = false;
-
-  // Re-paint to screen
-  first.clear();
-  last.clear();
 }
 
 //-----------------------------------------------------------------------------

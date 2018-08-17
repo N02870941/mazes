@@ -14,7 +14,7 @@ function solve() {
     action   = algorithm;
     callback = highlight;
 
-    // Reset
+    // Reset the grid
     grid.forEach(c => {
 
       c.visited = false;
@@ -58,10 +58,15 @@ function solve() {
 //------------------------------------------------------------------------------
 
 /**
- *
+ * Searches the maze for the target
+ * vertex. This function takes a discover()
+ * function that takes a Cell object.
+ * discover() returns another Cell that will
+ * be the next cell pushed on to the stack.
  */
-function search(discover) {
+function search(discover, dequeue) {
 
+  // Mark current node as visited
   current.visited = true;
 
   // Do not leave visited
@@ -71,12 +76,9 @@ function search(discover) {
     current.clear();
   }
 
-  // TODO - Supply target as parameter?
-  let last = new Cell(rows - 1, cols - 1);
-
   // We have found the target vertex
   // So, no need to do any more work
-  if (current.i === last.i && current.j === last.j) {
+  if (Cell.equals(current, target)) {
 
     return true;
   }
@@ -85,6 +87,7 @@ function search(discover) {
   // the specified getter function
   let next = discover(current);
 
+  // Did anything come back?
   if (next) {
 
     // Mark as visited
@@ -102,8 +105,8 @@ function search(discover) {
     stack.push(current);
 
     // Show on-screen where we are
-    current.highlight()
-    next.highlight()
+    current.gradient();
+    next.gradient();
 
     // Move current pointer
     // to next vertex
@@ -115,7 +118,7 @@ function search(discover) {
     current = stack.pop();
   }
 
-  // If true, search complete
+  // If the stack is empty and no one else to visit, the search is done
   return stack.length === 0 && current.unvisited().length === 0;
 }
 
@@ -138,6 +141,9 @@ function aStar() {
 
 //------------------------------------------------------------------------------
 
+/**
+ *
+ */
 function dijkstra() {
 
   return search(minNeighbor)
@@ -170,29 +176,27 @@ function DFS() {
  */
 function next(cell, heuristic, selector) {
 
-  // TODO - Accept heuristic as parameter?
-
   let neighbors  = [];
   let distances  = [];
   let potentials = cell.potentials();
-  let p;
-
-  // TODO - As arg?
-  let last = new Cell(rows - 1, cols - 1);
   let cost;
 
-  for (let i = 0; i < potentials.length; i++) {
+  let add = (x, mask) => {
 
-    p = potentials[i];
+    if (x && !cell.wall(mask) && !x.visited) {
 
-    if (p && !cell.walls[i] && !p.visited) {
+      cost = heuristic ? heuristic(x, target) : 0;
 
-      cost = heuristic ? heuristic(p, last) : 0;
-
-      neighbors.push(p);
+      neighbors.push(x);
       distances.push(cost);
     }
-  }
+
+  };
+
+  add(potentials[TOP],    masks.set.TOP);
+  add(potentials[RIGHT],  masks.set.RIGHT);
+  add(potentials[BOTTOM], masks.set.BOTTOM);
+  add(potentials[LEFT],   masks.set.LEFT);
 
   return selector(neighbors, distances);
 }
@@ -206,21 +210,11 @@ function next(cell, heuristic, selector) {
  */
 function minNeighbor(cell) {
 
-  return next(cell, Cell.manhattan, (neighbors, distances) => {
-
-    let min = 0;
-
-    for (let i = 0; i < distances.length; i++)  {
-
-      if (distances[i] < distances[min]) {
-
-        min = i;
-      }
-    }
-
-    return neighbors[min];
-
-  })
+  return next(
+    cell,
+    Cell.manhattan,
+    (neighbors, distances) => neighbors[minimum(distances)]
+  );
 }
 
 //------------------------------------------------------------------------------
@@ -231,15 +225,11 @@ function minNeighbor(cell) {
  */
 function unvisitedNeighbor(cell) {
 
-  let heuristic = Cell.euclidian;
-
-  return next(cell, null, (n, distances) => {
-
-    let r = floor(random(0, n.length));
-
-    return n[r];
-
-  })
+  return next(
+    cell,
+    null,
+    (n, distances) => n[floor(random(0, n.length))]
+  );
 }
 
 //------------------------------------------------------------------------------
