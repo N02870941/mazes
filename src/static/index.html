@@ -30,7 +30,7 @@
           <h1 id="title">Mazes</h1>
         </div>
       </div>
-      
+
     </div>
 
     <!-- Main canvas parent div -->
@@ -122,6 +122,7 @@
           <!-- Dropdown -->
           <select id='dropdown-solver' class="form-control form-control-sm">
             <option value='aStar'>A* search</option>
+            <option value='dijkstra'>Dijkstra's Algorithm</option>
             <option value='DFS'>Depth-first search (DFS)</option>
           </select>
         </div>
@@ -197,6 +198,8 @@
     <script type="text/javascript" src="scripts/p5/lib/addons/p5.dom.min.js"></script>
 
     <!-- Custom JS -->
+    <script type="text/javascript" src="js/set.js"></script>
+    <script type="text/javascript" src="js/heap.js"></script>
     <script type="text/javascript" src="js/variable.js"></script>
     <script type="text/javascript" src="js/util.js"></script>
     <script type="text/javascript" src="js/cell.js"></script>

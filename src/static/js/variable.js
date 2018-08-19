@@ -196,6 +196,8 @@ const visualizers = [];
 const grid    = [];
 const stack   = [];
 const parents = new Map();
+const heap    = new Heap();
+let queue;
 
 // Dimensions of grid
 let cols;

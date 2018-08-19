@@ -14,6 +14,14 @@ class Cell {
     this.i = i;
     this.j = j;
 
+    // Cost to get to this cell
+    // from the start in the search.
+    // By default, it is infinite,
+    // indicating that there is currently
+    // no path to this cell. Upon generating
+    // The maze, this value will be updated.
+    this.cost = Infinity;
+
     // Unique key
     this.key = `${this.i}-${this.j}`;
 
@@ -157,6 +165,34 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  top() {
+
+    return this.wall(masks.set.TOP);
+  }
+
+//------------------------------------------------------------------------------
+
+  right() {
+
+    return this.wall(masks.set.RIGHT);
+  }
+
+//------------------------------------------------------------------------------
+
+  bottom() {
+
+    return this.wall(masks.set.BOTTOM);
+  }
+
+//------------------------------------------------------------------------------
+
+  left() {
+
+    return this.wall(masks.set.LEFT);
+  }
+
+//------------------------------------------------------------------------------
+
   /**
    * Draws the lines that represent the walls of this cell.
    */
@@ -165,16 +201,16 @@ class Cell {
     stroke(BLACK);
     strokeWeight(LINE_WIDTH);
 
-    if (this.wall(masks.set.TOP))
+    if (this.top())
       line(x, y , x + w, y);
 
-    if (this.wall(masks.set.RIGHT))
+    if (this.right())
       line(x + w, y  , x + w, y + w);
 
-    if (this.wall(masks.set.BOTTOM))
+    if (this.bottom())
       line(x + w, y + w, x , y + w);
 
-    if (this.wall(masks.set.LEFT))
+    if (this.left())
       line(x , y + w, x , y);
   }
 
@@ -379,6 +415,8 @@ class Cell {
 
   }
 
+//------------------------------------------------------------------------------
+
   /**
    * Return hex color from scalar
    * value between 0 and 1.
@@ -437,6 +475,7 @@ class Cell {
    */
   static equals(u, v) {
 
-    return u.i === v.i && u.j === v.j;
+    return u.i === v.i &&
+           u.j === v.j;
   }
 }

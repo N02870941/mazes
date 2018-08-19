@@ -5,6 +5,22 @@ function solve() {
 
   let algorithm = solving();
 
+  switch (algorithm) {
+
+    case dijkstra:
+    case aStar:
+
+      queue = heap;
+      queue.clear();
+      break;
+
+    case DFS:
+
+    default:
+      queue = stack;
+      break;
+  }
+
   // Maze fully generated?
   if (generated) {
 
@@ -18,12 +34,19 @@ function solve() {
     grid.forEach(c => {
 
       c.visited = false;
+      c.cost    = Infinity;
 
       c.clear();
     });
 
     // Start at first cell
-    current = grid[0];
+    current = source;
+
+    // Set the cost to 0
+    current.cost = 0;
+
+    // Clear the parents map
+    parents.clear();
 
     // Indicates beginning of path
     parents.set(current.key, null);
@@ -64,7 +87,7 @@ function solve() {
  * discover() returns another Cell that will
  * be the next cell pushed on to the stack.
  */
-function search(discover, dequeue) {
+function search(discover, dequeue, update) {
 
   // Mark current node as visited
   current.visited = true;
@@ -93,16 +116,17 @@ function search(discover, dequeue) {
     // Mark as visited
     next.visited = true;
 
-    // Is the next vertex alreadty in the path?
-    // If not, add it to map for later backtracking
-    if (!parents.has(next.key)) {
+    // Is next in path? have
+    // we found a better route? etc.
+    // Calling function must Implement.
+    if (update(current, next)) {
 
       parents.set(next.key, current);
     }
 
-    // Push on to stack
+    // Push on to queue
     // for backtracking
-    stack.push(current);
+    queue.push(current);
 
     // Show on-screen where we are
     current.gradient();
@@ -113,54 +137,63 @@ function search(discover, dequeue) {
     current = next;
 
   // Hit a dead end, begin backtracking
-  } else if (stack.length > 0) {
+  } else if (queue.length > 0) {
 
-    current = stack.pop();
+    current = dequeue(queue);
   }
 
-  // If the stack is empty and no one else to visit, the search is done
-  return stack.length === 0 && current.unvisited().length === 0;
+  // If the queue is empty and no one else to visit, the search is done
+  return queue.length === 0 &&
+         current.unvisited().length === 0
 }
 
 //------------------------------------------------------------------------------
 
 /**
- * Performs search using the minNeighbor()
- * function for specifying graph traversal
- * order. The minNeighbor function always visits
- * the vertex with the lowest estimated heuristic cost
- * first.
+ * Searches the maze using the A*
+ * path finding algorithm. We Use
+ * the closest() function as our
+ * adjacent vertex discovery function
+ * which used a heuristic (manhattan or euclidian)
+ * distance
  */
 function aStar() {
 
   // TODO - http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
   // TODO - http://theory.stanford.edu/~amitp/GameProgramming/index.html
 
-  return search(minNeighbor)
+  return search(
+    closest,
+    (s) => s.pop(),
+    cheaper
+  );
 }
 
 //------------------------------------------------------------------------------
 
 /**
- *
+ * Finds the shortest path from the source
+ * vertex to the target. For perfect mazes
+ * Dijkstra performs exactly the same as
  */
 function dijkstra() {
 
-  return search(minNeighbor)
+  return search(
+    rand,
+    (s) => s.pop(),
+    cheaper
+  );
 }
 
 //------------------------------------------------------------------------------
 
-/**
- * Performs search using the unvisitedNeighbor()
- * function for specifying graph traversal
- * order. The unvisitedNeighbor function randomly
- * selects an adjacent vertex, resulting in a randomized
- * depth first search.
- */
 function DFS() {
 
-  return search(unvisitedNeighbor)
+  return search(
+    rand,
+    (s) => s.pop(),
+    undiscovered
+  );
 }
 
 //------------------------------------------------------------------------------
@@ -206,9 +239,9 @@ function next(cell, heuristic, selector) {
 /**
  * Selects unvisited adjacent
  * vertices based on minimum
- * distance for A* algorithm
+ * heuristic for A* algorithm.
  */
-function minNeighbor(cell) {
+function closest(cell) {
 
   return next(
     cell,
@@ -221,15 +254,70 @@ function minNeighbor(cell) {
 
 /**
  * Returns a randomly selected
- * unvisited adjacent vertex.
+ * unvisited adjacent vertex with
+ * no heuristic.
  */
-function unvisitedNeighbor(cell) {
+function rand(cell) {
 
   return next(
     cell,
     null,
     (n, distances) => n[floor(random(0, n.length))]
   );
+}
+
+//------------------------------------------------------------------------------
+
+/**
+ * Auxiliary function that returns a
+ * boolean value that tells the search
+ * function to save a record in the parents
+ * map that associates src as a the source
+ * node to dst in the solution path.
+ */
+function cheaper(src, dst) {
+
+  // Compute cost to get to next vertex.
+  // This is always one plus the cost of
+  // the vertex from which we are coming
+  // because they are adjacent.
+  let cost = src.cost + 1;
+
+  // A better path already exists
+  // then do not update.
+  if (cost >= dst.cost) {
+
+    return false;
+  }
+
+  // If we are here, this means, we have
+  // either already seen this vertex, but
+  // we have found a better path. Or this
+  // is the firt time seeing it, and it's
+  // cost is infinite, so anything is less
+  // than that. Note, for a perfect / simple
+  // maze, this code is only executed once,
+  // upon first discovery.
+  dst.cost = cost;
+
+  return true;
+}
+
+//------------------------------------------------------------------------------
+
+/**
+ * Auxiliary function that tells the search
+ * function to only store src as a source vertex
+ * to dst if the destination vertex has not
+ * previously been visited. This may result in
+ * suboptimals solution paths if there exist multiple
+ * paths from the start to target vertex. For perfect / simlpe
+ * mazes this will still result in the optimal solution
+ * because there is only one.
+ */
+function undiscovered(src, dst) {
+
+  return !parents.has(dst.key);
 }
 
 //------------------------------------------------------------------------------
@@ -246,6 +334,7 @@ function highlight() {
   // Highlight current vertex
   current.shade();
 
+  // Get previous vertex
   current = parents.get(current.key);
 
   // If one came back

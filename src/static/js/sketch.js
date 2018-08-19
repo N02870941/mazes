@@ -41,7 +41,7 @@ function parameters() {
     sliders[keys.PATH].slider(SET_ATTRIBUTE, attributes.MAX, hi)
     sliders[keys.PATH].slider(SET_ATTRIBUTE, Math.floor(lo + hi) / 2);
     sliders[keys.PATH].slider(events.REFRESH);
-  }
+  };
 
   // The sliders
   sliders[keys.CANVAS] = $(elements.slider.CANVAS).slider();
@@ -128,8 +128,9 @@ function actions() {
   generators[algorithms.generator.HYBRID] = hybrid;
 
   // Solver algorithms
-  solvers[algorithms.solver.DFS]    = DFS;
-  solvers[algorithms.solver.A_STAR] = aStar;
+  solvers[algorithms.solver.DFS]      = DFS;
+  solvers[algorithms.solver.A_STAR]   = aStar;
+  solvers[algorithms.solver.DIJKSTRA] = dijkstra;
 
   // Visualizer algorithms
   visualizers[algorithms.visualizer.HIGHLIGHT] = highlight;
@@ -265,8 +266,6 @@ function init() {
   // TODO - Allow user to click on the cell
   source = grid[0];
   target = grid[grid.length - 1];
-
-  // target = grid[floor(random(0, grid.length))];
 
   // Start at source
   current = source;
