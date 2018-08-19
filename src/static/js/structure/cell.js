@@ -14,6 +14,8 @@ class Cell {
     this.i = i;
     this.j = j;
 
+    this.heuristic = 1;
+
     // Cost to get to this cell
     // from the start in the search.
     // By default, it is infinite,
@@ -132,6 +134,36 @@ class Cell {
 
     return this.potentials()
                .filter( (c) => c && !c.visited);
+  }
+
+//------------------------------------------------------------------------------
+
+  x() {
+
+    let n = this.potentials();
+    let t = [];
+
+    if (n[TOP] && !this.top()) {
+
+      t.push(n[TOP])
+    }
+
+    if (n[RIGHT] && !this.right()) {
+
+      t.push(n[RIGHT])
+    }
+
+    if (n[BOTTOM] && !this.bottom()) {
+
+      t.push(n[BOTTOM])
+    }
+
+    if (n[LEFT] && !this.left()) {
+
+      t.push(n[LEFT])
+    }
+
+    return t;
   }
 
 //------------------------------------------------------------------------------
@@ -477,5 +509,23 @@ class Cell {
 
     return u.i === v.i &&
            u.j === v.j;
+  }
+
+//------------------------------------------------------------------------------
+
+  /**
+   * Returns random unvisited
+   * adjacent vertex.
+   */
+  static randomNeighbor(cell) {
+
+    // Get unvisited neighbors
+    let neighbors = cell.unvisited();
+
+    // Random index
+    let r = floor(random(0, neighbors.length));
+
+    // Return random neighbor
+    return neighbors[r];
   }
 }

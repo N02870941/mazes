@@ -195,7 +195,7 @@ pushed on to the stack before any popping (visiting) occurs.
 
 A modified depth-first search can be used, stopping once we come across the
 target vertex, then back tracking to discover the path from source to destination. This is a brute force method that would take a lot longer
-and may not always result in the optimal solution if there were more than one path from beginning to end. 
+that more strategic methods and may not always result in the optimal solution if there is more than one path from beginning to end. 
 
 Pseudo code follows:
 
@@ -211,7 +211,7 @@ dfs(src, dst) {
 	parents[src.key] = null
 	
 	// Start with source
-	visited.push(src);
+	unvisited.push(src);
 	
 	// Process each vertex
 	while (unvisited.length > 0) {
@@ -281,9 +281,9 @@ push all `|V|` vertices before popping. This is the case where we visit **all** 
 # Solving with Dijkstra's algorithm
 
 We can (theoretically) improve the above DFS by running a variant of Dijkstra's algorithm, which is a generic shortest path algorithm for arbitrary weighted graphs. Instead of blindly visiting each unvisited adjacent vertex until we have found our target, we will give them a priority. We will visit adjacent verticies that have **lower** cost first. This is a greedy approach that takes steps that may be optimal for
-**intermediate** solutions, but not optimal for the **overall** solution. So we run the risk of diverging off on to many sub-optimal paths.
+**intermediate** solutions, but not optimal for the **overall** solution. So we run the risk of diverging off on to many sub-optimal paths if the maze has a high branching factor.
 
-In fact, since each adjacent vertex has the same cost to visit, if the graph only has **one solution**, Dijkstra will behave exactly like DFS. The only way we get a speed boost is if there are **multiple ways** to get to the same vertex because that way we could actually **compare** and update costs if a **better** route is found. With this in mind, it makes it clear that the added benefit of Dijkstra's algorithm is null and void unless the maze has multiple solutions. 
+In fact, since each adjacent vertex has the same cost to visit, if the graph only has **one solution**, Dijkstra will behave exactly like a greedy BFS. The only way we get a speed boost is if there are **multiple ways** to get to the same vertex because that way we could actually **compare** and update costs if a **better** route is found. With this in mind, it makes it clear that the added benefit of Dijkstra's algorithm is null and void unless the maze has multiple solutions. 
 
 Pseudo code follows:
 
@@ -292,7 +292,7 @@ dijkstra(src, dst) {
 
     const infinity = Number.POSITIVE_INFINITY
 
-	var unvisited = []	// Stack
+	var unvisited = []	// Heap
 	var neighbors = []	// Set
 	var parents   = []	// Map
 	var costs     = []  // Map 
@@ -306,13 +306,13 @@ dijkstra(src, dst) {
 	costs[src.key] = 0
 	
 	// Start with source
-	visited.push(src);
+	unvisited.push(src);
 	
 	// Process each vertex
 	while (unvisited.length > 0) {
 	
-		// Get next vertex
-		current = unvisited.pop()
+		// Get next vertex with min cost
+		current = unvisited.min()
 		
 		// We found the target
 		if (current == dst) {
@@ -332,13 +332,7 @@ dijkstra(src, dst) {
 			// Compute cost to go over one vertex
 			cost = costs[current.key] + 1
 			
-			// Push all unvisited neighbors to stack.
-			// Note, since the cost to get to any 
-			// adjacent vertex is always 1 + the cost
-			// of our current position, sorting has no
-			// effect. Any vertex is equally optimal.
-			// This is the shortcoming of Dijkstra.
-			// We may go down sub-optimal paths.
+
 			neighbors.forEach( neighbor => {
 			
 				 // Do not revisit
@@ -348,13 +342,9 @@ dijkstra(src, dst) {
 			    }
 			    
 			    // Add to priority queue to continue graph traversal
-			    unvisited.push(neighbor)
+			    unvisited.add(neighbor)
 			
-				// Does this beat the previous cost to get there?
-				// If no path exists, then the distance is infinite
-				// and this will evaluate to true, and make a new entry.
-				// This happens on first discovery of a vertex,
-				// otherwise only if a better path is found
+				// Have we found a shorter path to this vertex?
 				if (cost < costs[neighbor.key] || infinity) {
 				
 					// Save new lowest cost
@@ -368,30 +358,15 @@ dijkstra(src, dst) {
 		}
 	}
 	
-	// Start at destination	
-	current = dst
-	
-	// Backtrack highlighting the path
-	while (current) {
-	
-		current.highlight()
-		
-		current = parents[current.key]
-	}
+	// Backtrack using parent map to display path
 
 }
 ```
 
 ## Time complexity of Dijkstra
 
-For an arbitrary graph, Dijkstra's algorithm runs in `O(|V|²)` time (assuming an adjacency matrix is used). This is because we visit each vertex once - `O(|V|)`, and each potential edge for each vertex, which is `|V|` edges per vertex - `|V| * |V| = |V|²` . We improve this by
-storing each vertex's adjacency list in a min-priority queue (Fibonacci Heap). This improves the runtime to `O(|E| + |V| * log |V|)`. 
-
-However, as previously noted, for this problem, `|E| = 4 * |V|`. So, if we were to use a fibonacci heap for **this particular problem**, our runtime would be `O(|V| + |V| * log |V|)` or simply `O(|V| * log |V|)`. The `|V| * log |V|` portion comes from. The `extractMin()` operation which runs in `log |V|` times is called `|V|` times. 
-
-Fortunately, we do not even need to sort our edges in a heap because there is **always exactly 4 potential adjacent vertices per vertex with equal cost** no matter how many vertices we have in the entire graph. For an adjacency list of exactly 4 everytime, `extractMin()` is run in `O(1)` time. That being said, we make `|V|` calls to an `O(1)` operation.
-
-**The runtime of DFS is** `O(|V|) = O(n²)`.
+For this particular problem, we have chosen to implement Dijkstra's
+algorithm with a min priority binary heap. We must loop through `|V|` vertices.
 
 ## Space complexity of Dijkstra
 

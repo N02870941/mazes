@@ -15,7 +15,7 @@ const MAX_FRAME_RATE = 60;
 
 // Canvas parameters
 const MIN_CANVAS_WIDTH     = 100;
-const MAX_CANVAS_WIDTH     = 2000;
+const MAX_CANVAS_WIDTH     = 3000;
 const DEFAULT_CANVAS_WIDTH = 300;
 
 // Grid parameters

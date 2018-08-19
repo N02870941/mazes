@@ -124,6 +124,7 @@
             <option value='aStar'>A* search</option>
             <option value='dijkstra'>Dijkstra's Algorithm</option>
             <option value='DFS'>Depth-first search (DFS)</option>
+            <option value='BFS'>Breadth-first search (BFS)</option>
           </select>
         </div>
 
@@ -198,13 +199,34 @@
     <script type="text/javascript" src="scripts/p5/lib/addons/p5.dom.min.js"></script>
 
     <!-- Custom JS -->
-    <script type="text/javascript" src="js/set.js"></script>
-    <script type="text/javascript" src="js/heap.js"></script>
-    <script type="text/javascript" src="js/variable.js"></script>
-    <script type="text/javascript" src="js/util.js"></script>
-    <script type="text/javascript" src="js/cell.js"></script>
-    <script type="text/javascript" src="js/generate.js"></script>
-    <script type="text/javascript" src="js/solve.js"></script>
+
+    <!-- Custom data types -->
+    <script type="text/javascript" src="js/structure/set.js"></script>
+    <script type="text/javascript" src="js/structure/stack.js"></script>
+    <script type="text/javascript" src="js/structure/queue.js"></script>
+    <script type="text/javascript" src="js/structure/heap.js"></script>
+    <script type="text/javascript" src="js/structure/cell.js"></script>
+
+    <!-- Common functions and variables -->
+    <script type="text/javascript" src="js/commons/variable.js"></script>
+    <script type="text/javascript" src="js/commons/util.js"></script>
+
+    <!-- Solvers -->
+    <script type="text/javascript" src="js/solve/highlight.js"></script>
+    <script type="text/javascript" src="js/solve/astar.js"></script>
+    <script type="text/javascript" src="js/solve/dijkstra.js"></script>
+    <script type="text/javascript" src="js/solve/dfs.js"></script>
+    <script type="text/javascript" src="js/solve/bfs.js"></script>
+    <script type="text/javascript" src="js/solve/solve.js"></script>
+
+    <!-- Generators -->
+    <script type="text/javascript" src="js/generate/bfs.js"></script>
+    <script type="text/javascript" src="js/generate/dfs.js"></script>
+    <script type="text/javascript" src="js/generate/hybrid.js"></script>
+    <script type="text/javascript" src="js/generate/backtrack.js"></script>
+    <script type="text/javascript" src="js/generate/generate.js"></script>
+
+    <!-- Main sketch / event loop -->
     <script type="text/javascript" src="js/sketch.js"></script>
 
   </body>

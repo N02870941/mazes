@@ -129,6 +129,7 @@ function actions() {
 
   // Solver algorithms
   solvers[algorithms.solver.DFS]      = DFS;
+  solvers[algorithms.solver.BFS]      = BFS;
   solvers[algorithms.solver.A_STAR]   = aStar;
   solvers[algorithms.solver.DIJKSTRA] = dijkstra;
 
