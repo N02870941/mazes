@@ -6,12 +6,12 @@ A simple maze generator and solver available in the form of a [web app][site].
 # Intuition
 Maze generating and solving can be described in terms of graph theory. For the
 purpose of clarity, we will use the words maze and graph interchangeably. If you
-are not familiar with graph theory, here is a **brief** explanation of the information
+are not familiar with graph theory, here is an explanation of the information
 relevant to understand this problem.
 
 A graph `G` is a pair denoted as `G = {V, E}` where `V` is a set of vertices and
 `E` is a set of edges where each edge connects some vertex `u` to some vertex `v` from set vertex set `V`. A vertex is an abstract
-*node* in a network. An edge is a *branch* that links them together. Graphs
+**node** in a network. An edge is a **branch** that links them together. Graphs
 come in various ways:
 
 1. Weighted
@@ -183,9 +183,9 @@ In regards to edge weight, there is no need to actually store that information. 
 
 For a given walk of the graph, the cost of a vertex `v_i` is always the cost of vertex `v_(i-1) + 1`, where `v_(i+1)` is the vertex just before vertex `v` in the walk. So, when we traverse the graph, we just keep incrementing as we go instead of wasting space on information we can confidently predict and compute when it is needed. We see for vertices that we not discovered or visited, by default their cost is infinite - this will come in handy when finding the shortest path.
 
-# Generating with Randomized Depth-first search
+# Generating with Randomized Depth/Breadth-first search
 
-The [Randomized Depth-first search][wiki] follows:
+The [Randomized Depth/Breadth-first search][wiki] follows:
 
 1. Make the initial cell the current cell and mark it as visited
 2. While there are unvisited cells
@@ -199,11 +199,83 @@ The [Randomized Depth-first search][wiki] follows:
         1. Pop a cell from the stack
         2. Make it the current cell
 
+Pseudo code follows:
+
+```
+backtrack(src) {
+
+	var unvisited = []	// Stack or Queue
+	var neighbors = []  // Array
+	var curr
+	var next
+	var i
+	
+	// Make the initial cell the current cell
+	curr = src
+
+	do {
+	
+		// Mark current as visited
+		curr.visited = true
+		
+		// Get neighbors
+		neighbors = curr.neighbors()
+		
+		// If at least one came back
+		if (neighbors.length > 0) {
+		
+			// Pick random index
+			i = random(0, neighbors.length)
+		
+			// Pick random neighbor	
+			next = neighbors[i]
+			
+			// Push to stack
+			unvisited.push(next)
+			
+			// Remove wall (create edge)
+			removeWall(curr, next)
+			
+			// Point current to next
+			curr = next
+			
+		// No neighbors, start backtracking
+		} else {
+		
+			curr = unvisited.pop()
+		}
+	
+	} while (unvisited.length > 0)
+
+}
+```
+
 In essence, this algorithm starts at a vertex `u`, randomly visits an adjacent
 vertex `v` that has not been visited yet - destroying barriers (walls of pixels) between
 the current and previous vertex to create an edge, and repeats this until all vertices are visited and we have a spanning tree.
 
-## Time complexity with DFS
+<p align="center">
+  <img src="img/png/maze-dfs.png"><br>
+  <i>A maze generated with DFS and solved with A*.</i>
+</p>
+
+The above algorithm can be written as DFS, BFS, or even a hybrid. if implemented with DSF, the resulting maze will have a longer solution path, but relatively "easy" to solve by a computer using graph algorithms because there is a lower brancing factor. This means dead ends are relatively short, and there are less paths that are seemingly reasonable. Instead, the solution may take many twists and turns around the entire maze to get to the target. We see there are less highlighted squares, meaning the path finding algorithm did not visit too many nodes that did not contribute to the final solution.
+
+<p align="center">
+  <img src="img/png/maze-bfs.png"><br>
+  <i>A maze generated with BFS and solved with A*.</i>
+</p>
+
+Generating the maze with BFS will result in a maze with much higher branching factor, meaning the depth of the tree will be lower. This means we will get a shorter path, so the maze is more solvable for humans. However, for graph algorithms, they will generally take longer to solve because there are many more "promising" paths that branch off to dead ends. Notice that the path finding algorithm visited nearly all nodes to find the optimal solution, even though by "looking" at it, the solution appears obvious.
+
+<p align="center">
+  <img src="img/png/maze-bfs-dfs.png"><br>
+  <i>A maze generated with BFS / DFS hybrid and solved with A*.</i>
+</p>
+
+Finally, we can implement a hybrid where sometimes we push, and sometimes we pop. This will result in a maze that is less difficult than DFS, so still solvable by a human, but less predictable than BFS so it remains interesting. Altering between pushing and popping with 50:50 probability works well. Here we see, the path finding algorithm needed to visit a decent amount of nodes before finding the solution and the solution still seems "doable" by a human.
+
+## Time complexity with DFS / BFS + backtracking
 As noted, we are using depth-first search to generate the graph. To *traverse* a graph
 we visit each node once, which is `O(|V|)`. But, we also must check all adjacent vertices per vertex.
 This we can do in `O(1)` time because edges are simply stored as boolean values per grid cell.
@@ -212,7 +284,7 @@ which is still `O(1)`. So, we are doing `|V|` loop iterations, each of which doe
 
 **Generating the maze is done in** `O(|V|)` **or** `O(n²)` **time.**
 
-## Space complexity with DFS
+## Space complexity with DFS / BFS + backtracking
 The only auxiliary space we use is the stack
 structure for queuing vertices for processing. In the worst case, the depth-first search
 traverses the entire graph without repetition / backtracking. This would mean all `|V|` vertices are
@@ -296,7 +368,7 @@ dfs(src, dst) {
 
 ## Time complexity of DFS
 
-Depth-first search visits all `|V|` vertices in the outer loop. Each loop iteration visits at most all of that vertex's edges, which for a grid is always 4.
+Depth-first search visits all `|V|` vertices in the outer loop. Each loop iteration visits at most all of that vertex's edges, which for a grid is always 4. Discovering adjacent vertices is done in `O(1)` time. The `push()` and `pop()` operation on the stack are also done in constant time. So, `O(|V| * 1)` results in linear time with respect to vertices.
 
 **The runtime of DFS is** `O(|V|)`.
 
@@ -305,11 +377,11 @@ Depth-first search visits all `|V|` vertices in the outer loop. Each loop iterat
 This depth-first search uses a stack of unvisitd vertices. In the worst case, we
 push all `|V|` vertices before popping. This is the case where we visit **all** vertices in a single walk before hitting a dead end. The map used for backtracking in the worst case will hold references to all `|V|` vertices in the path from source to destination - also using at most `O(|V|)` space.
 
-**The space complexity is** `O(|V|)`.
+**The space complexity of DFS is** `O(|V|)`.
 
 # Solving with Breadth-first search (BFS)
 
-Breadth-first search is another general purpose graph traversal algorithm. The intuition behind BFS can be looked at as roughly the "opposite" of that of DFS. In DFS we try to go as deep as possible until we hit a dead end. With BFS, we try to go as wide as possible until we hit a dead end, or find our target. For acyclic graphs (trees) it is the equivalent of a level-order traversal. It also turns out that the only different between implementing BFS and DFS is the data structure used to process vertices. For DFS we used a stack (FILO) structure. For BFS we will use a standard queue (FIFO) structure. The code is otherwise, roughly the same.
+Breadth-first search is another general purpose graph traversal algorithm. The intuition behind BFS can be looked at as roughly the "opposite" of that of DFS. In DFS we try to go as deep as possible until we hit a dead end. With BFS, we try to go as wide as possible until we hit a dead end, or find our target. For acyclic graphs (trees) it is the equivalent of a level-order traversal. It also turns out that the only difference between implementing BFS and DFS is the data structure used to process vertices. For DFS we used a stack (FILO) structure. For BFS we will use a standard queue (FIFO) structure. The code is otherwise, roughly the same.
 
 Pseudo code follows:
 
@@ -358,7 +430,7 @@ dfs(src, dst) {
 					parents[neighbor.key] = current.key
 				
 					// Add to start for processing
-					unvisited.push(neighbor)
+					unvisited.enqueue(neighbor)
 				}
 			
 			})
@@ -381,14 +453,24 @@ dfs(src, dst) {
 
 ## Time complexity of BFS
 
+Breadth-first search's outer loop visits all `|V|` vertices. Within each loop iteration, we perform one `dequeue()` and at most 4 `enqueue()` operations - constant time. Discovering adjacent vertices is also done in constant time. In total, we have `|V| * O(1)` which is `O(|V|)`.
+
+**The runtime of BFS is** `O(|V|)`.
+
 ## Space complexity of BFS
+
+To process vertices, BFS uses a queue. In the worst case, the queue is storing all the vertices - `O(|V|)`. We also use a map to store references to vertices to reconstruct the path. In the worst case, the map holds references to all vertices - `O(|V|)`.
+
+**The space complexity of BFS is** `O(|V|)`.
 
 # Solving with Dijkstra's algorithm
 
-We can (theoretically) improve the above DFS by running a variant of Dijkstra's algorithm, which is a generic shortest path algorithm for arbitrary weighted graphs. Instead of blindly visiting each unvisited adjacent vertex until we have found our target, we will give them a priority. We will visit adjacent verticies that have **lower** cost first. This is a greedy approach that takes steps that may be optimal for
+We can (theoretically) improve the above BFS by running Dijkstra's algorithm, which is a generic shortest path algorithm for arbitrary weighted graphs. Instead of blindly visiting each unvisited adjacent vertex until we have found our target, we will give them a priority. We will visit adjacent verticies that have **lower** associated cost first. This is a greedy approach that takes steps that may be optimal for
 **intermediate** solutions, but not optimal for the **overall** solution. So we run the risk of diverging off on to many sub-optimal paths if the maze has a high branching factor.
 
-In fact, since each adjacent vertex has the same cost to visit, if the graph only has **one solution**, Dijkstra will behave exactly like a greedy BFS. The only way we get a speed boost is if there are **multiple ways** to get to the same vertex because that way we could actually **compare** and update costs if a **better** route is found. With this in mind, it makes it clear that the added benefit of Dijkstra's algorithm is null and void unless the maze has multiple solutions. 
+In fact, since each adjacent vertex has the same cost to visit, if the graph only has **one solution**, Dijkstra will behave exactly like a greedy BFS.
+
+The only way we get value out of Dijkstra's algorithm is if there are **multiple ways** to get to the same vertex because that way we could actually **compare** and update costs if a **better** route is found. With this in mind, it makes it clear that the added benefit of Dijkstra's algorithm is null and void unless the maze has multiple solutions. 
 
 Pseudo code follows:
 
@@ -473,41 +555,36 @@ dijkstra(src, dst) {
 For this particular problem, we have chosen to implement Dijkstra's
 algorithm with a min priority binary heap. We must loop through `|V|` vertices. For each iteration, we perform 1 `pop()` which is `O(log |V|)` and at most 4 `push()` operations for each adjacent neighbor - also `O(log |V|)`. So, multiplying the inner runtime by the outer runtime, we get `O(|V| * log |V|)`.
 
-**Solving the maze with A* is done in** `O(|V| * log |V|)` **time.**
+**Solving the maze with Dijkstra's algorithm is done in** `O(|V| * log |V|)` **time.**
 
 ## Space complexity of Dijkstra
 
-Dijkstra's algorithm uses a array or priority queue to process unvisited vertices. In the worst case we will push `|V|` vertices before our first pop. We also use a map for backtracking to discover the path from source to destination. Since we are **only working with spanning trees**, the max size of a path is `|V| - 1`. In fact, no **path** in a graph can have more than `|V|` vertices because a path by definition says a vertex cannot be repeated. So, the map cannot grow greater than `O(|V|)`. 
+Dijkstra's algorithm uses a priority queue to process unvisited vertices. In the worst case we will push `|V|` vertices before our first pop. We also use a map for backtracking to discover the path from source to destination. Since we are **only working with spanning trees**, the max size of a path is `|V| - 1`. In fact, no **path** in a graph can have more than `|V|` vertices because a path by definition says a vertex cannot be repeated. So, the map cannot grow greater than `O(|V|)`. 
 
-**The space complexity is** `O(|V|) = O(n²)`.
+**The space complexity is** `O(|V|)`.
 
 # Solving with A* search
 
 The limitations of Dijkstra's algorithm is the reason we use A* (A Star) as our primary approach in **path finding**. It can be considered a generalization of Dijkstra's algorithm
 that uses a heuristic value (specific to the problem) that prevents us from straying away on non-optimal paths and helps make more intelligent intermediate
-steps that lead to the overall optimal solution. We can also say Dijkstra's algorithm is a specific case of A* where the heuristic of all adjacent vertices are equal or zero - thus having no impact on decision making. This fact, along with the fact that edge weights are all equal is why Dijkstra for simple (single solutions) mazes degrades to a greedy BFS.
+steps that lead to the overall optimal solution. We can also say Dijkstra's algorithm is a specific case of A* where the heuristic of all adjacent vertices are equal or zero - thus having no impact on decision making. This fact, along with the fact that edge weights are all equal is why Dijkstra for simple (single solution) mazes degrades to a greedy BFS.
 
-The heuristic is an easy-to-compute value computed per iteration (or beforehand) that we use to determine whether or not we are getting closer to our target. It is a problem-specific computation because for arbitrary graphs (a set of edges and vertices) we do not have any information about how "close" we are. Since we have our graph in terms of a grid, a good choice for the heuristic is the (euclidian or manhattan) distance between the current pixel and the target. 
+The heuristic is an easy-to-compute value computed per iteration (or beforehand) that we use to determine whether or not we are getting closer to our target. It is a problem-specific computation because for arbitrary graphs (a set of edges and vertices) we do not have any information nor a concept of "how close" we are. Since we have our graph in terms of a grid, a good choice for the heuristic is the (euclidian or manhattan) distance between the current pixel and the target. 
 
-Although we may not always know the **direct** path, we know we are getting closer if the euclidian distance is shrinking. With this new tool at our disposal, we make our choice to visit a particular vertex that not only minimizes overall cost, but also shrinks the distance between the current vertex in the search and the target vertex - this assures us we are "getting closer."
+Although we may not always know the **direct** path, we know we are getting closer if the distance is shrinking. With this new tool at our disposal, we make our choice to visit a particular vertex that not only minimizes overall cost, but also shrinks the distance between the current vertex in the search and the target vertex - this assures us we are "getting closer." We use both the aggregated cost and the vertex's heuristic as the metric for assigning priority to vertices in the priority queue.
 
-Again, algorithms like Dijkstra's or A* have limited benefit if there is only one solution. However, A* allows us to make more **informed** decisions in our search via heuristics.
+Again, algorithms like Dijkstra's or A* have limited benefit if there is only one solution. However, A* allows us to make more **informed** decisions in our traversal.
 
 Pseudo code follows:
 
 ## Time complexity of A*
 
-For all intents and purposes, if the heuristic underestimates every time or returns the same value for every vertex, A* degrades to a uniform cost search - aka Dijkstra's algorithm, which will explore each vertex, and in **this case** is `O(|V| * log |V|)` in total.
-
-Even if our heuristic does estimate well (which it does with euclidian and manhattan distance), in the worst case, we still visit all `|E|` edges (in the outer loop) which we have proven to be `4 * |V|` for a grid where only adjacent pixels can have edges. But, since we are no longer using a stack or queue for the unvisited set, we must evaluate the associated runtime to `push` and `pop()` per iteration. 
-
-This project uses a binary heap which has `O(log |V|)` extract min and `O(log |V|)` insertion. So, we must multiply this by the number of iterations, which we know is `|V|`. This gives us `|V| * log |V|`.
 
 **Solving the maze with A* is done in** `O(|V| * log |V|)` **time.**
 
 ## Space complexity of A*
 
-A* uses a array or priority queue of unvisited vertices. In the worst case, we
+A* uses a priority queue of unvisited vertices. In the worst case, we
 push all `|V|` vertices before popping. This is the case where we visit **all** vertices in a single walk before hitting a dead end. The map used for backtracking in the worst case will hold references to all `|V|` vertices in the path from source to destination - also using at most `O(|V|)` space. Lastly, if we pre-compute our heuristics for easy lookup (one per vertex), we will need `O(|V|)` extra space - still resulting in linear space.
 
 **The space complexity of A* is** `O(|V|)`.
