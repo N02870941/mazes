@@ -10,14 +10,14 @@ are not familiar with graph theory, here is a **brief** explanation of the infor
 relevant to understand this problem.
 
 A graph `G` is a pair denoted as `G = {V, E}` where `V` is a set of vertices and
-`E` is a set of edges that where each edges connects in the set `V`. A vertex is an abstract
-*node* in a network. An edge is a *branch* that links two vertices or nodes. Graphs
+`E` is a set of edges where each edge connects some vertex `u` to some vertex `v` from set vertex set `V`. A vertex is an abstract
+*node* in a network. An edge is a *branch* that links them together. Graphs
 come in various ways:
 
 1. Weighted
 2. Directed
 
-You can have any combination:
+Any combination is valid:
 
 1. Weighted and directed
 2. Weighted and undirected
@@ -40,9 +40,8 @@ each city.
 
 A directed graph is a graph where an edge `e`  from vertex `u` to
 `v` is not equal to an edge `f` from `v` to `u`. For example, in our city
-example, we may have an edge from New York to Chicago with weight 200 miles.
-But, the edge going from Chicago to New York may be 250 miles because that
-edges represent a different roads.
+graph we may have an edge (road) from New York to Chicago with weight 200 miles.
+But, we have a **different** edge going from Chicago to New York may be 250 miles because the route the other way may require you to take a different road.
 
 <p align="center">
   <img src="img/png/undirected-weighted.png"><br>
@@ -50,11 +49,9 @@ edges represent a different roads.
 </p>
 
 For the purpose of representing a maze, we will use an undirected weighted graph.
-We will consider vertices white pixels (or square groups of pixels) and edges will be
+We will consider vertices white pixels (or square groups of white pixels) and edges will be
 placed between adjacent pixels. A vertex is considered adjacent or having an edge with another vertex if there is **no** barrier (black pixels) between them. Edges will have a uniform weight of 1 which
-just indicates that two vertices are one pixel away from each other (adjacent). We
-do not need to make it directed because pixels have uniform size, thus a
-uniform distance if they are adjacent.
+just indicates that two vertices are one pixel away from each other (adjacent).
 
 <p align="center">
   <img src="img/png/grid.png"><br>
@@ -85,7 +82,7 @@ In the case of a **blank** `n x n` image where `n` is the width (and height) of 
 in pixels, the image *always* represents connected graph. The reason is that
 there are no missing pixels assuming your photo is not corrupted. So, in terms of
 traversing the image, there exist a path from each pixel to each other pixel - this too many
-in fact. This is why we have black lines to represent **absence** of an edge, or a boundary that terminates a particular path. But, in the case of our full grid, we have too many boundaries as well - resulting in zero paths. Our goal is to traverse our image full of boundaries and **remove** as many as possible but still resulting in a graph that has the connected property. This will result in a maze that leaves a
+in fact. This is why we have black lines to represent the **absence** of edges, or a boundary that terminates a particular path. But, in the case of our full grid, we have too many boundaries as well - resulting in zero paths. Our goal is to traverse our image full of boundaries and **remove** (recreate) as many (paths) as possible but still resulting in a graph that has the connected property. This will result in a maze that leaves a
 **path** from any vertex to any other vertex, but in a much less cluttered way.
 The result is called a **spanning tree**.
 
@@ -97,8 +94,7 @@ The result is called a **spanning tree**.
 A spanning tree `S` is a sub-graph of a graph `G = {V, E}` that contains the minimum
 number of edges required to connect all vertices in `G`. If we denote the number of
 vertices as `|V|` and number of edges as `|E|`, then for graph `S`, `|V|`
-remains the same, and `|E| = |V| - 1`. It also turns out that graph `S` meets the
-criteria of an **acyclic** graph. 
+remains the same, and `|E| = |V| - 1`. It also turns out that graph `S` has the **acyclic** property of a graph. 
 
 <p align="center">
   <img src="img/png/cyclic-acyclic.png"><br>
@@ -154,6 +150,39 @@ We observe, that each vertex has 4 edges that point to the top, bottom, left, an
 adjacent vertices. In total, for `|V|` vertices we have 4 * `|V|` edges. `|E|` is linear with respect to `|V|`.
 Although typically we say `O(|E|) = O(|V|²)`, for **this particular problem** we can say `O(|E|) = O(|V|) = O(n²)` where `n` is the number of boxes in our grid.
 
+# Implementation details
+There are many ways to represent a graph in memory. The typical implementations of the graph structure are Edge List, Adjacency Matrix, and Adjacency List. However, since this graph does not need to support all of the standard graph operations, we will implement a modified version of the adjacency list. We will have a single array called `grid` that represents a flattened `n x n` matrix of pixels / vertices. The `grid` array will be of type `Cell`.
+
+```
+Cell {
+
+	walls     = 1111
+	visited   = false
+	cost      = Infinity
+	heuristic = 0
+}
+```
+
+Each `Cell` object contains a 4-bit binary string containing boolean values indicating whether or not any of the 4 walls are present for that `Cell`. If is a particular bit is set to 0, then there is **no** wall, or there **is** and edge between that cell and the cell indicated by the position of the bit. If the bit is set to 1, a wall **does** exist or there is **not** an edge to the adjacent vertex. The bit mapping goes as follows:
+
+| Bit | Neighbor |
+|:---:| :------: |
+| 0   | top      |
+| 1   | right    |
+| 2   | bottom   |
+| 3   | left     |
+
+For example, if `wall = 1010`, then the cell has a top, and bottom wall, but it does not have a left or right wall. In order to actually check the value of or modify these flags, we must use bitwise operations.
+
+In regards to edge weight, there is no need to actually store that information. As noted, all edges have a weight of 1 because the distance between two adjacent pixels is always 1. So, we can simply ignore it. Instead, we just give each cell a `cost` field that represents the **aggregated weight** associated with **getting to** that vertex.
+
+<p align="center">
+  <img src="img/png/uniform-costs.png"><br>
+  <i>A walk from vertex A to I on a weighted graph.</i>
+</p>
+
+For a given walk of the graph, the cost of a vertex `v_i` is always the cost of vertex `v_(i-1) + 1`, where `v_(i+1)` is the vertex just before vertex `v` in the walk. So, when we traverse the graph, we just keep incrementing as we go instead of wasting space on information we can confidently predict and compute when it is needed. We see for vertices that we not discovered or visited, by default their cost is infinite - this will come in handy when finding the shortest path.
+
 # Generating with Randomized Depth-first search
 
 The [Randomized Depth-first search][wiki] follows:
@@ -191,7 +220,7 @@ pushed on to the stack before any popping (visiting) occurs.
 
 **Generating the maze required** `O(|V|)` **or** `O(n²)` **space.**
 
-# Solving with Depth-first search
+# Solving with Depth-first search (DFS)
 
 A modified depth-first search can be used, stopping once we come across the
 target vertex, then back tracking to discover the path from source to destination. This is a brute force method that would take a lot longer
@@ -238,7 +267,7 @@ dfs(src, dst) {
 			neighbors.forEach( neighbor => {
 			
 				// If there is no path to this vertex yet
-				if (!neighbor.visited && !parents[neighbor.key]) {
+				if (!neighbor.visited) {
 				
 					// Create a mapping for backtracking
 					parents[neighbor.key] = current.key
@@ -277,6 +306,82 @@ This depth-first search uses a stack of unvisitd vertices. In the worst case, we
 push all `|V|` vertices before popping. This is the case where we visit **all** vertices in a single walk before hitting a dead end. The map used for backtracking in the worst case will hold references to all `|V|` vertices in the path from source to destination - also using at most `O(|V|)` space.
 
 **The space complexity is** `O(|V|)`.
+
+# Solving with Breadth-first search (BFS)
+
+Breadth-first search is another general purpose graph traversal algorithm. The intuition behind BFS can be looked at as roughly the "opposite" of that of DFS. In DFS we try to go as deep as possible until we hit a dead end. With BFS, we try to go as wide as possible until we hit a dead end, or find our target. For acyclic graphs (trees) it is the equivalent of a level-order traversal. It also turns out that the only different between implementing BFS and DFS is the data structure used to process vertices. For DFS we used a stack (FILO) structure. For BFS we will use a standard queue (FIFO) structure. The code is otherwise, roughly the same.
+
+Pseudo code follows:
+
+```javascript
+dfs(src, dst) {
+
+	var unvisited = []	// Queue
+	var neighbors = []	// Set
+	var parents   = []	// Map
+	var current
+	
+	// The start vertex has no parent
+	parents[src.key] = null
+	
+	// Start with source
+	unvisited.enqueue(src);
+	
+	// Process each vertex
+	while (unvisited.length > 0) {
+	
+		// Get next vertex
+		current = unvisited.dequeue()
+		
+		// We found the target
+		if (current == dst) {
+			
+			break
+		}
+		
+		// If first time visiting
+		if (!current.visited) {
+		
+			// Label is visited
+			current.visited = true
+					
+			// Get it's neighbors
+			neighbors = current.neighbors()
+			
+			// Push all unvisited neighbors to stack
+			neighbors.forEach( neighbor => {
+			
+				// If there is no path to this vertex yet
+				if (!neighbor.visited) {
+				
+					// Create a mapping for backtracking
+					parents[neighbor.key] = current.key
+				
+					// Add to start for processing
+					unvisited.push(neighbor)
+				}
+			
+			})
+		}
+	}
+	
+	// Start at destination	
+	current = dst
+	
+	// Backtrack highlighting the path
+	while (current) {
+	
+		current.highlight()
+		
+		current = parents[current.key]
+	}
+
+}
+```
+
+## Time complexity of BFS
+
+## Space complexity of BFS
 
 # Solving with Dijkstra's algorithm
 
@@ -366,13 +471,13 @@ dijkstra(src, dst) {
 ## Time complexity of Dijkstra
 
 For this particular problem, we have chosen to implement Dijkstra's
-algorithm with a min priority binary heap. We must loop through `|V|` vertices.
+algorithm with a min priority binary heap. We must loop through `|V|` vertices. For each iteration, we perform 1 `pop()` which is `O(log |V|)` and at most 4 `push()` operations for each adjacent neighbor - also `O(log |V|)`. So, multiplying the inner runtime by the outer runtime, we get `O(|V| * log |V|)`.
+
+**Solving the maze with A* is done in** `O(|V| * log |V|)` **time.**
 
 ## Space complexity of Dijkstra
 
-Dijkstra's algorithm uses a array or priority queue to process unvisited vertices. In the worst case we will push `|V|` vertices before our first pop. We also use a map for backtracking to discover the path from source to destination. Since we are **only working with spanning trees**, the max size of a path is `|V| - 1`. In fact, no **path** in a graph can have more than `|V|` vertices because a path by definition says a vertex cannot be repeated.
-
-So the map cannot grow greater than `O(|V|)`. Lastly, Dijkstra uses another map that assocates each visited vertex with it's cost to get there. This grows no greater than the number of vertices `|V|` because each vertex has a single cost. So, summing all utilized space, we use `O(|V| + |V| + |V|) = O(3 * |V|) = O(|V|)`.
+Dijkstra's algorithm uses a array or priority queue to process unvisited vertices. In the worst case we will push `|V|` vertices before our first pop. We also use a map for backtracking to discover the path from source to destination. Since we are **only working with spanning trees**, the max size of a path is `|V| - 1`. In fact, no **path** in a graph can have more than `|V|` vertices because a path by definition says a vertex cannot be repeated. So, the map cannot grow greater than `O(|V|)`. 
 
 **The space complexity is** `O(|V|) = O(n²)`.
 
@@ -380,7 +485,7 @@ So the map cannot grow greater than `O(|V|)`. Lastly, Dijkstra uses another map 
 
 The limitations of Dijkstra's algorithm is the reason we use A* (A Star) as our primary approach in **path finding**. It can be considered a generalization of Dijkstra's algorithm
 that uses a heuristic value (specific to the problem) that prevents us from straying away on non-optimal paths and helps make more intelligent intermediate
-steps that lead to the overall optimal solution. We can also say Dijkstra's algorithm is a specific case of A* where the heuristic of all adjacent vertices are equal or zero - thus having no impact on decision making. This fact, along with the fact that edge weights are all equal is why Dijkstra for simple (single solutions) mazes degrades to DFS.
+steps that lead to the overall optimal solution. We can also say Dijkstra's algorithm is a specific case of A* where the heuristic of all adjacent vertices are equal or zero - thus having no impact on decision making. This fact, along with the fact that edge weights are all equal is why Dijkstra for simple (single solutions) mazes degrades to a greedy BFS.
 
 The heuristic is an easy-to-compute value computed per iteration (or beforehand) that we use to determine whether or not we are getting closer to our target. It is a problem-specific computation because for arbitrary graphs (a set of edges and vertices) we do not have any information about how "close" we are. Since we have our graph in terms of a grid, a good choice for the heuristic is the (euclidian or manhattan) distance between the current pixel and the target. 
 
@@ -392,9 +497,13 @@ Pseudo code follows:
 
 ## Time complexity of A*
 
-For all intents and purposes, if the heuristic underestimates every time or returns the same value for every vertex, A* degrades to a uniform cost search - aka Dijkstra's algorithm, which will explore each vertex, and in **this case** is `O(|V|)`. Even if our heuristic does estimate well (which it does with euclidian and manhattan distance), in the worst case, we still visit all `|E|` edges which we have proven to be `4 * |V|` for a grid where only adjacent pixels can have edges.
+For all intents and purposes, if the heuristic underestimates every time or returns the same value for every vertex, A* degrades to a uniform cost search - aka Dijkstra's algorithm, which will explore each vertex, and in **this case** is `O(|V| * log |V|)` in total.
 
-**Solving the maze with A* is done in** `O(|E|) = O(|V|)` **or** `O(n²)` **time.**
+Even if our heuristic does estimate well (which it does with euclidian and manhattan distance), in the worst case, we still visit all `|E|` edges (in the outer loop) which we have proven to be `4 * |V|` for a grid where only adjacent pixels can have edges. But, since we are no longer using a stack or queue for the unvisited set, we must evaluate the associated runtime to `push` and `pop()` per iteration. 
+
+This project uses a binary heap which has `O(log |V|)` extract min and `O(log |V|)` insertion. So, we must multiply this by the number of iterations, which we know is `|V|`. This gives us `|V| * log |V|`.
+
+**Solving the maze with A* is done in** `O(|V| * log |V|)` **time.**
 
 ## Space complexity of A*
 
