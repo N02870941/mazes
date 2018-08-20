@@ -3,30 +3,15 @@
  */
 function solve() {
 
+  // Get solver
   let algorithm = solving();
-
-  switch (algorithm) {
-
-    case dijkstra:
-    queue = new Heap(); break;
-
-    case aStar:
-      queue = new Heap((a,b) => a.heuristic < b.heuristic); break;
-
-    case DFS:
-      queue = new Stack(); break;
-
-    case BFS:
-      queue = new Queue(); break;
-
-    default:
-      queue = new Stack();
-
-      break;
-  }
 
   // Maze fully generated?
   if (generated) {
+
+    // Initialize solver
+    // by specified algorithm
+    solverInit(algorithm);
 
     // Change main event loop's
     // primary action to specified
@@ -38,8 +23,6 @@ function solve() {
     grid.forEach(c => {
 
       c.visited = false;
-      c.cost    = Infinity;
-
       c.clear();
     });
 
@@ -49,6 +32,7 @@ function solve() {
     // Set the cost to 0
     current.cost = 0;
 
+    // Enqueue to start processing
     queue.push(current);
 
     // Clear the parents map
@@ -86,56 +70,30 @@ function solve() {
 
 }
 
-//------------------------------------------------------------------------------
-
 /**
- * Takes in a cell and a selector function
- * which has two arguments - neighbors and
- * distances. They are both arrays of the same
- * length where distance[i] represents the distance
- * to get to neighbors[i]. The selector function must
- * return a single value from neighbors. This selector
- * function specifies the order of graph traversal
+ * Initializes the solver.
  */
-function next(cell, heuristic, selector) {
+function solverInit(algorithm) {
 
-  let neighbors  = [];
-  let distances  = [];
-  let potentials = cell.potentials();
-  let cost;
+  switch (algorithm) {
 
-  let add = (x, mask) => {
+    case dijkstra:
+      initDijkstra();
+      break;
 
-    if (x && !cell.wall(mask) && !x.visited) {
+    case aStar:
+      initAStar();
+      break;
 
-      cost = heuristic ? heuristic(x, target) : 0;
+    case DFS:
+      queue = new Stack();
+      break;
 
-      neighbors.push(x);
-      distances.push(cost);
-    }
+    case BFS:
+      queue = new Queue();
+      break;
 
-  };
-
-  add(potentials[TOP],    masks.set.TOP);
-  add(potentials[RIGHT],  masks.set.RIGHT);
-  add(potentials[BOTTOM], masks.set.BOTTOM);
-  add(potentials[LEFT],   masks.set.LEFT);
-
-  return selector(neighbors, distances);
-}
-
-//------------------------------------------------------------------------------
-
-/**
- * Returns a randomly selected
- * unvisited adjacent vertex with
- * no heuristic.
- */
-function rand(cell) {
-
-  return next(
-    cell,
-    null,
-    (n, distances) => n[floor(random(0, n.length))]
-  );
+    default:
+      break;
+  }
 }

@@ -1,42 +1,79 @@
-// const top = 0;
-const parent = i => ((i + 1) >>> 1) - 1;
-const left = i => (i << 1) + 1;
-const right = i => (i + 1) << 1;
-
 // https://stackoverflow.com/questions/42919469/efficient-way-to-implement-priority-queue-in-javascript
 
+// const top = 0;
+const left   = i => (i << 1) + 1;
+const right  = i => (i + 1) << 1;
+const parent = i => ((i + 1) >>> 1) - 1;
+
+//------------------------------------------------------------------------------
+
+/**
+ * Heap specifically
+ * for Cell objects.
+ */
 class Heap {
 
-  constructor(comparator = (a, b) => a.cost < b.cost) {
+  /**
+   * Constructs empty heap.
+   */
+  constructor(comparator) {
+
+    // Default min heap for numbers
+    let c = (a, b) => a < b;
 
     this._map        = new Map();
     this._heap       = [];
-    this._comparator = comparator;
+    this._comparator = comparator || c;
   }
 
+//------------------------------------------------------------------------------
+
+  /**
+   * Determines if heap
+   * contains a specific cell.
+   */
+  has(cell) {
+
+    return this._map.has(cell.key);
+  }
+
+//------------------------------------------------------------------------------
+
+  /**
+   * Size of heap.
+   */
   size() {
 
     return this._heap.length;
   }
 
+//------------------------------------------------------------------------------
+
+  /**
+   * Determines if
+   * heap is empty.
+   */
   empty() {
 
     return this.size() == 0;
   }
 
+//------------------------------------------------------------------------------
+
+  /**
+   * Returns min value of heap.
+   */
   peek() {
 
     return this._heap[0];
   }
 
+//------------------------------------------------------------------------------
+
+  /**
+   * Adds new value to heap.
+   */
   push(value) {
-
-    // Already have the key
-    if (this._map.has(value.key)) {
-
-      // So just decrease key
-      return this.replace(value);
-    }
 
     // Add to internal array
     this._heap.push(value);
@@ -50,36 +87,22 @@ class Heap {
     return this.size();
   }
 
+//------------------------------------------------------------------------------
+
+  /**
+   * Extract min from heap.
+   */
   pop() {
 
-    // Get min value
-    const value  = this.peek();
-
-    // Index of last element
-    const bottom = this.size() - 1;
-
-    // If value is not the last
-    if (bottom > 0) {
-
-      // Swap bottom to top
-      this._swap(0, bottom);
-    }
-
-    // Pop it off
-    this._heap.pop();
-
-    // Delete key for popped value
-    this._map.delete(value.key);
-
-    // Bubble root down
-    this._siftDown();
-
-    return value;
+    return this._delete(0);
   }
 
-  replace(element) {
+//------------------------------------------------------------------------------
 
-    console.log('here')
+  /**
+   * Replaces min value of heap.
+   */
+  replace(element) {
 
     // Get top value
     const old = this.peek();
@@ -93,6 +116,65 @@ class Heap {
     return old;
   }
 
+//------------------------------------------------------------------------------
+
+  /**
+   * Decreases a cells priority
+   * with a new specified cost.
+   */
+  decrease(cell, cost) {
+
+    // Get index
+    let i = this._map.get(cell.key);
+
+    // Update it's cost
+    cell.cost = cost;
+
+    // Cell is present
+    if (i || i === 0 ) {
+
+      // Delete it's reference
+      this._delete(i);
+    }
+
+    // (Re)add it's reference
+    this.push(cell);
+  }
+
+//------------------------------------------------------------------------------
+
+  /**
+   * Delete value from index.
+   */
+  _delete(i) {
+
+    // Get value
+    const value = this._heap[i];
+
+    // Index of last element
+    const bottom = this.size() - 1;
+
+    // If value is not the last
+    if (bottom > 0) {
+
+      // Swap val to back
+      this._swap(i, bottom);
+    }
+
+    // Delete last
+    this._heap.pop();
+
+    // Delete key
+    this._map.delete(value.key);
+
+    // Bubble down
+    this._siftDown(i);
+
+    return value;
+  }
+
+//------------------------------------------------------------------------------
+
   _greater(i, j) {
 
     return this._comparator(
@@ -101,17 +183,30 @@ class Heap {
     );
   }
 
+//------------------------------------------------------------------------------
+
+  /**
+   * Swap two vales in array.
+   */
   _swap(i, j) {
 
+    // Get keys
     let k1 = this._heap[i].key;
     let k2 = this._heap[j].key;
 
-    this._map.set(this._heap[i], k2);
-    this._map.set(this._heap[j], k1);
+    // Swap keys
+    this._map.set(k1, j);
+    this._map.set(k2, i);
 
+    // Swap values
     [this._heap[i], this._heap[j]] = [this._heap[j], this._heap[i]];
   }
 
+//------------------------------------------------------------------------------
+
+  /**
+   * Bubble up.
+   */
   _siftUp() {
 
     let node = this.size() - 1;
@@ -123,9 +218,15 @@ class Heap {
     }
   }
 
-  _siftDown() {
+//------------------------------------------------------------------------------
 
-    let node = 0;
+  /**
+   * Bubble down
+   */
+  _siftDown(i) {
+
+    let node = i;
+
     while (
       (left(node) < this.size() && this._greater(left(node), node)) ||
       (right(node) < this.size() && this._greater(right(node), node))

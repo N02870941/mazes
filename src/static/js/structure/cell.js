@@ -14,7 +14,9 @@ class Cell {
     this.i = i;
     this.j = j;
 
-    this.heuristic = 1;
+    // Default heuristc when
+    // finding the shortest path
+    this.heuristic = 0;
 
     // Cost to get to this cell
     // from the start in the search.

@@ -329,11 +329,19 @@ function execute(procedure, after) {
 
   let exit;
 
+  let c = 0;
+
   do {
+
+    c++;
 
     exit = procedure();
 
   } while (!exit);
+
+  if (procedure === highlight) {
+    console.log(c)
+  }
 
   if (after)
     after();
