@@ -1,3 +1,10 @@
+function initDFS() {
+
+  queue = new Stack();
+}
+
+//------------------------------------------------------------------------------
+
 function DFS() {
 
   let u = queue.pop();
@@ -8,7 +15,7 @@ function DFS() {
 
     return true;
   }
-  
+
   if (!u.visited) {
 
     u.visited = true

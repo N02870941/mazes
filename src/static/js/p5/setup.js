@@ -42,7 +42,7 @@ function setup() {
   initSlider(sliders[keys.PATH], MIN_PATH_WIDTH, MAX_PATH_WIDTH, DEFAULT_PATH_WIDTH);
   initSlider(sliders[keys.SUBTRACT_V], 0, 100, 0);
   initSlider(sliders[keys.SUBTRACT_H], 0, 100, 0);
-  initSlider(sliders[keys.FRAMES], 1, 60, 60);
+  initSlider(sliders[keys.FRAMES], MIN_FRAME_RATE, MAX_FRAME_RATE, MAX_FRAME_RATE);
 
   // Connect sliders to labels
   connectSliderLabel({slider : sliders[keys.CANVAS],     label : labels[keys.WIDTH]});

@@ -10,6 +10,10 @@ function init() {
   buttons[keys.SOLVE].prop(attributes.DISABLED, true);
   buttons[keys.EXPORT].prop(attributes.DISABLED, true);
 
+  // Get subtraction count from sliders
+  subtractionsV = subtractions.vertical();
+  subtractionsH = subtractions.horizontal();
+
   // TODO - Allow non-square mazes?
 
   // Create p5 canvas object
@@ -24,6 +28,10 @@ function init() {
   // Compute dimension of grid
   cols = floor(width  / w);
   rows = floor(height / w);
+
+  // Number of walls
+  walls.vertical   = [];
+  walls.horizontal = [];
 
   generated = false;
   solved    = false;

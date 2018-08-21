@@ -54,7 +54,8 @@ const keys = {
   SLIDER     : 'slider',
   HIGHLIGHT  : 'highlight',
   ANIMATE    : 'animate',
-  SUBTRACT_V : 'vertical'
+  SUBTRACT_V : 'vertical',
+  SUBTRACT_H : 'horizontal'
 };
 
 // UI element selector ids
@@ -232,4 +233,21 @@ let solved    = false;
 // Repeated action in draw()
 // and main event loop
 let action;
-let callback;
+let callbacks = [];
+
+// Numbers of walls in maze
+const walls = {
+
+  vertical   : [],
+  horizontal : [],
+
+  count : {
+
+    vertical   : 0,
+    horizontal : 0,
+  }
+};
+
+// Number of walls to subtract
+let subtractionsV;
+let subtractionsH;

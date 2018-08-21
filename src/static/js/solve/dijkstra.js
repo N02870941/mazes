@@ -9,13 +9,6 @@ function initDijkstra() {
   // Create heap that compares
   // vertices by their cost attribute
   queue = new Heap(comparator);
-
-  // Set initial cost of
-  // each cell to infinity
-  grid.forEach(c => {
-
-    c.cost = Infinity;
-  });
 }
 
 //------------------------------------------------------------------------------

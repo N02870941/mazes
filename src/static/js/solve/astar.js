@@ -9,11 +9,9 @@ function initAStar() {
   // Create new heap
   queue = new Heap(comparator);
 
-  // Reset grid
+  // Reset heuristics for grid
   grid.forEach( c => {
 
-    c.visited   = false;
-    c.cost      = Infinity;
     c.heuristic = 0;
   });
 

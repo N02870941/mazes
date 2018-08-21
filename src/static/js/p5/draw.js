@@ -4,30 +4,9 @@
  */
 function draw() {
 
-  // Are we generating?
-  if (generator(action)) {
+  if (action) {
 
-    // Are we done?
-    if (generated) {
-
-      callback();
-
-    // In progress
-    } else {
-
-      generated = action();
-    }
-
-  // Are we solving?
-  } else if (solver(action)) {
-
-    // If done, switch to animate action
-    action = !action() ? action : callback;
-
-  // Are we highlighting? Keep going, until done.
-  } else if (visualizer(action) && action()) {
-
-    complete();
+    action = !action() ? action : callbacks.shift();
   }
 
 }
@@ -35,36 +14,25 @@ function draw() {
 //------------------------------------------------------------------------------
 
 /**
- * Executes loop behind the scenes.
- * The first argument is a function with
- * zero arguments. It returns true when
- * it has met it's base case / exit condition.
- * otherwise it continues to return false.
- *
- * The second function after() is an optional
- * callback function that executes after the
- * procedure has run it's course. after() does
- * not return anything.
+ * Simulates runnning the draw() function,
+ * but behind the scences. This way, we can
+ * make several edits to the canvas, and then
+ * display the result at the end rather than
+ * painting one frame at a time.
  */
-function execute(procedure, after) {
+function execute() {
 
   let exit;
 
-  let c = 0;
+  while (action) {
 
-  do {
+    do {
 
-    c++;
+      exit = action();
 
-    exit = procedure();
+    } while (!exit);
 
-  } while (!exit);
-
-  // Debug, prints path length
-  if (procedure === highlight) {
-    console.log(c)
+    action = callbacks.shift();
   }
 
-  if (after)
-    after();
 }

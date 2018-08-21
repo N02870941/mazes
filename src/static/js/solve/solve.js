@@ -6,69 +6,71 @@ function solve() {
   // Get solver
   let algorithm = solving();
 
-  // Maze fully generated?
-  if (generated) {
+  // Set algorithm and callbacks
+  action    = algorithm;
+  callbacks = [noGradient, highlight, complete];
 
-    // Initialize solver
-    // by specified algorithm
-    solverInit(algorithm);
+  // Initialize solver
+  // by specified algorithm
+  solverInit(algorithm);
 
-    // Change main event loop's
-    // primary action to specified
-    // search algorithm
-    action   = algorithm;
-    callback = highlight;
+  // Reset grid
+  reset();
 
-    // Reset the grid
-    grid.forEach(c => {
+  // Start the process
+  start();
+}
 
-      c.visited = false;
-      c.clear();
-    });
+//------------------------------------------------------------------------------
 
-    // Start at first cell
-    current = source;
+  /**
+   * Clears the gradient if
+   * the checkbox is unchecked.
+   */
+  function noGradient() {
 
-    // Set the cost to 0
-    current.cost = 0;
+    if (!highlighted()) {
 
-    // Enqueue to start processing
-    queue.push(current);
-
-    // Clear the parents map
-    parents.clear();
-
-    // Indicates beginning of path
-    parents.set(current.key, null);
-
-    // If we want to do it
-    // in the background, execute it,
-    // then execute highlight as the
-    // callback to highlight the path
-    if (!animated()) {
-
-      execute(action, () => {
-
-        solved = true;
-
-        current = target
-
-        execute(callback, complete);
-      });
-
-    // Start draw() loop
-    } else {
-
-      loop();
+      clean();
     }
 
-  // In progress
-  } else {
-
-    unprepared();
+    return true;
   }
 
+//------------------------------------------------------------------------------
+
+/**
+ * Reset the grid.
+ */
+function reset() {
+
+  // Reset the grid
+  grid.forEach(c => {
+
+    c.cost    = Infinity;
+    c.visited = false;
+    c.clear();
+  });
+
+  // Start at first cell
+  current = source;
+
+  // Set the cost to 0
+  current.cost = 0;
+
+  // Enqueue to start processing
+  queue.push(current);
+
+  // Clear the parents map
+  parents.clear();
+
+  // Indicates beginning of path
+  parents.set(current.key, null);
+
+  return true;
 }
+
+//------------------------------------------------------------------------------
 
 /**
  * Initializes the solver.
@@ -78,20 +80,16 @@ function solverInit(algorithm) {
   switch (algorithm) {
 
     case dijkstra:
-      initDijkstra();
-      break;
+      initDijkstra(); break;
 
     case aStar:
-      initAStar();
-      break;
+      initAStar();    break;
 
     case DFS:
-      queue = new Stack();
-      break;
+      initDFS();      break;
 
     case BFS:
-      queue = new Queue();
-      break;
+      initBFS();      break;
 
     default:
       break;

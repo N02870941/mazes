@@ -9,6 +9,9 @@ async function sleep(ms) {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Return min value in array.
+ */
 function minimum(array) {
 
   let min = 0;
@@ -111,6 +114,9 @@ function unprepared() {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Triggers generating event.
+ */
 function generating() {
 
   // Disable appropriate buttons
@@ -129,6 +135,9 @@ function generating() {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Triggers solving event.
+ */
 function solving() {
 
   // Disable appropriate buttons
@@ -147,6 +156,9 @@ function solving() {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Triggers generated event.
+ */
 function prepared() {
 
   generated = true;
@@ -158,11 +170,18 @@ function prepared() {
   buttons[keys.GENERATE].trigger(events.GENERATED);
   buttons[keys.SOLVE].trigger(events.GENERATED);
   buttons[keys.EXPORT].trigger(events.GENERATED);
+
+  return true;
 }
 
 //------------------------------------------------------------------------------
 
+/**
+ * Triggers solved event.
+ */
 function complete() {
+
+  solved = true;
 
   solution = canvas.get();
 
@@ -170,10 +189,17 @@ function complete() {
 
   buttons[keys.GENERATE].trigger(events.SOLVED);
   buttons[keys.EXPORT].trigger(events.SOLVED);
+
+  return true;
 }
 
 //------------------------------------------------------------------------------
 
+/**
+ * Cancels any generating
+ * or solving action and resets
+ * grid to previous state.
+ */
 function cancel() {
 
   confirm(strings.CONFIRM_CANCEL, () => {
@@ -228,6 +254,10 @@ function download() {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Determines if a function is
+ * in a map by name.
+ */
 function funcInMap(func, map) {
 
   if (func && typeof func == 'function' && map) {
@@ -240,6 +270,11 @@ function funcInMap(func, map) {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Determines is a specified
+ * function is calssified as
+ * a generator algorithm.
+ */
 function generator(f) {
 
   return funcInMap(f, generators);
@@ -247,6 +282,11 @@ function generator(f) {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Determines is a specified
+ * function is calssified as
+ * a solver algorithm.
+ */
 function solver(f) {
 
   return funcInMap(f, solvers);
@@ -254,6 +294,11 @@ function solver(f) {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Determines is a specified
+ * function is calssified as
+ * a visualizer algorithm.
+ */
 function visualizer(f) {
 
   return funcInMap(f, visualizers);
@@ -261,6 +306,10 @@ function visualizer(f) {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Determines if a checkbox
+ * is checked or not.
+ */
 function checked(element) {
 
   return element.prop('checked');
@@ -268,6 +317,13 @@ function checked(element) {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Determines whether or not
+ * we want to keep the maze
+ * solution highlighted or not
+ * by checking the highlighted
+ * checkbox.
+ */
 function highlighted() {
 
   return checked(checkboxes[keys.HIGHLIGHT]);
@@ -275,7 +331,74 @@ function highlighted() {
 
 //------------------------------------------------------------------------------
 
+/**
+ * Determines if we want to animate
+ * a particular action by checking the
+ * value of the animate checkbox.
+ */
 function animated() {
 
   return checked(checkboxes[keys.ANIMATE]);
+}
+
+//------------------------------------------------------------------------------
+
+/**
+ * Returns the number of vertical
+ * and horizontal wall subtractions
+ * from the respective sliders.
+ */
+const subtractions = {
+
+  vertical : () => {
+
+    let number = sliders[keys.SUBTRACT_V].data(keys.SLIDER).getValue();
+
+    return (number / 100) * walls.vertical.length;
+  },
+
+  horizontal : () => {
+
+    let number = sliders[keys.SUBTRACT_H].data(keys.SLIDER).getValue();
+
+    return (number / 100) * walls.horizontal.length;
+  }
+
+}
+
+//------------------------------------------------------------------------------
+
+/**
+ * Starts an algorithm in either
+ * animated mode or background mode.
+ */
+function start() {
+
+  // Run in background
+  if (!animated()) {
+
+    execute();
+
+  // Start draw() to animate
+  } else {
+
+    loop();
+  }
+}
+
+//------------------------------------------------------------------------------
+
+/**
+ * Clears any highlighted
+ * vertices from having
+ * generated the maze.
+ */
+function clean() {
+
+  grid.forEach(c => {
+
+    c.clear();
+  })
+
+  return true;
 }
