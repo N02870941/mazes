@@ -5,9 +5,9 @@
  * file. They should all be local to functions.
  */
 
- // Colors
- const BLACK = 0;
- const LINE_WIDTH = 2;
+// Colors
+const BLACK = 0;
+const LINE_WIDTH = 2;
 
 // Frame rate parameters
 const MIN_FRAME_RATE = 1;
@@ -20,7 +20,7 @@ const DEFAULT_CANVAS_WIDTH = 300;
 
 // Grid parameters
 const MIN_PATH_WIDTH     = 10;
-const MAX_PATH_WIDTH     = Math.floor(0.05 * MAX_CANVAS_WIDTH);
+const MAX_PATH_WIDTH     = 50;
 const DEFAULT_PATH_WIDTH = MIN_PATH_WIDTH;
 
 // All string messages
@@ -43,20 +43,23 @@ const strings = {
 // of UI elements
 const keys = {
 
-  CANVAS    : 'canvas',
-  PATH      : 'path',
-  WIDTH     : 'width',
-  HEIGHT    : 'height',
-  GENERATE  : 'generate',
-  SOLVE     : 'solve',
-  EXPORT    : 'export',
-  FRAMES    : 'frame-rate',
-  SLIDER    : 'slider',
-  HIGHLIGHT : 'highlight',
-  ANIMATE   : 'animate'
+  CANVAS     : 'canvas',
+  PATH       : 'path',
+  WIDTH      : 'width',
+  HEIGHT     : 'height',
+  GENERATE   : 'generate',
+  SOLVE      : 'solve',
+  EXPORT     : 'export',
+  FRAMES     : 'frame-rate',
+  SLIDER     : 'slider',
+  HIGHLIGHT  : 'highlight',
+  ANIMATE    : 'animate',
+  SUBTRACT_V : 'vertical'
 };
 
 // UI element selector ids
+// Most of them are Jquery selectors
+// so they are preceded by a # symbol
 const elements = {
 
   dropdown : {
@@ -75,17 +78,21 @@ const elements = {
 
   slider : {
 
-    CANVAS : '#canvas-width-slider',
-    PATH   : '#path-width-slider',
-    FRAMES : '#frame-rate-slider'
+    CANVAS     : '#canvas-width-slider',
+    PATH       : '#path-width-slider',
+    FRAMES     : '#frame-rate-slider',
+    SUBTRACT_V : '#vertical-wall-slider',
+    SUBTRACT_H : '#horizontal-wall-slider'
   },
 
   label : {
 
-    CANVAS_W : '#canvas-width-slider-value',
-    CANVAS_H : '#canvas-height-slider-value',
-    PATH     : '#path-width-slider-value',
-    FRAMES   : '#frame-rate-slider-value'
+    CANVAS_W   : '#canvas-width-slider-value',
+    CANVAS_H   : '#canvas-height-slider-value',
+    PATH       : '#path-width-slider-value',
+    FRAMES     : '#frame-rate-slider-value',
+    SUBTRACT_V : '#vertical-wall-slider-value',
+    SUBTRACT_H : '#horizontal-wall-slider-value'
   },
 
   checkbox : {
@@ -96,6 +103,8 @@ const elements = {
 
   canvas : {
 
+    // NOTE - Not a Jquery selector
+    // so there is purposely no # symbol
     MAIN : 'sketch-holder'
   }
 };
@@ -128,7 +137,13 @@ const algorithms = {
 
     BFS    : 'bfs',
     DFS    : 'dfs',
-    HYBRID : 'hybrid'
+    HYBRID : 'hybrid',
+
+    subtract : {
+
+      VERTICAL   : 'vertical',
+      HORIZONTAL : 'horizontal'
+    }
   },
 
   solver : {

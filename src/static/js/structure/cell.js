@@ -192,6 +192,11 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  /**
+   * Determines whether or not
+   * a wall exists based on the bit
+   * mask.
+   */
   wall(mask) {
 
     return (this.bounds & mask) != 0;
@@ -199,6 +204,11 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  /**
+   * Determines whether or not
+   * there is a wall above
+   * this cell.
+   */
   top() {
 
     return this.wall(masks.set.TOP);
@@ -206,6 +216,11 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  /**
+   * Determines whether or not
+   * there is a wall to the right
+   * of this cell.
+   */
   right() {
 
     return this.wall(masks.set.RIGHT);
@@ -213,6 +228,11 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  /**
+   * Determines whether or not
+   * there is a wall the below
+   * this cell.
+   */
   bottom() {
 
     return this.wall(masks.set.BOTTOM);
@@ -220,6 +240,11 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  /**
+   * Determines whether or not
+   * there is a wall to the left
+   * of this cell.
+   */
   left() {
 
     return this.wall(masks.set.LEFT);
@@ -228,22 +253,27 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Draws the lines that represent the walls of this cell.
+   * Draws the lines that
+   * represent the walls of this cell.
    */
   outline(x, y, w) {
 
     stroke(BLACK);
     strokeWeight(LINE_WIDTH);
 
+    // There's a top wall
     if (this.top())
       line(x, y , x + w, y);
 
+    // There's a right wall
     if (this.right())
       line(x + w, y  , x + w, y + w);
 
+    // There's a bottom wall
     if (this.bottom())
       line(x + w, y + w, x , y + w);
 
+    // There's a left wall
     if (this.left())
       line(x , y + w, x , y);
   }
@@ -306,7 +336,9 @@ class Cell {
         return;
     }
 
-    // No heuristic
+    // If no heuristic,
+    // use Euclidian for
+    // gradient color map
     if (!heuristic) {
 
       heuristic = Cell.euclidian;
@@ -316,16 +348,17 @@ class Cell {
     let m = heuristic(source, target);
     let d = heuristic(this, target);
 
-    // How much percent are we?
+    // How much percent are we
+    // of the max distance?
     let ratio = d / m;
 
-    // Get a color that reflects that
+    // Get a color that reflects
     let color = Cell.makeColor(ratio);
 
-    // Color in the cell
+    // Color in this cell
     this.color(color);
 
-    // Mark it as colored
+    // Mark it as highlighted
     this.highlighted = true;
   }
 

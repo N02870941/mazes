@@ -1,7 +1,7 @@
 <html>
 
   <head>
-
+    
     <!-- SEO tags -->
     <title>Mazes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,8 +74,42 @@
         <!-- Label -->
         <div class="col">
           <span class='right-column' id="path-width-value-label">
-            Path Width: <span id="path-width-slider-value">3</span>
+            Path Width: <span id="path-width-slider-value"></span>
             <span>px</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Subtract vertical wall slider -->
+      <div class='row'>
+
+        <!-- Slider -->
+        <div class="col">
+          <input class='left-column' id="vertical-wall-slider" type="text"/>
+        </div>
+
+        <!-- Label -->
+        <div class="col">
+          <span class='right-column' id="vertical-wall-value-label">
+            Subtract vertical walls: <span id="vertical-wall-slider-value"></span>
+            <span>%</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Subtract horizontal wall slider -->
+      <div class='row'>
+
+        <!-- Slider -->
+        <div class="col">
+          <input class='left-column' id="horizontal-wall-slider" type="text"/>
+        </div>
+
+        <!-- Label -->
+        <div class="col">
+          <span class='right-column' id="horizontal-wall-value-label">
+            Subtract horizontal walls: <span id="horizontal-wall-slider-value"></span>
+            <span>%</span>
           </span>
         </div>
       </div>
@@ -85,13 +119,13 @@
 
         <!-- Slider -->
         <div class="col">
-          <input class='left-column' id="frame-rate-slider" type="text" data-slider-min="1" data-slider-max="120" data-slider-step="1" data-slider-value="60"/>
+          <input class='left-column' id="frame-rate-slider" type="text"/>
         </div>
 
         <!-- Label -->
         <div class="col">
           <span class='right-column' id="frame-rate-value-label">
-            Frame rate: <span id="frame-rate-slider-value">60</span>
+            Frame rate: <span id="frame-rate-slider-value"></span>
             <span>fps</span>
           </span>
         </div>
@@ -201,7 +235,7 @@
     <!-- Custom JS -->
 
     <!-- Custom data types -->
-    <script type="text/javascript" src="js/structure/set.js"></script>
+    <script type="text/javascript" src="js/structure/disjoint.js"></script>
     <script type="text/javascript" src="js/structure/stack.js"></script>
     <script type="text/javascript" src="js/structure/queue.js"></script>
     <script type="text/javascript" src="js/structure/heap.js"></script>
@@ -210,6 +244,8 @@
     <!-- Common functions and variables -->
     <script type="text/javascript" src="js/commons/variable.js"></script>
     <script type="text/javascript" src="js/commons/util.js"></script>
+    <script type="text/javascript" src="js/commons/gui.js"></script>
+    <script type="text/javascript" src="js/commons/init.js"></script>
 
     <!-- Solvers -->
     <script type="text/javascript" src="js/solve/highlight.js"></script>
@@ -224,10 +260,12 @@
     <script type="text/javascript" src="js/generate/dfs.js"></script>
     <script type="text/javascript" src="js/generate/hybrid.js"></script>
     <script type="text/javascript" src="js/generate/backtrack.js"></script>
+    <script type="text/javascript" src="js/generate/subtract.js"></script>
     <script type="text/javascript" src="js/generate/generate.js"></script>
 
-    <!-- Main sketch / event loop -->
-    <script type="text/javascript" src="js/sketch.js"></script>
+    <!-- GUI code -->
+    <script type="text/javascript" src="js/p5/setup.js"></script>
+    <script type="text/javascript" src="js/p5/draw.js"></script>
 
   </body>
 

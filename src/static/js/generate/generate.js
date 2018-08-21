@@ -49,13 +49,7 @@ function generate() {
  */
 function postGenerate() {
 
-  // for (let i = 0; i < 1000; i++) {
-  //
-  //   let x = floor(random(0, grid.length-1))
-  //   let y = x + 1
-  //
-  //   Cell.pave(grid[x], grid[y])
-  // }
+  // subtract.vertical(10000);
 
   // Trigger generated event
   prepared();

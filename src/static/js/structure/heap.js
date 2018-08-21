@@ -8,8 +8,8 @@ const parent = i => ((i + 1) >>> 1) - 1;
 //------------------------------------------------------------------------------
 
 /**
- * Heap specifically
- * for Cell objects.
+ * Heap specifically for Cell objects.
+ * This heap does not allow duplicate keys.
  */
 class Heap {
 
@@ -72,19 +72,13 @@ class Heap {
 
   /**
    * Adds new value to heap.
+   * Note, we jus decrease key
+   * so that we are not adding
+   * duplicate keys.
    */
   push(value) {
 
-    // Add to internal array
-    this._heap.push(value);
-
-    // Store it's index
-    this._map.set(value.key, this._heap.length-1);
-
-    // Bubble up
-    this._siftUp();
-
-    return this.size();
+    return this.decrease(value, value.cost);
   }
 
 //------------------------------------------------------------------------------
@@ -121,6 +115,8 @@ class Heap {
   /**
    * Decreases a cells priority
    * with a new specified cost.
+   * If the key is not in the heap,
+   * add it first.
    */
   decrease(cell, cost) {
 
@@ -138,7 +134,17 @@ class Heap {
     }
 
     // (Re)add it's reference
-    this.push(cell);
+
+    // Add to internal array
+    this._heap.push(cell);
+
+    // Store it's index
+    this._map.set(cell.key, this._heap.length-1);
+
+    // Bubble up
+    this._siftUp();
+
+    return this.size();
   }
 
 //------------------------------------------------------------------------------

@@ -185,7 +185,7 @@ For a given walk of the graph, the cost of a vertex `v_i` is always the cost of 
 
 # Generating with Randomized Depth/Breadth-first search
 
-The [Randomized Depth/Breadth-first search][wiki] follows:
+The [Randomized Depth / Breadth-first search][wiki] follows:
 
 1. Make the initial cell the current cell and mark it as visited
 2. While there are unvisited cells
@@ -204,7 +204,7 @@ Pseudo code follows:
 ```
 backtrack(src) {
 
-	var unvisited = []	// Stack or Queue
+	var unvisited = []  // Stack or Queue
 	var neighbors = []  // Array
 	var curr
 	var next
@@ -276,7 +276,7 @@ Generating the maze with BFS will result in a maze with much higher branching fa
 Finally, we can implement a hybrid where sometimes we push, and sometimes we pop. This will result in a maze that is less difficult than DFS, so still solvable by a human, but less predictable than BFS so it remains interesting. Altering between pushing and popping with 50:50 probability works well. Here we see, the path finding algorithm needed to visit a decent amount of nodes before finding the solution and the solution still seems "doable" by a human.
 
 ## Time complexity with DFS / BFS + backtracking
-As noted, we are using depth-first search to generate the graph. To *traverse* a graph
+As noted, we are using depth / breadth-first search to generate the graph. To *traverse* a graph
 we visit each node once, which is `O(|V|)`. But, we also must check all adjacent vertices per vertex.
 This we can do in `O(1)` time because edges are simply stored as boolean values per grid cell.
 We must check all four (top, bottom, left and right) edges, per vertex. This is `4 * O(1)`
@@ -285,8 +285,8 @@ which is still `O(1)`. So, we are doing `|V|` loop iterations, each of which doe
 **Generating the maze is done in** `O(|V|)` **or** `O(n²)` **time.**
 
 ## Space complexity with DFS / BFS + backtracking
-The only auxiliary space we use is the stack
-structure for queuing vertices for processing. In the worst case, the depth-first search
+The only auxiliary space we use is the stack / queue
+structure for queuing vertices for processing. In the worst case, the depth / breadth-first search
 traverses the entire graph without repetition / backtracking. This would mean all `|V|` vertices are
 pushed on to the stack before any popping (visiting) occurs.
 
@@ -386,7 +386,7 @@ Breadth-first search is another general purpose graph traversal algorithm. The i
 Pseudo code follows:
 
 ```javascript
-dfs(src, dst) {
+bfs(src, dst) {
 
 	var unvisited = []	// Queue
 	var neighbors = []	// Set
@@ -475,25 +475,34 @@ The only way we get value out of Dijkstra's algorithm is if there are **multiple
 Pseudo code follows:
 
 ```javascript
-dijkstra(src, dst) {
-
-    const infinity = Number.POSITIVE_INFINITY
+dijkstra(graph, src, dst) {
 
 	var unvisited = []	// Heap
 	var neighbors = []	// Set
 	var parents   = []	// Map
-	var costs     = []  // Map 
 	var current
 	var cost
+	
+	// Add to heap with initial cost of infinity
+	graph.verticies.forEach( v => {
+	
+		if (v != src) {
+		
+			v.cost = Infinity
+	
+			unvisited.push(v)
+		}
+	
+	})
 	
 	// The start vertex has no parent
 	parents[src.key] = null
 	
 	// Cost to get to start is 0
-	costs[src.key] = 0
+	src.cost = 0
 	
-	// Start with source
-	unvisited.push(src);
+	// Push source
+	unvisited.push(src)
 	
 	// Process each vertex
 	while (unvisited.length > 0) {
@@ -501,48 +510,39 @@ dijkstra(src, dst) {
 		// Get next vertex with min cost
 		current = unvisited.min()
 		
+		// Label is visited
+		current.visited = true
+		
 		// We found the target
 		if (current == dst) {
 			
 			break
 		}
-		
-		// If first time visiting
-		if (!current.visited) {
-		
-			// Label is visited
-			current.visited = true
-					
-			// Get it's neighbors
-			neighbors = current.neighbors()
-			
-			// Compute cost to go over one vertex
-			cost = costs[current.key] + 1
-			
-
-			neighbors.forEach( neighbor => {
-			
-				 // Do not revisit
-			    if (neighbor.visited) {
-			    
-			    	return
-			    }
-			    
-			    // Add to priority queue to continue graph traversal
-			    unvisited.add(neighbor)
-			
-				// Have we found a shorter path to this vertex?
-				if (cost < costs[neighbor.key] || infinity) {
 				
-					// Save new lowest cost
-					costs[neighbor.key] = cost
-					
-					// Update path map to indicate new parent vertex
-					parents[neighbor.key] = current.key
-				}
+		// Get it's neighbors
+		neighbors = current.neighbors()	
+		
+		// Discover each neighbor
+		neighbors.forEach( neighbor => {
+		
+			// Compute cost to go over one vertex
+			cost = current.cost + 1
+					  			
+			// Have we found a shorter path to this vertex?
+			if (cost < neighbor.cost) {
 			
-			})
-		}
+				// Update the cost
+				neighbor.cost = cost
+				
+				// Update path map to indicate new parent vertex
+				parents[neighbor.key] = current.key
+				
+				// Decrease the key of the neighbor with new cost
+		    	unvisited.decreaseKey(neighbor, cost)
+			}
+		
+		})
+
 	}
 	
 	// Backtrack using parent map to display path
@@ -578,9 +578,6 @@ Again, algorithms like Dijkstra's or A* have limited benefit if there is only on
 Pseudo code follows:
 
 ## Time complexity of A*
-
-
-**Solving the maze with A* is done in** `O(|V| * log |V|)` **time.**
 
 ## Space complexity of A*
 

@@ -10,13 +10,11 @@ function initDijkstra() {
   // vertices by their cost attribute
   queue = new Heap(comparator);
 
-  // Add each vertex to priority
-  // queue with an initial cost of Infinity
+  // Set initial cost of
+  // each cell to infinity
   grid.forEach(c => {
 
     c.cost = Infinity;
-
-    queue.push(c);
   });
 }
 
