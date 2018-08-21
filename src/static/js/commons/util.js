@@ -165,8 +165,6 @@ function prepared() {
 
   maze = canvas.get();
 
-  noLoop();
-
   buttons[keys.GENERATE].trigger(events.GENERATED);
   buttons[keys.SOLVE].trigger(events.GENERATED);
   buttons[keys.EXPORT].trigger(events.GENERATED);
@@ -184,8 +182,6 @@ function complete() {
   solved = true;
 
   solution = canvas.get();
-
-  noLoop();
 
   buttons[keys.GENERATE].trigger(events.SOLVED);
   buttons[keys.EXPORT].trigger(events.SOLVED);
@@ -354,14 +350,14 @@ const subtractions = {
 
     let number = sliders[keys.SUBTRACT_V].data(keys.SLIDER).getValue();
 
-    return (number / 100) * walls.vertical.length;
+    return (number / 100) * walls.vertical;
   },
 
   horizontal : () => {
 
     let number = sliders[keys.SUBTRACT_H].data(keys.SLIDER).getValue();
 
-    return (number / 100) * walls.horizontal.length;
+    return (number / 100) * walls.horizontal;
   }
 
 }

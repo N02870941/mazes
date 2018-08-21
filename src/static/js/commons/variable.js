@@ -238,14 +238,8 @@ let callbacks = [];
 // Numbers of walls in maze
 const walls = {
 
-  vertical   : [],
-  horizontal : [],
-
-  count : {
-
-    vertical   : 0,
-    horizontal : 0,
-  }
+  vertical   : 0,
+  horizontal : 0,
 };
 
 // Number of walls to subtract

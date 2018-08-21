@@ -6,9 +6,16 @@ function solve() {
   // Get solver
   let algorithm = solving();
 
-  // Set algorithm and callbacks
-  action    = algorithm;
-  callbacks = [noGradient, highlight, complete];
+  // Set solver algorithm
+  action = algorithm;
+
+  // Callbacks
+  callbacks = [
+    
+    noGradient,
+    highlight,
+    complete
+  ];
 
   // Initialize solver
   // by specified algorithm

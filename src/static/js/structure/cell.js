@@ -126,6 +126,38 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  verticalNeighbors() {
+
+    let potentials = this.potentials();
+    let neighbors  = [];
+
+    if (potentials[TOP])
+      neighbors.push(potentials[TOP]);
+
+    if (potentials[BOTTOM])
+      neighbors.push(potentials[BOTTOM]);
+
+    return neighbors
+  }
+
+//------------------------------------------------------------------------------
+
+  horizontalNeighbors() {
+
+    let potentials = this.potentials();
+    let neighbors  = [];
+
+    if (potentials[RIGHT])
+      neighbors.push(potentials[RIGHT]);
+
+    if (potentials[LEFT])
+      neighbors.push(potentials[LEFT]);
+
+    return neighbors
+  }
+
+//------------------------------------------------------------------------------
+
   /**
    * Returns all unvisited adjacent vertices.
    * This essentially filters ouf all adjacent
@@ -480,6 +512,9 @@ class Cell {
       v.bounds &= masks.unset.TOP;
     }
 
+    // Update view
+    u.clear()
+    v.clear()
   }
 
 //------------------------------------------------------------------------------

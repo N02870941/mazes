@@ -67,10 +67,6 @@ function make(discover, dequeue) {
     // these two adjacent vertices
     Cell.pave(current, next);
 
-    // Show in white
-    current.clear();
-    next.clear();
-
     // Highlight end of path
     current.highlight();
 

@@ -7,28 +7,11 @@ const subtract = {
    */
   vertical : () => {
 
-    // Done?
-    if (subtractionsV === 0) {
-
-      return true;
-    }
-
-    let x = floor(random(0, grid.length-1));
-    let y = x + 1;
-
-    // Only pave if in same row
-    if (grid[x].j === grid[y].j) {
-
-      Cell.pave(grid[x], grid[y]);
-
-      grid[x].clear();
-      grid[y].clear();
-    }
-
-    // Decrement
-    subtractionsV--;
-
-    return subtractionsV <= 0;
+    return takeaway(
+      (c) => c.horizontalNeighbors(),
+      ()  => subtractionsV--,
+      ()  => subtractionsV
+    )
   },
 
   /**
@@ -38,28 +21,50 @@ const subtract = {
    */
   horizontal : () => {
 
-    // Done?
-    if (subtractionsH <= 0) {
-
-      return true;
-    }
-
-    let x = floor(random(0, grid.length-1));
-    let y = x + (1 * cols);
-
-    if (grid[x] && grid[y] && grid[x].i === grid[y].i) {
-
-      Cell.pave(grid[x], grid[y]);
-
-      grid[x].clear();
-      grid[y].clear();
-
-    }
-
-    // Decrement
-    subtractionsH--;
-
-    return subtractionsH <= 0;
+    return takeaway(
+      (c) => c.verticalNeighbors(),
+      ()  => subtractionsH--,
+      ()  => subtractionsH
+    )
   }
 
 };
+
+/**
+ * Deletes walls between
+ * adjacent vertices.
+ */
+function takeaway(discover, decrement, count) {
+
+  // Dequeue
+  let u = queue.pop()
+
+  // If we have not
+  // visited vertex yet
+  if (!u.visited) {
+
+    // Mark it as visited
+    u.visited = true
+
+    // Get adjacent vertices
+    let neighbors = discover(u)
+
+    // Explore each neighbor
+    neighbors.forEach( v => {
+
+      // Do not revisit
+      if (v.visited) {
+
+        return
+      }
+
+      // Pave a wall
+      Cell.pave(u, v)
+
+      // Decrement counter
+      decrement()
+    });
+  }
+
+  return queue.size() === 0 || count() <= 0;
+}

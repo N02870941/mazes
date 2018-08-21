@@ -10,9 +10,6 @@ function init() {
   buttons[keys.SOLVE].prop(attributes.DISABLED, true);
   buttons[keys.EXPORT].prop(attributes.DISABLED, true);
 
-  // Get subtraction count from sliders
-  subtractionsV = subtractions.vertical();
-  subtractionsH = subtractions.horizontal();
 
   // TODO - Allow non-square mazes?
 
@@ -29,9 +26,13 @@ function init() {
   cols = floor(width  / w);
   rows = floor(height / w);
 
-  // Number of walls
-  walls.vertical   = [];
-  walls.horizontal = [];
+  // Get the number of walls
+  walls.vertical   = rows * (cols - 1)
+  walls.horizontal = cols * (rows - 1)
+
+  // Get subtraction count from sliders
+  subtractionsV = subtractions.vertical();
+  subtractionsH = subtractions.horizontal();
 
   generated = false;
   solved    = false;
