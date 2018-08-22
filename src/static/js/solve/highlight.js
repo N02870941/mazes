@@ -10,6 +10,9 @@ function highlight() {
   // Highlight current vertex
   current.shade();
 
+  // Increment walk count
+  walk.length++;
+
   // Get previous vertex
   current = parents.get(current.key);
 

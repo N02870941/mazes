@@ -14,7 +14,7 @@ class Cell {
     this.i = i;
     this.j = j;
 
-    // Default heuristc when
+    // Default heuristic when
     // finding the shortest path
     this.heuristic = 0;
 
@@ -95,17 +95,11 @@ class Cell {
 
     return [
 
-      // Top
-      grid[Cell.index(this.i,   this.j-1)],
-
-      // Right
-      grid[Cell.index(this.i+1, this.j)],
-
-      // Bottom
-      grid[Cell.index(this.i,   this.j+1)],
-
-      // Left
-      grid[Cell.index(this.i-1, this.j)]
+      // Top, right, bottom, left
+      Cell.get(this.i,   this.j-1),
+      Cell.get(this.i+1, this.j),
+      Cell.get(this.i,   this.j+1),
+      Cell.get(this.i-1, this.j),
     ];
   }
 
@@ -126,6 +120,10 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  /**
+   * Returns references to top
+   * and bottom adjacent cells.
+   */
   verticalNeighbors() {
 
     let potentials = this.potentials();
@@ -142,6 +140,10 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  /**
+   * Returns references to left
+   * and right adjacent cells.
+   */
   horizontalNeighbors() {
 
     let potentials = this.potentials();
@@ -172,30 +174,27 @@ class Cell {
 
 //------------------------------------------------------------------------------
 
+  /**
+   * Returns references to all adjacent
+   * vertices for which there exists no
+   * wall.
+   */
   x() {
 
     let n = this.potentials();
     let t = [];
 
-    if (n[TOP] && !this.top()) {
-
+    if (n[TOP] && !this.top())
       t.push(n[TOP])
-    }
 
-    if (n[RIGHT] && !this.right()) {
-
+    if (n[RIGHT] && !this.right())
       t.push(n[RIGHT])
-    }
 
-    if (n[BOTTOM] && !this.bottom()) {
-
+    if (n[BOTTOM] && !this.bottom())
       t.push(n[BOTTOM])
-    }
 
-    if (n[LEFT] && !this.left()) {
-
+    if (n[LEFT] && !this.left())
       t.push(n[LEFT])
-    }
 
     return t;
   }
@@ -338,7 +337,10 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   *
+   * Shades a cell in pink
+   * to highlight it. This is
+   * used to highlight a path
+   * or given walk of the maze.
    */
   shade() {
 
@@ -478,6 +480,17 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
+   * Get's a cell by row
+   * and column indices.
+   */
+  static get(i, j) {
+
+    return grid[Cell.index(i, j)]
+  }
+
+//------------------------------------------------------------------------------
+
+  /**
    * Removes the wall between two adjacent
    * vertices to create a path between them.
    */
@@ -598,4 +611,57 @@ class Cell {
     // Return random neighbor
     return neighbors[r];
   }
+
 }
+
+// TODO - Make sure this is useful
+
+/**
+ * The value of a cell is determined
+ * by it's cost value.
+ */
+Cell.prototype.valueOf = function() {
+
+  return this.cost;
+};
+
+/**
+ * Define readonly psuedo-static
+ * attributes called heuristics.
+ * https://stackoverflow.com/questions/32647215/declaring-static-constants-in-es6-classes
+ */
+Object.defineProperty(Cell, 'heuristics', {
+
+  value : {
+
+    // Euclidian distance
+    euclidian : (src, dst) => {
+
+      const a = dst.j - src.j;
+      const b = dst.i - src.i;
+
+      return sqrt( sq(a) + sq(b) );
+    },
+
+    // Manhattan distance
+    manhattan : (src, dst) => {
+
+      const a = abs(dst.j - src.j);
+      const b = abs(dst.i - src.i);
+
+      return a + b
+    },
+
+    comparators : {
+
+      standard      : (a, b) => a.heuristic + a.cost < b.heuristic + b.cost,
+      pureHeuristic : (a, b) => a.heuristic < b.heuristic,
+      pureCost      : (a, b) => a.cost < b.cost
+    }
+
+  },
+
+  writable     : false,
+  enumerable   : false,
+  configurable : false
+});

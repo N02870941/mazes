@@ -24,8 +24,9 @@ function draw() {
 
   // Call action(), if it
   // returns true, get the next
-  // action from queue, otherwise,
-  // just keep repeating
+  // action from queue, and jump
+  // back to the top. Otherwise,
+  // just keep repeating action()
   } else if (action()) {
 
     action = callbacks.shift();
@@ -46,6 +47,17 @@ function execute() {
 
   let exit;
 
+  // While there is an
+  // action to execute
+  // run it until it returns
+  // true. Once it returns true,
+  // dequeue the next action and
+  // jump back to the top. When
+  // the callback queue becomes
+  // empty we action will be
+  // undefined (falsy), and we
+  // will drop out of the outer loop
+  // and all tasks will be complete.
   while (action) {
 
     do {

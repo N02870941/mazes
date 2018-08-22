@@ -7,6 +7,11 @@ function setup() {
   // of draw()
   noLoop();
 
+  // Message
+  message[keys.MESSAGE]   = $(elements.message.MESSAGE);
+  message[keys.TITLE]     = $(elements.message.TITLE);
+  message[keys.CONTENT]   = $(elements.message.CONTENT);
+
   // Sliders
   sliders[keys.CANVAS]     = $(elements.slider.CANVAS).slider();
   sliders[keys.PATH]       = $(elements.slider.PATH).slider();
@@ -36,6 +41,9 @@ function setup() {
   buttons[keys.SOLVE]    = $(elements.button.SOLVE);
   buttons[keys.EXPORT]   = $(elements.button.EXPORT);
   buttons[keys.CANCEL]   = $(elements.button.CANCEL);
+
+  // Show default message
+  showMessage({content : strings.DEFAULT_MESSAGE, title : strings.DEFAULT_TITLE});
 
   // Set min and max, and default values for sliders
   initSlider(sliders[keys.CANVAS], MIN_CANVAS_WIDTH, MAX_CANVAS_WIDTH, DEFAULT_CANVAS_WIDTH);

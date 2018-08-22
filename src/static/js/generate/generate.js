@@ -9,16 +9,21 @@ function generate() {
   // Change main event
   // loop algorithm to
   // the specified generator
-  action = algorithm;
+  action = () => showMessage(strings.messages.generate.start);
 
   // List of callbacks
   callbacks = [
+    algorithm,
+    clean,
+    () => showMessage(strings.messages.generate.subtractV),
     loadFunda,
     subtract.vertical,
+    () => showMessage(strings.messages.generate.subtractH),
     loadFunda,
     subtract.horizontal,
     clean,
-    prepared
+    prepared,
+    () => showMessage(strings.messages.generate.done)
   ];
 
   // Initialize the grid

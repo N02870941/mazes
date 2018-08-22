@@ -41,7 +41,10 @@
 
       <!-- Message that say's what's happening -->
       <div class='row' id='message'>
-        <h4 style='display:none;' class='centered'></h4>
+        <div class='col'>
+          <h4 id='message-title'></h4>
+          <p id='message-content'></p>
+        </div>
       </div>
 
       <!-- Canvas width slider -->
@@ -164,6 +167,20 @@
 
       </div>
 
+      <!-- Dropdown for selecting Heuristic for A* -->
+      <div class='col algo-select' style='display:none;'>
+
+        <!-- Label -->
+        <div>Heuristic:</div>
+
+        <!-- Dropdown -->
+        <select id='dropdown-heuristic' class="form-control form-control-sm">
+          <option value='euclidian'>Euclidian Distance</option>
+          <option value='manhattan'>Manhattan Distance</option>
+          <option value='crossProduct'>Cross Product</option>
+        </select>
+      </div>
+
       <!-- Checkbox for highlighting the solution -->
       <div class='row'>
         <div class='col form-check'>
@@ -240,10 +257,19 @@
     <script type="text/javascript" src="js/structure/stack.js"></script>
     <script type="text/javascript" src="js/structure/queue.js"></script>
     <script type="text/javascript" src="js/structure/heap.js"></script>
-    <script type="text/javascript" src="js/structure/cell.js"></script>
 
-    <!-- Utility functions + variables -->
-    <script type="text/javascript" src="js/commons/variable.js"></script>
+    <!-- Maze structures -->
+    <script type="text/javascript" src="js/maze/cell.js"></script>
+    <script type="text/javascript" src="js/maze/wall.js"></script>
+    <script type="text/javascript" src="js/maze/maze.js"></script>
+
+    <!-- Variables + constants -->
+    <script type="text/javascript" src="js/value/dom.js"></script>
+    <script type="text/javascript" src="js/value/string.js"></script>
+    <script type="text/javascript" src="js/value/variable.js"></script>
+    <script type="text/javascript" src="js/value/state.js"></script>
+
+    <!-- Utility functions -->
     <script type="text/javascript" src="js/commons/util.js"></script>
     <script type="text/javascript" src="js/commons/gui.js"></script>
     <script type="text/javascript" src="js/commons/init.js"></script>

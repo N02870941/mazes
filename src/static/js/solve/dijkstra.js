@@ -2,13 +2,10 @@
  * One-time setup for Dijkstra's algorithm.
  */
 function initDijkstra() {
-
-  // Comparator that compares cell by cost
-  let comparator = (a, b) => a.cost < b.cost;
-
+  
   // Create heap that compares
   // vertices by their cost attribute
-  queue = new Heap(comparator);
+  queue = new Heap(Cell.heuristics.comparators.pureCost);
 }
 
 //------------------------------------------------------------------------------
@@ -50,6 +47,7 @@ function dijkstra() {
       parents.set(v.key, u);
 
       // Update cost, and decrease key
+      // If the key is new, a push() occurs
       queue.decrease(v, cost);
     }
 

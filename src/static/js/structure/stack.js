@@ -1,11 +1,20 @@
+/**
+ * FILO structure.
+ */
 class Stack {
 
+  /**
+   * Constructs an empty stack.
+   */
   constructor() {
 
     this.stack  = [];
     this.length = 0;
   }
 
+  /**
+   * Push a value.
+   */
   push(value) {
 
     this.length++;
@@ -13,6 +22,9 @@ class Stack {
     this.stack.push(value);
   }
 
+  /**
+   * Pop a value.
+   */
   pop() {
 
     if (this.length === 0) {
@@ -25,6 +37,9 @@ class Stack {
     return this.stack.pop();
   }
 
+  /**
+   * Empties the stack.
+   */
   clear() {
 
     this.stack.length = 0;

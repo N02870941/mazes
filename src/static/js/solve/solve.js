@@ -7,14 +7,16 @@ function solve() {
   let algorithm = solving();
 
   // Set solver algorithm
-  action = algorithm;
+  action = () => showMessage(strings.messages.solve.start);
 
   // Callbacks
   callbacks = [
-    
+    algorithm,
     noGradient,
+    () => showMessage(strings.messages.solve.reconstructing),
     highlight,
-    complete
+    complete,
+    () => showMessage({title:'Solved!', content: `${walk.algorithm.name} solved maze in ${walk.length} steps.`})
   ];
 
   // Initialize solver
@@ -22,7 +24,7 @@ function solve() {
   solverInit(algorithm);
 
   // Reset grid
-  reset();
+  reset(algorithm);
 
   // Start the process
   start();
@@ -49,7 +51,11 @@ function solve() {
 /**
  * Reset the grid.
  */
-function reset() {
+function reset(algo) {
+
+  walk.visits    = 0;
+  walk.length    = 0;
+  walk.algorithm = algo;
 
   // Reset the grid
   grid.forEach(c => {

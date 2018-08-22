@@ -1,21 +1,25 @@
-const SET_ATTRIBUTE = 'setAttribute';
-
 /**
  * Sets min, max, initial value for a
  *jquery  bootstrap-slider object reference.
  */
-let initSlider = (slider, min, max, initial) => {
+function initSlider(slider, min, max, initial) {
 
-  slider.slider(SET_ATTRIBUTE, attributes.MIN, min);
-  slider.slider(SET_ATTRIBUTE, attributes.MAX, max);
-  slider.slider(SET_ATTRIBUTE, attributes.VALUE, initial);
+  slider.slider(attributes.SET_ATTRIBUTE, attributes.MIN, min);
+  slider.slider(attributes.SET_ATTRIBUTE, attributes.MAX, max);
+  slider.slider(attributes.SET_ATTRIBUTE, attributes.VALUE, initial);
   slider.slider(events.REFRESH);
 };
 
+//------------------------------------------------------------------------------
+
 /**
- * Connects a slider to a label.
+ * Connects a slider to a label with
+ * an optional transformer function that
+ * performs data type conversion and an
+ * optional callback that takes in the transformed
+ * value.
  */
-let connectSliderLabel = ({
+function connectSliderLabel({
 
     // Named parameters + default values
     slider      = undefined,
@@ -23,7 +27,7 @@ let connectSliderLabel = ({
     transformer = (v) => v,
     callback    = (v) => {}
 
-  }) => {
+  }) {
 
   // On slide event
   slider.on(events.SLIDE, (e) => {
@@ -45,32 +49,38 @@ let connectSliderLabel = ({
   label.text(data);
 };
 
-let initButton = ({
+//------------------------------------------------------------------------------
+
+/**
+ * Initializes a button by setting
+ * the onclick event as well as
+ * attaches event listeners that tell
+ * the button when to activate and
+ * deactivate.
+ */
+function initButton({
 
   button  = undefined,
   onclick = () => {},
   enable  = [],
   disable = []
 
-}) => {
+}) {
 
+  // Set on click
   button.click(onclick);
 
+  // For all events in disable array,
+  // if fired, disable this button
   disable.forEach(e => {
 
-    button.on(e, function(event) {
-
-      button.prop(attributes.DISABLED, true);
-    });
-
+    button.on(e, (event) => button.prop(attributes.DISABLED, true));
   });
 
+  // For all events in enable array,
+  // if fired, enable this button
   enable.forEach(e => {
 
-    button.on(e, function(event) {
-
-      button.prop(attributes.DISABLED, false);
-    });
-
+    button.on(e, (event) => button.prop(attributes.DISABLED, false));
   });
 };

@@ -398,3 +398,18 @@ function clean() {
 
   return true;
 }
+
+//------------------------------------------------------------------------------
+
+/**
+ * Displays a message on screen
+ * to notify the user the results
+ * of an operation.
+ */
+function showMessage({title = '', content = ''}) {
+
+  message[keys.TITLE].text(title)
+  message[keys.CONTENT].text(content)
+
+  return true;
+}

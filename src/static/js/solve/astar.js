@@ -1,10 +1,21 @@
 // TODO - http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
 // TODO - http://theory.stanford.edu/~amitp/GameProgramming/index.html
 
+/**
+ * Initializes the 'open set' min priority
+ * binary heap with the specified comparator
+ * for minimizing f(n) = g(n) + h(n).
+ *
+ * We set the initial heurstic value of each
+ * cell 0, and as we go through the maze, we
+ * will update each one upon discovery.
+ */
 function initAStar() {
 
+  // TODO - Get heurstic from drop down
+
   // Comparator for heap that minimizes: f(n) = g(n) + h(n)
-  let comparator = (a, b) => a.heuristic + a.cost < b.heuristic + b.cost;
+  let comparator = Cell.heuristics.comparators.standard;
 
   // Create new heap
   queue = new Heap(comparator);
@@ -26,10 +37,22 @@ function initAStar() {
  */
 function aStar() {
 
-  // Extract min g(n) + h(n) value
+  return informedSearch(Cell.heuristics.euclidian);
+}
+
+//------------------------------------------------------------------------------
+
+/**
+ * Runs A* with a specified heuristic.
+ */
+function informedSearch(heuristic) {
+
+  // Extract min by minimizing
+  // f(n) = g(n) + h(n)
   let u = queue.pop();
 
-  // This cell is the target
+  // This cell is the target,
+  // so we have no more work to do
   if (Cell.equals(target, u)) {
 
     current = u;
@@ -40,7 +63,7 @@ function aStar() {
   // Mark as visited
   u.visited = true;
 
-  // Highlight
+  // Highlight it
   u.gradient();
 
   // Get neighbors
@@ -50,10 +73,8 @@ function aStar() {
   neighbors.forEach( v => {
 
     // Do no revisit visited nodes
-    if (v.visited) {
-
+    if (v.visited)
       return;
-    }
 
     // Compute alternative cost
     let cost = u.cost + 1;
@@ -61,16 +82,16 @@ function aStar() {
     // A better path was found
     if (cost < v.cost) {
 
-      // Store in predecessors map
+      // Update predecessors map
       parents.set(v.key, u);
 
-      // Update cost, g(n)
+      // Update actual cost, g(n)
       v.cost = cost;
 
-      // Update heuristic, h(n)
-      v.heuristic = Cell.euclidian(v, target);
+      // Update heuristic cost, h(n)
+      v.heuristic = heuristic(v, target);
 
-      // Enqueue for processing
+      // Add to heap to visit later
       queue.push(v);
     }
 

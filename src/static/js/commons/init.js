@@ -3,9 +3,11 @@
  */
 function init() {
 
+  // TODO - Abstract to function in util.js
   const width = sliders[keys.CANVAS].data(keys.SLIDER).getValue();
   const w     = sliders[keys.PATH].data(keys.SLIDER).getValue();
 
+  // TODO - Abstract to function in util.js
   buttons[keys.GENERATE].prop(attributes.DISABLED, false);
   buttons[keys.SOLVE].prop(attributes.DISABLED, true);
   buttons[keys.EXPORT].prop(attributes.DISABLED, true);
