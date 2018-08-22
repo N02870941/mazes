@@ -2,11 +2,13 @@
  * Sets min, max, initial value for a
  *jquery  bootstrap-slider object reference.
  */
-function initSlider(slider, min, max, initial) {
+function initSlider({key=undefined, min=undefined, max=undefined, def=undefined}) {
+
+  let slider = sliders[key]
 
   slider.slider(attributes.SET_ATTRIBUTE, attributes.MIN, min);
   slider.slider(attributes.SET_ATTRIBUTE, attributes.MAX, max);
-  slider.slider(attributes.SET_ATTRIBUTE, attributes.VALUE, initial);
+  slider.slider(attributes.SET_ATTRIBUTE, attributes.VALUE, def);
   slider.slider(events.REFRESH);
 };
 
@@ -22,12 +24,15 @@ function initSlider(slider, min, max, initial) {
 function connectSliderLabel({
 
     // Named parameters + default values
-    slider      = undefined,
-    label       = undefined,
+    sliderKey      = undefined,
+    labelKey      = undefined,
     transformer = (v) => v,
     callback    = (v) => {}
 
   }) {
+
+    let slider = sliders[sliderKey];
+    let label  = labels[labelKey];
 
   // On slide event
   slider.on(events.SLIDE, (e) => {
@@ -60,12 +65,13 @@ function connectSliderLabel({
  */
 function initButton({
 
-  button  = undefined,
-  onclick = () => {},
-  enable  = [],
-  disable = []
+    key  = undefined,
+    onclick = () => {},
+    enable  = [],
+    disable = []
+  }) {
 
-}) {
+  let button = buttons[key]
 
   // Set on click
   button.click(onclick);
@@ -84,3 +90,17 @@ function initButton({
     button.on(e, (event) => button.prop(attributes.DISABLED, false));
   });
 };
+
+//------------------------------------------------------------------------------
+
+function initElement({map=undefined, key=undefined, selector=undefined, initializer=undefined}) {
+
+  map[key] = initializer ? initializer(selector) : $(selector)
+}
+
+//------------------------------------------------------------------------------
+
+function initAgorithm({map=undefined, key=undefined, algorithm=undefined}) {
+
+  map[key] = algorithm
+}

@@ -28,6 +28,7 @@ const DEFAULT_PATH_WIDTH = MIN_PATH_WIDTH;
 // of UI elements
 const keys = {
 
+  CANCEL     : 'cancel',
   CANVAS     : 'canvas',
   PATH       : 'path',
   WIDTH      : 'width',

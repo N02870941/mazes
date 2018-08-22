@@ -7,117 +7,108 @@ function setup() {
   // of draw()
   noLoop();
 
-  // Message
-  message[keys.MESSAGE]   = $(elements.message.MESSAGE);
-  message[keys.TITLE]     = $(elements.message.TITLE);
-  message[keys.CONTENT]   = $(elements.message.CONTENT);
+  // HTML elements to create references for
+  let elementsToSelect = [
 
-  // Sliders
-  sliders[keys.CANVAS]     = $(elements.slider.CANVAS).slider();
-  sliders[keys.PATH]       = $(elements.slider.PATH).slider();
-  sliders[keys.FRAMES]     = $(elements.slider.FRAMES).slider();
-  sliders[keys.SUBTRACT_V] = $(elements.slider.SUBTRACT_V).slider();
-  sliders[keys.SUBTRACT_H] = $(elements.slider.SUBTRACT_H).slider();
+    // Message
+    {map : message, key : keys.MESSAGE,      selector : elements.message.MESSAGE},
+    {map : message, key : keys.TITLE,        selector : elements.message.TITLE},
+    {map : message, key : keys.CONTENT,      selector : elements.message.CONTENT},
 
-  // Labels
-  labels[keys.CANVAS]     = $(elements.label.CANVAS_W);
-  labels[keys.WIDTH]      = $(elements.label.CANVAS_W);
-  labels[keys.HEIGHT]     = $(elements.label.CANVAS_H);
-  labels[keys.PATH]       = $(elements.label.PATH);
-  labels[keys.FRAMES]     = $(elements.label.FRAMES);
-  labels[keys.SUBTRACT_V] = $(elements.label.SUBTRACT_V);
-  labels[keys.SUBTRACT_H] = $(elements.label.SUBTRACT_H);
+    // Sliders
+    {map : sliders, key : keys.CANVAS,       selector : elements.slider.CANVAS,     initializer : s => $(s).slider()},
+    {map : sliders, key : keys.PATH,         selector : elements.slider.PATH,       initializer : s => $(s).slider()},
+    {map : sliders, key : keys.FRAMES,       selector : elements.slider.FRAMES,     initializer : s => $(s).slider()},
+    {map : sliders, key : keys.SUBTRACT_V,   selector : elements.slider.SUBTRACT_V, initializer : s => $(s).slider()},
+    {map : sliders, key : keys.SUBTRACT_H,   selector : elements.slider.SUBTRACT_H, initializer : s => $(s).slider()},
 
-  // Dropowns
-  dropdowns[keys.GENERATE] = $(elements.dropdown.GENERATE);
-  dropdowns[keys.SOLVE]    = $(elements.dropdown.SOLVE);
+    // Labels
+    {map : labels,  key : keys.CANVAS,       selector : elements.label.CANVAS_W},
+    {map : labels,  key : keys.WIDTH,        selector : elements.label.CANVAS_W},
+    {map : labels,  key : keys.HEIGHT,       selector : elements.label.CANVAS_H},
+    {map : labels,  key : keys.PATH,         selector : elements.label.PATH},
+    {map : labels,  key : keys.FRAMES,       selector : elements.label.FRAMES},
+    {map : labels,  key : keys.SUBTRACT_V,   selector : elements.label.SUBTRACT_V},
+    {map : labels,  key : keys.SUBTRACT_H,   selector : elements.label.SUBTRACT_H},
 
-  // Checkboxes
-  checkboxes[keys.HIGHLIGHT] = $(elements.checkbox.HIGHLIGHT);
-  checkboxes[keys.ANIMATE]   = $(elements.checkbox.ANIMATE);
+    // Dropdowns
+    {map : dropdowns, key : keys.GENERATE,   selector : elements.dropdown.GENERATE},
+    {map : dropdowns, key : keys.SOLVE,      selector : elements.dropdown.SOLVE},
 
-  // Buttons
-  buttons[keys.GENERATE] = $(elements.button.GENERATE);
-  buttons[keys.SOLVE]    = $(elements.button.SOLVE);
-  buttons[keys.EXPORT]   = $(elements.button.EXPORT);
-  buttons[keys.CANCEL]   = $(elements.button.CANCEL);
+    // Checkboxes
+    {map : checkboxes, key : keys.HIGHLIGHT, selector : elements.checkbox.HIGHLIGHT},
+    {map : checkboxes, key : keys.ANIMATE,   selector : elements.checkbox.ANIMATE},
 
-  // Show default message
-  showMessage({content : strings.DEFAULT_MESSAGE, title : strings.DEFAULT_TITLE});
+    // Buttons
+    {map : buttons, key : keys.GENERATE,     selector : elements.button.GENERATE},
+    {map : buttons, key : keys.SOLVE,        selector : elements.button.SOLVE},
+    {map : buttons, key : keys.EXPORT,       selector : elements.button.EXPORT},
+    {map : buttons, key : keys.CANCEL,       selector : elements.button.CANCEL},
+  ];
 
-  // Set min and max, and default values for sliders
-  initSlider(sliders[keys.CANVAS], MIN_CANVAS_WIDTH, MAX_CANVAS_WIDTH, DEFAULT_CANVAS_WIDTH);
-  initSlider(sliders[keys.PATH], MIN_PATH_WIDTH, MAX_PATH_WIDTH, DEFAULT_PATH_WIDTH);
-  initSlider(sliders[keys.SUBTRACT_V], 0, 100, 0);
-  initSlider(sliders[keys.SUBTRACT_H], 0, 100, 0);
-  initSlider(sliders[keys.FRAMES], MIN_FRAME_RATE, MAX_FRAME_RATE, MAX_FRAME_RATE);
+  // Sliders to initialize
+  let slidersToInit = [
 
-  // Connect sliders to labels
-  connectSliderLabel({slider : sliders[keys.CANVAS],     label : labels[keys.WIDTH]});
-  connectSliderLabel({slider : sliders[keys.CANVAS],     label : labels[keys.HEIGHT]});
-  connectSliderLabel({slider : sliders[keys.PATH],       label : labels[keys.PATH]});
-  connectSliderLabel({slider : sliders[keys.SUBTRACT_V], label : labels[keys.SUBTRACT_V]});
-  connectSliderLabel({slider : sliders[keys.SUBTRACT_H], label : labels[keys.SUBTRACT_H]});
-  connectSliderLabel({slider : sliders[keys.FRAMES],     label : labels[keys.FRAMES], transformer : (v) => abs(int(v)), callback : frameRate});
+    {key : keys.CANVAS,     min : MIN_CANVAS_WIDTH, max : MAX_CANVAS_WIDTH, def : DEFAULT_CANVAS_WIDTH},
+    {key : keys.PATH,       min : MIN_PATH_WIDTH,   max : MAX_PATH_WIDTH,   def : DEFAULT_PATH_WIDTH},
+    {key : keys.SUBTRACT_V, min : 0,                max : 100,              def : 0},
+    {key : keys.SUBTRACT_H, min : 0,                max : 100,              def : 0},
+    {key : keys.FRAMES,     min : MIN_FRAME_RATE,   max : MAX_FRAME_RATE,   def : MAX_FRAME_RATE}
+  ];
 
-  // Generate button
-  initButton({
-    button  : buttons[keys.GENERATE],
-    onclick : generate,
-    disable : [events.SOLVING],
-    enable  : [events.GENERATED, events.SOLVED]
-  });
+  // Slider label pairs to connect
+  let sliderLabelsToConnect = [
 
-  // Solve button
-  initButton({
-    button  : buttons[keys.SOLVE],
-    onclick : solve,
-    disable : [events.GENERATING],
-    enable  : [events.GENERATED]
-  });
+    {sliderKey : keys.CANVAS,     labelKey : keys.WIDTH},
+    {sliderKey : keys.CANVAS,     labelKey : keys.HEIGHT},
+    {sliderKey : keys.PATH,       labelKey : keys.PATH},
+    {sliderKey : keys.SUBTRACT_V, labelKey : keys.SUBTRACT_V},
+    {sliderKey : keys.SUBTRACT_H, labelKey : keys.SUBTRACT_H},
+    {sliderKey : keys.FRAMES,     labelKey : keys.FRAMES, transformer : (v) => abs(int(v)), callback : frameRate}
+  ];
 
-  // Export button
-  initButton({
-    button  : buttons[keys.EXPORT],
-    onclick : download,
-    disable : [events.GENERATING, events.SOLVING],
-    enable  : [events.GENERATED,  events.SOLVED]
-  });
+  // Buttons to initialize
+  let buttonsToInit = [
 
-  // Cancel button
-  initButton({
-    button  : buttons[keys.CANCEL],
-    onclick : cancel,
-    disable : [],
-    enable  : []
-  });
+    {key  : keys.GENERATE, onclick : generate, disable : [events.SOLVING],                    enable  : [events.GENERATED, events.SOLVED]},
+    {key  : keys.SOLVE,    onclick : solve,    disable : [events.GENERATING],                 enable  : [events.GENERATED]},
+    {key  : keys.EXPORT,   onclick : download, disable : [events.GENERATING, events.SOLVING], enable  : [events.GENERATED,  events.SOLVED]},
+    {key  : keys.CANCEL,   onclick : cancel,   disable : [],                                  enable  : []}
+  ];
 
-  /*
-   * Here we are are creating key-value
-   * pairs between algorithm functions as
-   * values and their string names as keys.
-   * This way we can lookup function by name
-   * and always get the right algorithm based
-   * on the value in the dropdown.
-   */
+  // Algorithms for generating, solving, etc
+  let algorithmsToInit = [
 
-  // Generator algorithms
-  generators[algorithms.generator.BFS]    = bfs;
-  generators[algorithms.generator.DFS]    = dfs;
-  generators[algorithms.generator.HYBRID] = hybrid;
+    // Generators
+    {map : generators, key : algorithms.generator.BFS,    algorithm : bfs},
+    {map : generators, key : algorithms.generator.DFS,    algorithm : dfs},
+    {map : generators, key : algorithms.generator.HYBRID, algorithm : hybrid},
 
-  // Auxiliary generators for subtracting walls / create cycles in graph
-  generators[algorithms.generator.subtract.HORIZONTAL] = subtract.horizontal;
-  generators[algorithms.generator.subtract.VERTICAL]   = subtract.vertical;
+    // Auxiliary generators
+    {map : generators, key : algorithms.generator.subtract.HORIZONTAL, algorithm : subtract.horizontal},
+    {map : generators, key : algorithms.generator.subtract.VERTICAL,   algorithm : subtract.vertical},
 
-  // Solver algorithms
-  solvers[algorithms.solver.DFS]      = DFS;
-  solvers[algorithms.solver.BFS]      = BFS;
-  solvers[algorithms.solver.A_STAR]   = aStar;
-  solvers[algorithms.solver.DIJKSTRA] = dijkstra;
+    // Solvers
+    {map : solvers, key : algorithms.solver.DFS,      algorithm : DFS},
+    {map : solvers, key : algorithms.solver.BFS,      algorithm : BFS},
+    {map : solvers, key : algorithms.solver.A_STAR,   algorithm : aStar},
+    {map : solvers, key : algorithms.solver.DIJKSTRA, algorithm : dijkstra},
 
-  // Visualizer algorithms
-  visualizers[algorithms.visualizer.HIGHLIGHT] = highlight;
+    // Visualizers
+    {map : visualizers, key : algorithms.visualizer.HIGHLIGHT, algorithm : highlight}
+  ];
+
+  let initMaps = [
+
+    {array : elementsToSelect,      initializer : initElement},
+    {array : slidersToInit,         initializer : initSlider},
+    {array : sliderLabelsToConnect, initializer : connectSliderLabel},
+    {array : buttonsToInit,         initializer : initButton},
+    {array : algorithmsToInit,      initializer : initAgorithm}
+  ];
+
+  // Initialize all maps
+  initMaps.forEach(e => e.array.forEach(v => e.initializer(v)))
 
   // Grid
   init();

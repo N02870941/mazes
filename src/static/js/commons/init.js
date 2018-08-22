@@ -3,6 +3,9 @@
  */
 function init() {
 
+  // Show default message
+  showMessage({content : strings.DEFAULT_MESSAGE, title : strings.DEFAULT_TITLE});
+
   // TODO - Abstract to function in util.js
   const width = sliders[keys.CANVAS].data(keys.SLIDER).getValue();
   const w     = sliders[keys.PATH].data(keys.SLIDER).getValue();

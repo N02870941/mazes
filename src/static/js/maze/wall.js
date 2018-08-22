@@ -1,7 +1,8 @@
 /**
- * A wall is essentially
- * an edge in the graph that
- * connects to cells (vertices).
+ * A wall is an edge in the graph
+ * that connects to cells (vertices).
+ * Weight is implied as the distance
+ * between adjacetn cells is always 1.
  */
 class Wall {
 
@@ -24,10 +25,10 @@ class Wall {
     // Make sure they are adjacent
     if (x === y || x !== 1 || y !== 1) {
 
-      let msg = 'Cells must be adjacent - no diagonals'
-
-      throw new Error(msg)
+      throw new Error('Cells must be adjacent - no diagonals')
     }
+
+    // TODO - Determine if there is actually a dividing wall
 
     this.u = u
     this.v = v
