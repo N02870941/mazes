@@ -78,3 +78,12 @@ const events = {
   SOLVED     : 'solved',
   SOLVING    : 'solving'
 };
+
+// UI element
+// associative arrays
+const message    = [];
+const buttons    = [];
+const sliders    = [];
+const labels     = [];
+const dropdowns  = [];
+const checkboxes = [];

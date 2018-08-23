@@ -4,7 +4,7 @@
 function solve() {
 
   // Get solver
-  let algorithm = solving();
+  let algorithm = trigger.solving();
 
   // Set solver algorithm
   action = () => showMessage(strings.messages.solve.start);
@@ -15,8 +15,8 @@ function solve() {
     noGradient,
     () => showMessage(strings.messages.solve.reconstructing),
     maze.highlight,
-    complete,
-    () => showMessage({title:'Solved!', content: `${maze.walk.algorithm.name} solved maze in ${maze.walk.length} steps.`})
+    trigger.complete,
+    () => showMessage(strings.messages.solve.getWalkInfo())
   ];
 
   // Initialize solver
@@ -38,10 +38,8 @@ function solve() {
    */
   function noGradient() {
 
-    if (!highlighted()) {
-
-      clean();
-    }
+    if (!highlighted())
+      maze.clean();
 
     return true;
   }
@@ -101,4 +99,6 @@ function solverInit(algorithm) {
     default:
       break;
   }
+
+  return true
 }

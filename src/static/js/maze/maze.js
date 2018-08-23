@@ -15,7 +15,7 @@ const Maze = (() => {
     let source
     let target
 
-    // Integers
+    // Row, col count
     let r
     let c
 
@@ -58,8 +58,7 @@ const Maze = (() => {
     return {
 
       generated : false,
-
-      solved : false,
+      solved    : false,
 
       // Map for reconstructing a path
       parents : new Map(),
@@ -72,6 +71,9 @@ const Maze = (() => {
         length    : 0,
         algorithm : undefined
       },
+
+      // Default heuristic is euclidian distance
+      heuristic : Cell.heuristics.euclidian,
 
       /**
        * Creates new grid
@@ -88,6 +90,13 @@ const Maze = (() => {
         grid.length = 0
         this.parents.clear()
 
+        // It's just a grid to start with
+        this.generated = false
+        this.solved    = false
+
+        // Walk reset to 0
+        this.resetWalk()
+
         // Rows
         for (let j = 0; j < r; j++) {
 
@@ -95,21 +104,22 @@ const Maze = (() => {
           for (let i = 0; i < c; i++) {
 
             // New cell
-            grid.push(new Cell(i, j, wid));
+            let t = new Cell(i, j, wid)
+
+            t.clear()
+
+            grid.push(t)
           }
         }
 
         // Set default src and tgt
         source = grid[0]
         target = grid[grid.length-1]
-
-        // It's just a grid to start with
-        this.generated = false
-        this.solved    = false
-
-        this.resetWalk()
       },
 
+      /**
+       *
+       */
       resetWalk : function(algo) {
 
         this.walk.visits    = 0
@@ -207,6 +217,20 @@ const Maze = (() => {
           c.clear()
         })
 
+      },
+
+      /**
+       * Removes any highlighting
+       * from all cells in grid.
+       */
+      clean : function() {
+
+        grid.forEach( c => {
+
+          c.clear()
+        })
+
+        return true
       },
 
       // Highlights a path

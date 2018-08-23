@@ -100,11 +100,11 @@ function setup() {
 
   let initMaps = [
 
-    {array : elementsToSelect,      initializer : initElement},
-    {array : slidersToInit,         initializer : initSlider},
-    {array : sliderLabelsToConnect, initializer : connectSliderLabel},
-    {array : buttonsToInit,         initializer : initButton},
-    {array : algorithmsToInit,      initializer : initAgorithm}
+    {array : elementsToSelect,      initializer : gui.initElement},
+    {array : slidersToInit,         initializer : gui.initSlider},
+    {array : sliderLabelsToConnect, initializer : gui.connectSliderLabel},
+    {array : buttonsToInit,         initializer : gui.initButton},
+    {array : algorithmsToInit,      initializer : gui.initAgorithm}
   ];
 
   // Initialize all maps

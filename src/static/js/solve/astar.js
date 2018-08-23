@@ -6,13 +6,13 @@
  * binary heap with the specified comparator
  * for minimizing f(n) = g(n) + h(n).
  *
- * We set the initial heurstic value of each
+ * We set the initial heuristic value of each
  * cell 0, and as we go through the maze, we
  * will update each one upon discovery.
  */
 function initAStar() {
 
-  // TODO - Get heurstic from drop down
+  // TODO - Get heuristic from drop down
 
   // Comparator for heap that minimizes: f(n) = g(n) + h(n)
   let comparator = Cell.heuristics.comparators.standard;
@@ -23,17 +23,7 @@ function initAStar() {
   // Set the initial heuristic
   let src = maze.source()
 
-  src.heuristic = Cell.euclidian(src, maze.target());
-}
-
-//------------------------------------------------------------------------------
-
-/**
- * A* main loop.
- */
-function aStar() {
-
-  return informedSearch(Cell.heuristics.euclidian);
+  src.heuristic = maze.heuristic(src, maze.target());
 }
 
 //------------------------------------------------------------------------------
@@ -41,7 +31,7 @@ function aStar() {
 /**
  * Runs A* with a specified heuristic.
  */
-function informedSearch(heuristic) {
+function aStar() {
 
   // Extract min by minimizing
   // f(n) = g(n) + h(n)
@@ -85,7 +75,7 @@ function informedSearch(heuristic) {
       v.cost = cost;
 
       // Update heuristic cost, h(n)
-      v.heuristic = heuristic(v, maze.target());
+      v.heuristic = maze.heuristic(v, maze.target());
 
       // Add to heap to visit later
       queue.push(v);

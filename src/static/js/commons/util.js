@@ -10,30 +10,6 @@ async function sleep(ms) {
 //------------------------------------------------------------------------------
 
 /**
- * Return min value in array.
- */
-function minimum(array) {
-
-  let min = 0;
-
-  let i = 0;
-
-  while (i < array.length) {
-
-    if (array[i] < array[min]) {
-
-      min = i;
-    }
-
-    i++;
-  }
-
-  return min;
-}
-
-//------------------------------------------------------------------------------
-
-/**
  * Displays an alert dialog
  * with a specified message.
  */
@@ -115,83 +91,6 @@ function unprepared() {
 //------------------------------------------------------------------------------
 
 /**
- * Triggers generating event.
- */
-function generating() {
-
-  // Disable appropriate buttons
-  buttons[keys.SOLVE].trigger(events.GENERATING);
-  buttons[keys.EXPORT].trigger(events.GENERATING);
-
-  // Flag to false
-  maze.generated = false;
-
-  // Get generator algorithm name
-  let val = dropdowns[keys.GENERATE].val();
-
-  // Return correct algorithm
-  return generators[val];
-}
-
-//------------------------------------------------------------------------------
-
-/**
- * Triggers solving event.
- */
-function solving() {
-
-  // Disable appropriate buttons
-  buttons[keys.GENERATE].trigger(events.SOLVING);
-  buttons[keys.EXPORT].trigger(events.SOLVING);
-
-  // Flag to false
-  maze.solved = false;
-
-  // Get solver algorithm name
-  let val = dropdowns[keys.SOLVE].val();
-
-  // Return correct algorithm
-  return solvers[val];
-}
-
-//------------------------------------------------------------------------------
-
-/**
- * Triggers generated event.
- */
-function prepared() {
-
-  maze.generated = true;
-
-  images.maze = canvas.get();
-
-  buttons[keys.GENERATE].trigger(events.GENERATED);
-  buttons[keys.SOLVE].trigger(events.GENERATED);
-  buttons[keys.EXPORT].trigger(events.GENERATED);
-
-  return true;
-}
-
-//------------------------------------------------------------------------------
-
-/**
- * Triggers solved event.
- */
-function complete() {
-
-  maze.solved = true;
-
-  solution = canvas.get();
-
-  buttons[keys.GENERATE].trigger(events.SOLVED);
-  buttons[keys.EXPORT].trigger(events.SOLVED);
-
-  return true;
-}
-
-//------------------------------------------------------------------------------
-
-/**
  * Cancels any generating
  * or solving action and resets
  * grid to previous state.
@@ -200,12 +99,17 @@ function cancel() {
 
   confirm(strings.CONFIRM_CANCEL, () => {
 
+    let prev = action
+
+    action    = null
+    callbacks = []
+
     // Were we solving
-    if (maze.solved) {
+    if (maze.solved || solver(prev)) {
 
       maze.forEach(c => c.clear());
 
-      prepared();
+      trigger.prepared();
 
       maze.solved = false;
 
@@ -376,23 +280,6 @@ function start() {
 
     loop();
   }
-}
-
-//------------------------------------------------------------------------------
-
-/**
- * Clears any highlighted
- * vertices from having
- * generated the maze.
- */
-function clean() {
-
-  maze.forEach(c => {
-
-    c.clear();
-  })
-
-  return true;
 }
 
 //------------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 function generate() {
 
   // Fire generating event
-  let algorithm = generating();
+  let algorithm = trigger.generating();
 
   // Change main event
   // loop algorithm to
@@ -14,15 +14,15 @@ function generate() {
   // List of callbacks
   callbacks = [
     algorithm,
-    clean,
+    maze.clean,
     () => showMessage(strings.messages.generate.subtractV),
     loadFunda,
     subtract.vertical,
     () => showMessage(strings.messages.generate.subtractH),
     loadFunda,
     subtract.horizontal,
-    clean,
-    prepared,
+    maze.clean,
+    trigger.prepared,
     () => showMessage(strings.messages.generate.done)
   ];
 

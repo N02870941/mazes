@@ -64,12 +64,12 @@ class Cell {
     // Note, we use a binary value
     // instead of a traditional array
     // simply for optimization. The cell
-    // object has a slightly smaller footprint
+    // object has a slightly smaller memory footprint
     // and lookup may be faster with bitwise
     // operations rather than array lookup (
     // linear search or pointer arithmetic).
     // We use bitwise operations to modify
-    // and extract data from this value.
+    // and extract data from this binary value.
     this.bounds = 0b1111;
   }
 
@@ -121,21 +121,32 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
+   * Returns specific neighbors
+   * by array of indices
+   */
+  specificNeighbors(...indices) {
+
+    let potentials = this.potentials()
+    let neighbors  = []
+
+    indices.forEach(i => {
+
+      if (potentials[i])
+        neighbors.push(potentials[i])
+    })
+
+    return neighbors
+  }
+
+//------------------------------------------------------------------------------
+
+  /**
    * Returns references to top
    * and bottom adjacent cells.
    */
   verticalNeighbors() {
 
-    let potentials = this.potentials();
-    let neighbors  = [];
-
-    if (potentials[TOP])
-      neighbors.push(potentials[TOP]);
-
-    if (potentials[BOTTOM])
-      neighbors.push(potentials[BOTTOM]);
-
-    return neighbors
+    return this.specificNeighbors(TOP, BOTTOM)
   }
 
 //------------------------------------------------------------------------------
@@ -146,16 +157,7 @@ class Cell {
    */
   horizontalNeighbors() {
 
-    let potentials = this.potentials();
-    let neighbors  = [];
-
-    if (potentials[RIGHT])
-      neighbors.push(potentials[RIGHT]);
-
-    if (potentials[LEFT])
-      neighbors.push(potentials[LEFT]);
-
-    return neighbors
+    return this.specificNeighbors(LEFT, RIGHT)
   }
 
 //------------------------------------------------------------------------------
@@ -168,8 +170,7 @@ class Cell {
    */
   unvisited() {
 
-    return this.potentials()
-               .filter( (c) => c && !c.visited);
+    return this.potentials().filter( (c) => c && !c.visited)
   }
 
 //------------------------------------------------------------------------------
@@ -362,7 +363,7 @@ class Cell {
    * to A*). If no heuristic is being used (Dijkstra, DFS,
    * or BFS), then euclidian distance is used.
    */
-  gradient(src, dst, heuristic) {
+  gradient() {
 
     // Do not re-highlight
     if (this.highlighted) {
@@ -370,17 +371,9 @@ class Cell {
         return;
     }
 
-    // If no heuristic,
-    // use Euclidian for
-    // gradient color map
-    if (!heuristic) {
-
-      heuristic = Cell.euclidian;
-    }
-
     // Max and current distances
-    let m = heuristic(maze.source(), maze.target());
-    let d = heuristic(this, maze.target());
+    let m = Cell.heuristics.euclidian(maze.source(), maze.target());
+    let d = Cell.heuristics.euclidian(this, maze.target());
 
     // How much percent are we
     // of the max distance?
@@ -425,21 +418,6 @@ class Cell {
     this.color(255, 255, 255, 255);
 
     this.highlighted = false;
-  }
-
-//------------------------------------------------------------------------------
-
-  /**
-   * Computes the euclidian distance
-   * between this cell and another cell
-   * usig the Pythagorean Theorem.
-   */
-  static euclidian(src, dst) {
-
-    const a = dst.j - src.j;
-    const b = dst.i - src.i;
-
-    return sqrt( sq(a) + sq(b) );
   }
 
 //------------------------------------------------------------------------------
@@ -525,17 +503,6 @@ class Cell {
   }
 
 }
-
-// TODO - Make sure this is useful
-
-/**
- * The value of a cell is determined
- * by it's cost value.
- */
-Cell.prototype.valueOf = function() {
-
-  return this.cost;
-};
 
 /**
  * Define readonly psuedo-static

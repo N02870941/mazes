@@ -1,10 +1,3 @@
-/*
- * This file holds all constant and variable
- * values that reflect the 'state' of the application.
- * No global value should be declared outside of this
- * file. They should all be local to functions.
- */
-
 // Colors
 const BLACK = 0;
 const LINE_WIDTH = 2;
@@ -112,15 +105,6 @@ const masks = {
   }
 
 };
-
-// UI element
-// associative arrays
-const message    = [];
-const buttons    = [];
-const sliders    = [];
-const labels     = [];
-const dropdowns  = [];
-const checkboxes = [];
 
 // Arrays of functions
 // used for generating,

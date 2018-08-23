@@ -11,13 +11,16 @@ const strings = {
   CONFIRM_CANCEL  : 'Are you sure you want to cancel?',
   YES             : 'Yes',
   NO              : 'No',
-  DEFAULT_TITLE   : 'Welcome!',
-  DEFAULT_MESSAGE : 'Generate a maze by adjusting the sliders, '            +
-                    'and selecting a generator algorithm. When it\'s done ' +
-                    'you can select a solver algorithm and click the '      +
-                    '"Solve" button to show the solution.',
 
   messages : {
+
+    initial : {
+      title   : 'Welcome!',
+      content : 'Generate a maze by adjusting the sliders, '            +
+                'and selecting a generator algorithm. When it\'s done ' +
+                'you can select a solver algorithm and click the '      +
+                '"Solve" button to show the solution.'
+    },
 
     generate : {
 
@@ -30,7 +33,16 @@ const strings = {
     solve : {
 
       start          : {title : 'Solving...',   content : 'Please wait while the maze is being solved.'},
-      reconstructing : {title :'Target found!', content : 'Reconstructing path'}
+      reconstructing : {title :'Target found!', content : 'Reconstructing path'},
+      getWalkInfo    : () => {
+
+        return {
+
+          title   :'Solved!',
+          content : `${maze.walk.algorithm.name} found a path of
+                    length ${maze.walk.length} in ${maze.walk.visits} steps.`
+          }
+      }
     }
 
   }
