@@ -143,7 +143,7 @@ function download() {
 
   if (maze.solved) {
 
-    confirm(strings.DOWNLOAD_MSG, () => save(solution, 'maze-solution', 'png'));
+    confirm(strings.DOWNLOAD_MSG, () => save(images.solution, 'maze-solution', 'png'));
   }
 
 }

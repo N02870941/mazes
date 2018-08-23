@@ -1,85 +1,107 @@
+
 /**
- * Generic backtracking function that
- * takes in two functions. The first
- * function takes in a cell and returns
- * the next "discovered" adjacent cell.
- * It is up to the discovery function to decide
- * 'how' we discover. The dequeue function
- * takes in an array / stack and dequeues the
- * next vertex. It's up to the dequeue function
- * to go about 'how' we choose to dequeue.
- * This is what influences some of the patterns and biases.
- *
- * For example, always removing the first
- * element results in a breadth-first search,
- * or level order traversal. This results in a
- * high branching factor in the resulting tree,
- * and thus a realtively easy solution in that
- * it is not highly 'river-y.' The solution tends
- * to be a straight line from start to finish with
- * slight randomness, but still easy to spot with the eye.
- * However, this can trick up algorithms such as A* because there
- * are many paths that appear 'promising', but are long
- * paths that eventually lead to dead ends.
- *
- * Always removing from the back results in
- * a depth-first search. So we will keep going
- * as deep as possible, until we hit a dead end.
- * For high resolutions, this results in an extremely
- * difficult maze to solve by hand because the path
- * from start to finish is very long and rivery.
- * This however, is easy for A* to solve because
- * dead ends are relatively short and branching factor
- * is low. That being said, there are fewer 'promising'
- * paths that lead to dead ends, and even when they do,
- * they are not very deep, and course correction can
- * be done with less effort than the above example.
- *
- * We can limit the disadvantage of BFS (overly predictable solution)
- * and the disadvantage of DFS (overly complicated solution) by
- * randomizing how we dequeue adjacent vertices as we pave paths
- * throughout the grid. For example, removing from the front 50% and
- * removing from the back 50% warrants less predictable but still
- * solvable solutions.
+ * Maze generating based on backtracking. The
+ * discover() function determines how to choose
+ * the next adjacent vertex. The dequeue function
+ * determines how to select the next node to dequeue.
+ * This has a direct connection with the branching
+ * factor and difficulty of the maze.
  */
-function make(discover, dequeue) {
+const backtrack = (() => {
 
-  // Mark as visited
-  current.visited = true;
-
-  // Set back to white
-  current.clear();
-
-  // Get random neighbor
-  let next = discover(current);
-
-  // Did one come back?
-  if (next) {
+  // Private functions
+  function make(discover, dequeue) {
 
     // Mark as visited
-    next.visited = true;
+    current.visited = true;
 
-    // Push current onto stack
-    // for backtracking purposes
-    stack.push(current);
+    // Set back to white
+    current.clear();
 
-    // Remove the wall between
-    // these two adjacent vertices
-    maze.pave(current, next);
+    // Get random neighbor
+    let next = discover(current);
 
-    // Highlight end of path
-    current.highlight();
+    // Did one come back?
+    if (next) {
 
-    // Shift the pointers
-    current = next;
+      // Mark as visited
+      next.visited = true;
 
-  // We have reached a dead end
-  // so we start back tracking
-  } else if (stack.length > 0) {
+      // Push current onto stack
+      // for backtracking purposes
+      stack.push(current);
 
-    current = dequeue(stack);
+      // Remove the wall between
+      // these two adjacent vertices
+      maze.pave(current, next);
+
+      // Highlight end of path
+      current.highlight();
+
+      // Shift the pointers
+      current = next;
+
+    // We have reached a dead end
+    // so we start back tracking
+    } else if (stack.length > 0) {
+
+      current = dequeue(stack);
+    }
+
+    // Exit condition
+    return stack.length === 0;
   }
 
-  // Exit condition
-  return stack.length === 0;
-}
+  // Public functions
+  return {
+
+    /**
+     * Generates using breadth-first search. This
+     * results in a maze with a high branching factor
+     * and relatively easy to find solution with the
+     * naked eye. However, it takes longer to run
+     * algorithmically because there are many potentially
+     * promising paths.
+     */
+    bfs : () => make(Cell.randomNeighbor, (s) => s.shift()),
+
+    /**
+     * Generates using depth-first search. This
+     * results in a maze with a low branching factor
+     * and an extremely difficult to find solution with the
+     * naked eye. However, the solution is easily found
+     * algorithmically because dead ends are relatively
+     * shorter, and there are far fever potentially promising paths
+     * when compared with breadth-first search.
+     */
+    dfs : () => make(Cell.randomNeighbor, (s) => s.pop()),
+
+    /**
+     * Generates using a 50:50 hybrid of breadth-first
+     * search and depth-first search. The only difference
+     * between the two is that DFS uses as a stack, and
+     * BFS uses a FIFO queue. The hybrid randomly alternates
+     * with equal probability between treating the unvisited
+     * set as a stack and a queue. This results in a higher branching
+     * factor than BFS, thus a less obvious solution, but it
+     * is still a lot more solvable than a pure DFS.
+     */
+    hybrid : () => {
+
+      return make(Cell.randomNeighbor, (s) => {
+
+        let n = floor(random(1, 101));
+
+        if (n % 2 === 0)
+          return s.shift();
+
+        else
+          return s.pop();
+
+      });
+
+    }
+
+  }
+
+})();

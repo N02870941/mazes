@@ -80,9 +80,9 @@ function setup() {
   let algorithmsToInit = [
 
     // Generators
-    {map : generators, key : algorithms.generator.BFS,    algorithm : bfs},
-    {map : generators, key : algorithms.generator.DFS,    algorithm : dfs},
-    {map : generators, key : algorithms.generator.HYBRID, algorithm : hybrid},
+    {map : generators, key : algorithms.generator.BFS,    algorithm : backtrack.bfs},
+    {map : generators, key : algorithms.generator.DFS,    algorithm : backtrack.dfs},
+    {map : generators, key : algorithms.generator.HYBRID, algorithm : backtrack.hybrid},
 
     // Auxiliary generators
     {map : generators, key : algorithms.generator.subtract.HORIZONTAL, algorithm : subtract.horizontal},

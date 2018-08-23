@@ -25,9 +25,4 @@ function init() {
   // Get subtraction count from sliders
   subtractionsV = subtractions.vertical(config.walls.vertical);
   subtractionsH = subtractions.horizontal(config.walls.horizontal);
-
-
-  stack.length = 0;
-
-  current = maze.source();
 }

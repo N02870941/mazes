@@ -29,6 +29,10 @@ function generate() {
   // Initialize the grid
   init();
 
+  stack.length = 0;
+
+  current = maze.source();
+
   // Start the process
   start();
 }

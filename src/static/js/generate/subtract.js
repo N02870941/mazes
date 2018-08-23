@@ -1,70 +1,76 @@
-const subtract = {
+const subtract = (() => {
 
   /**
-   * Subtracts a specified number
-   * of randomly selected vertical
-   * walls from the grid.
+   * Deletes walls between
+   * adjacent vertices.
    */
-  vertical : () => {
+  function takeaway(discover, decrement, count) {
 
-    return takeaway(
-      (c) => c.horizontalNeighbors(),
-      ()  => subtractionsV--,
-      ()  => subtractionsV
-    )
-  },
+    if (count() <= 0)
+      return true
 
-  /**
-   * Subtracts a specified number
-   * of randomly selected horizontal
-   * walls from the grid.
-   */
-  horizontal : () => {
+    // Dequeue
+    let u = queue.pop()
 
-    return takeaway(
-      (c) => c.verticalNeighbors(),
-      ()  => subtractionsH--,
-      ()  => subtractionsH
-    )
+    // If we have not
+    // visited vertex yet
+    if (!u.visited) {
+
+      // Mark it as visited
+      u.visited = true
+
+      // Get adjacent vertices
+      let neighbors = discover(u)
+
+      // Explore each neighbor
+      neighbors.forEach( v => {
+
+        // Do not revisit
+        if (v.visited) {
+
+          return
+        }
+
+        // Pave a wall
+        maze.pave(u, v)
+
+        // Decrement counter
+        decrement()
+      });
+    }
+
+    return queue.size() === 0 || count() <= 0;
   }
 
-};
+  return {
 
-/**
- * Deletes walls between
- * adjacent vertices.
- */
-function takeaway(discover, decrement, count) {
+    /**
+     * Subtracts a specified number
+     * of randomly selected vertical
+     * walls from the grid.
+     */
+    vertical : () => {
 
-  // Dequeue
-  let u = queue.pop()
+      return takeaway(
+        (c) => c.horizontalNeighbors(),
+        ()  => subtractionsV--,
+        ()  => subtractionsV
+      )
+    },
 
-  // If we have not
-  // visited vertex yet
-  if (!u.visited) {
+    /**
+     * Subtracts a specified number
+     * of randomly selected horizontal
+     * walls from the grid.
+     */
+    horizontal : () => {
 
-    // Mark it as visited
-    u.visited = true
-
-    // Get adjacent vertices
-    let neighbors = discover(u)
-
-    // Explore each neighbor
-    neighbors.forEach( v => {
-
-      // Do not revisit
-      if (v.visited) {
-
-        return
-      }
-
-      // Pave a wall
-      maze.pave(u, v)
-
-      // Decrement counter
-      decrement()
-    });
+      return takeaway(
+        (c) => c.verticalNeighbors(),
+        ()  => subtractionsH--,
+        ()  => subtractionsH
+      )
+    }
   }
 
-  return queue.size() === 0 || count() <= 0;
-}
+})();

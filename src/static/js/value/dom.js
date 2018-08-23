@@ -79,11 +79,28 @@ const events = {
   SOLVING    : 'solving'
 };
 
-// UI element
-// associative arrays
-const message    = [];
-const buttons    = [];
-const sliders    = [];
-const labels     = [];
-const dropdowns  = [];
-const checkboxes = [];
+// Associative arrays
+// of UI elements
+const message     = [];
+const buttons     = [];
+const sliders     = [];
+const labels      = [];
+const dropdowns   = [];
+const checkboxes  = [];
+
+/**
+ * Event to list pairing
+ * for each key in events map.
+ */
+const subscribers = (() => {
+
+  let s = []
+
+  for (let key in events) {
+
+      s[events[key]] = new Set()
+  }
+
+  return s
+
+})();

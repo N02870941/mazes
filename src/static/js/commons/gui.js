@@ -85,14 +85,18 @@ const gui = {
     // if fired, disable this button
     disable.forEach(e => {
 
-      button.on(e, (event) => button.prop(attributes.DISABLED, true));
+      subscribers[e].add(button)
+
+      button.on(e, (c) => button.prop(attributes.DISABLED, true));
     });
 
     // For all events in enable array,
     // if fired, enable this button
     enable.forEach(e => {
 
-      button.on(e, (event) => button.prop(attributes.DISABLED, false));
+      subscribers[e].add(button)
+
+      button.on(e, (c) => button.prop(attributes.DISABLED, false));
     });
   },
 
