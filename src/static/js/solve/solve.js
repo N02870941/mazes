@@ -60,8 +60,9 @@ function reset(algo) {
   // Reset the grid
   grid.forEach(c => {
 
-    c.cost    = Infinity;
-    c.visited = false;
+    c.heurstic = 0;
+    c.cost     = Infinity;
+    c.visited  = false;
     c.clear();
   });
 

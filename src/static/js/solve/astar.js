@@ -20,12 +20,6 @@ function initAStar() {
   // Create new heap
   queue = new Heap(comparator);
 
-  // Reset heuristics for grid
-  grid.forEach( c => {
-
-    c.heuristic = 0;
-  });
-
   // Set the initial heuristic
   source.heuristic = Cell.euclidian(source, target);
 }

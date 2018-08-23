@@ -2,12 +2,16 @@
  * Sets min, max, initial value for a
  *jquery  bootstrap-slider object reference.
  */
-function initSlider({key=undefined, min=undefined, max=undefined, def=undefined}) {
+function initSlider({
+  key = undefined,
+  min = undefined,
+  max = undefined,
+  def = undefined}) {
 
   let slider = sliders[key]
 
-  slider.slider(attributes.SET_ATTRIBUTE, attributes.MIN, min);
-  slider.slider(attributes.SET_ATTRIBUTE, attributes.MAX, max);
+  slider.slider(attributes.SET_ATTRIBUTE, attributes.MIN,   min);
+  slider.slider(attributes.SET_ATTRIBUTE, attributes.MAX,   max);
   slider.slider(attributes.SET_ATTRIBUTE, attributes.VALUE, def);
   slider.slider(events.REFRESH);
 };
@@ -22,13 +26,10 @@ function initSlider({key=undefined, min=undefined, max=undefined, def=undefined}
  * value.
  */
 function connectSliderLabel({
-
-    // Named parameters + default values
-    sliderKey      = undefined,
-    labelKey      = undefined,
-    transformer = (v) => v,
-    callback    = (v) => {}
-
+    sliderKey   = undefined,
+    labelKey    = undefined,
+    transformer = undefined,
+    callback    = undefined
   }) {
 
     let slider = sliders[sliderKey];
@@ -38,13 +39,17 @@ function connectSliderLabel({
   slider.on(events.SLIDE, (e) => {
 
     // Transform the data
-    let v = transformer(e.value);
+    let v = transformer ? transformer(e.value) : e.value;
 
     // Set the value
     label.text(v);
 
     // Follow up action
-    callback(v);
+    // callback(v);
+
+    if (callback) {
+      callback(v)
+    }
   });
 
   // Get initial value from label
@@ -65,8 +70,8 @@ function connectSliderLabel({
  */
 function initButton({
 
-    key  = undefined,
-    onclick = () => {},
+    key     = undefined,
+    onclick = undefined,
     enable  = [],
     disable = []
   }) {
@@ -93,14 +98,40 @@ function initButton({
 
 //------------------------------------------------------------------------------
 
-function initElement({map=undefined, key=undefined, selector=undefined, initializer=undefined}) {
+/**
+ * Initializes an HTML
+ * element as a JQuery object.
+ */
+function initElement({
+  map         = undefined,
+  key         = undefined,
+  selector    = undefined,
+  initializer = undefined}) {
 
   map[key] = initializer ? initializer(selector) : $(selector)
 }
 
 //------------------------------------------------------------------------------
 
-function initAgorithm({map=undefined, key=undefined, algorithm=undefined}) {
+/**
+ * Initializes an algorithm.
+ */
+function initAgorithm({
+  map       = undefined,
+  key       = undefined,
+  algorithm = undefined}) {
 
   map[key] = algorithm
+}
+
+//------------------------------------------------------------------------------
+
+/**
+ * Initializes a dropdown.
+ */
+function initDropdown({
+
+  }) {
+
+    // TODO - Implement
 }
