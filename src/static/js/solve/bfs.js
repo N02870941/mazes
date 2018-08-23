@@ -11,7 +11,7 @@ function BFS() {
   let u = queue.pop();
 
   // Found target
-  if (Cell.equals(u, target)) {
+  if (Cell.equals(u, maze.target())) {
 
     current = u;
 
@@ -25,7 +25,7 @@ function BFS() {
   neighbors.forEach( v => {
 
     // Do not enqueue visited vertices
-    if (parents.has(v.key)) {
+    if (maze.parents.has(v.key)) {
 
       return;
     }
@@ -34,7 +34,7 @@ function BFS() {
     v.gradient();
 
     // Store in map
-    parents.set(v.key, u)
+    maze.parents.set(v.key, u)
 
     // Enqueue for processing
     queue.push(v);

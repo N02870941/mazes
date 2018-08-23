@@ -124,7 +124,7 @@ function generating() {
   buttons[keys.EXPORT].trigger(events.GENERATING);
 
   // Flag to false
-  generated = false;
+  maze.generated = false;
 
   // Get generator algorithm name
   let val = dropdowns[keys.GENERATE].val();
@@ -145,7 +145,7 @@ function solving() {
   buttons[keys.EXPORT].trigger(events.SOLVING);
 
   // Flag to false
-  solved = false;
+  maze.solved = false;
 
   // Get solver algorithm name
   let val = dropdowns[keys.SOLVE].val();
@@ -161,9 +161,9 @@ function solving() {
  */
 function prepared() {
 
-  generated = true;
+  maze.generated = true;
 
-  maze = canvas.get();
+  images.maze = canvas.get();
 
   buttons[keys.GENERATE].trigger(events.GENERATED);
   buttons[keys.SOLVE].trigger(events.GENERATED);
@@ -179,7 +179,7 @@ function prepared() {
  */
 function complete() {
 
-  solved = true;
+  maze.solved = true;
 
   solution = canvas.get();
 
@@ -200,18 +200,14 @@ function cancel() {
 
   confirm(strings.CONFIRM_CANCEL, () => {
 
-    const prev = action;
-
-    action = null;
-
     // Were we solving
-    if (solver(prev)) {
+    if (maze.solved) {
 
-      grid.forEach(c => c.clear());
+      maze.forEach(c => c.clear());
 
       prepared();
 
-      solved = false;
+      maze.solved = false;
 
     // Or generating
     } else {
@@ -231,7 +227,7 @@ function download() {
 
   // Do not export
   // if we are not ready
-  if (!generated) {
+  if (!maze.generated) {
 
     unprepared();
 
@@ -239,9 +235,9 @@ function download() {
   }
 
   // Save the maze
-  save(maze, 'maze', 'png');
+  save(images.maze, 'maze', 'png');
 
-  if (solved) {
+  if (maze.solved) {
 
     confirm(strings.DOWNLOAD_MSG, () => save(solution, 'maze-solution', 'png'));
   }
@@ -346,18 +342,18 @@ function animated() {
  */
 const subtractions = {
 
-  vertical : () => {
+  vertical : (v) => {
 
     let number = sliders[keys.SUBTRACT_V].data(keys.SLIDER).getValue();
 
-    return (number / 100) * walls.vertical;
+    return (number / 100) * v;
   },
 
-  horizontal : () => {
+  horizontal : (h) => {
 
     let number = sliders[keys.SUBTRACT_H].data(keys.SLIDER).getValue();
 
-    return (number / 100) * walls.horizontal;
+    return (number / 100) * h;
   }
 
 }
@@ -391,7 +387,7 @@ function start() {
  */
 function clean() {
 
-  grid.forEach(c => {
+  maze.forEach(c => {
 
     c.clear();
   })

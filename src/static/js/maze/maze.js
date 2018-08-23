@@ -2,21 +2,22 @@
 // a non-threadsafe Singleton
 const Maze = (() => {
 
-  // Single instance
+  // Single Maze instance
   let instance
-
 
   // Initialize singleton
   function init() {
 
     // Private attributes
     const grid = new Array()
-    const path = new Array()
 
-    let generated
-    let solved
+    // Cells
     let source
     let target
+
+    // Integers
+    let r
+    let c
 
 //------------------------------------------------------------------------------
 
@@ -27,7 +28,7 @@ const Maze = (() => {
 
       if (!rows || !cols || !wid) {
 
-        throw new Error('Row / col count  and width must be truthy')
+        throw new Error('Row / col count  and width must be positive integers')
       }
     }
 
@@ -42,19 +43,35 @@ const Maze = (() => {
       if (
         i < 0      ||
         j < 0      ||
-        i > cols-1 ||
-        j > rows-1) {
+        i > c-1 ||
+        j > r-1) {
 
         return -1;
       }
 
-      return i + j * cols;
+      return i + j * c;
     }
 
 //------------------------------------------------------------------------------
 
     // Public attributes
     return {
+
+      generated : false,
+
+      solved : false,
+
+      // Map for reconstructing a path
+      parents : new Map(),
+
+      // Stats on a given
+      // walk of the maze
+      walk : {
+
+        visits    : 0,
+        length    : 0,
+        algorithm : undefined
+      },
 
       /**
        * Creates new grid
@@ -64,15 +81,18 @@ const Maze = (() => {
         // Argument validation
         validate({rows:rows, cols:cols, wid:wid})
 
-        // Reset arrays
+        r = rows
+        c = cols
+
+        // Reset data structures
         grid.length = 0
-        path.length = 0
+        this.parents.clear()
 
         // Rows
-        for (let j = 0; j < rows; j++) {
+        for (let j = 0; j < r; j++) {
 
           // Cols
-          for (let i = 0; i < cols; i++) {
+          for (let i = 0; i < c; i++) {
 
             // New cell
             grid.push(new Cell(i, j, wid));
@@ -84,8 +104,17 @@ const Maze = (() => {
         target = grid[grid.length-1]
 
         // It's just a grid to start with
-        generated = false
-        solved    = false
+        this.generated = false
+        this.solved    = false
+
+        this.resetWalk()
+      },
+
+      resetWalk : function(algo) {
+
+        this.walk.visits    = 0
+        this.walk.length    = 0
+        this.walk.algorithm = algo || undefined
       },
 
       /**
@@ -177,11 +206,33 @@ const Maze = (() => {
           c.visited   = false
           c.clear()
         })
+
       },
 
       // Highlights a path
       highlight : function() {
 
+        let stop = true;
+
+        // Highlight current vertex
+        current.shade();
+
+        // Increment walk count
+        maze.walk.length++;
+
+        // Get previous vertex
+        current = maze.parents.get(current.key);
+
+        // If one came back
+        if (current) {
+
+          // Return false to indicate
+          // we still have more vertices
+          // in our path to highlight
+          stop = false;
+        }
+
+        return stop;
       }
     }
   }
@@ -201,10 +252,3 @@ const Maze = (() => {
   };
 
 })();
-
-let m = Maze.getInstance()
-
-m.create({rows:5, cols:5, wid:1})
-m.create({rows:2, cols:2, wid:1})
-
-m.forEach( (c) => console.log(c) )

@@ -14,9 +14,9 @@ function solve() {
     algorithm,
     noGradient,
     () => showMessage(strings.messages.solve.reconstructing),
-    highlight,
+    maze.highlight,
     complete,
-    () => showMessage({title:'Solved!', content: `${walk.algorithm.name} solved maze in ${walk.length} steps.`})
+    () => showMessage({title:'Solved!', content: `${maze.walk.algorithm.name} solved maze in ${maze.walk.length} steps.`})
   ];
 
   // Initialize solver
@@ -53,21 +53,14 @@ function solve() {
  */
 function reset(algo) {
 
-  walk.visits    = 0;
-  walk.length    = 0;
-  walk.algorithm = algo;
+  // Reset walk stats
+  maze.resetWalk(algo)
 
   // Reset the grid
-  grid.forEach(c => {
-
-    c.heurstic = 0;
-    c.cost     = Infinity;
-    c.visited  = false;
-    c.clear();
-  });
+  maze.reset()
 
   // Start at first cell
-  current = source;
+  current = maze.source();
 
   // Set the cost to 0
   current.cost = 0;
@@ -76,10 +69,10 @@ function reset(algo) {
   queue.push(current);
 
   // Clear the parents map
-  parents.clear();
+  maze.parents.clear();
 
   // Indicates beginning of path
-  parents.set(current.key, null);
+  maze.parents.set(current.key, null);
 
   return true;
 }

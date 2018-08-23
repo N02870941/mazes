@@ -44,7 +44,7 @@ function loadFunda() {
 
   queue = new Funda()
 
-  grid.forEach(c => {
+  maze.forEach(c => {
 
     c.visited = false
 

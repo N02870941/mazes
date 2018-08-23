@@ -95,7 +95,7 @@ function setup() {
     {map : solvers, key : algorithms.solver.DIJKSTRA, algorithm : dijkstra},
 
     // Visualizers
-    {map : visualizers, key : algorithms.visualizer.HIGHLIGHT, algorithm : highlight}
+    {map : visualizers, key : algorithms.visualizer.HIGHLIGHT, algorithm : maze.highlight}
   ];
 
   let initMaps = [

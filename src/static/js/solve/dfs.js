@@ -9,7 +9,7 @@ function DFS() {
 
   let u = queue.pop();
 
-  if (Cell.equals(u, target)) {
+  if (Cell.equals(u, maze.target())) {
 
     current = u;
 
@@ -24,11 +24,11 @@ function DFS() {
 
     neighbors.forEach( v => {
 
-      if (!parents.has(v.key)) {
+      if (!maze.parents.has(v.key)) {
 
         v.gradient();
 
-        parents.set(v.key, u)
+        maze.parents.set(v.key, u)
 
         queue.push(v);
       }

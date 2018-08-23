@@ -65,7 +65,7 @@ function make(discover, dequeue) {
 
     // Remove the wall between
     // these two adjacent vertices
-    Cell.pave(current, next);
+    maze.pave(current, next);
 
     // Highlight end of path
     current.highlight();

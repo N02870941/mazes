@@ -96,10 +96,10 @@ class Cell {
     return [
 
       // Top, right, bottom, left
-      Cell.get(this.i,   this.j-1),
-      Cell.get(this.i+1, this.j),
-      Cell.get(this.i,   this.j+1),
-      Cell.get(this.i-1, this.j),
+      maze.get(this.i,   this.j-1),
+      maze.get(this.i+1, this.j),
+      maze.get(this.i,   this.j+1),
+      maze.get(this.i-1, this.j),
     ];
   }
 
@@ -379,8 +379,8 @@ class Cell {
     }
 
     // Max and current distances
-    let m = heuristic(source, target);
-    let d = heuristic(this, target);
+    let m = heuristic(maze.source(), maze.target());
+    let d = heuristic(this, maze.target());
 
     // How much percent are we
     // of the max distance?
@@ -440,94 +440,6 @@ class Cell {
     const b = dst.i - src.i;
 
     return sqrt( sq(a) + sq(b) );
-  }
-
-//------------------------------------------------------------------------------
-
-  /**
-   * Computes the manhattan distance
-   * between this cell and another cell.
-   */
-  static manhattan(src, dst) {
-
-    const a = abs(dst.j - src.j);
-    const b = abs(dst.i - src.i);
-
-    return a + b
-  }
-
-//------------------------------------------------------------------------------
-
-  /**
-   * Returns the index of cell
-   * in the 1D grid provided it's
-   * 2D coordinates.
-   */
-  static index(i, j) {
-
-    if (
-      i < 0      ||
-      j < 0      ||
-      i > cols-1 ||
-      j > rows-1) {
-
-      return -1;
-    }
-
-    return i + j * cols;
-  }
-
-//------------------------------------------------------------------------------
-
-  /**
-   * Get's a cell by row
-   * and column indices.
-   */
-  static get(i, j) {
-
-    return grid[Cell.index(i, j)]
-  }
-
-//------------------------------------------------------------------------------
-
-  /**
-   * Removes the wall between two adjacent
-   * vertices to create a path between them.
-   */
-  static pave(u, v) {
-
-    // Vertical and horizontal
-    // distances between two cells
-    const x = u.i - v.i;
-    const y = u.j - v.j;
-
-    // They are next to each other
-    if (x === 1) {
-
-      u.bounds &= masks.unset.LEFT;
-      v.bounds &= masks.unset.RIGHT;
-
-    } else if (x === -1) {
-
-      u.bounds &= masks.unset.RIGHT;
-      v.bounds &= masks.unset.LEFT;
-    }
-
-    // They are on top of each other
-    if (y === 1) {
-
-      u.bounds &= masks.unset.TOP;
-      v.bounds &= masks.unset.BOTTOM;
-
-    } else if (y === -1) {
-
-      u.bounds &= masks.unset.BOTTOM;
-      v.bounds &= masks.unset.TOP;
-    }
-
-    // Update view
-    u.clear()
-    v.clear()
   }
 
 //------------------------------------------------------------------------------

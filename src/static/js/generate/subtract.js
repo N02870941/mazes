@@ -59,7 +59,7 @@ function takeaway(discover, decrement, count) {
       }
 
       // Pave a wall
-      Cell.pave(u, v)
+      maze.pave(u, v)
 
       // Decrement counter
       decrement()

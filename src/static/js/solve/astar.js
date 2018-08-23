@@ -21,7 +21,9 @@ function initAStar() {
   queue = new Heap(comparator);
 
   // Set the initial heuristic
-  source.heuristic = Cell.euclidian(source, target);
+  let src = maze.source()
+
+  src.heuristic = Cell.euclidian(src, maze.target());
 }
 
 //------------------------------------------------------------------------------
@@ -47,7 +49,7 @@ function informedSearch(heuristic) {
 
   // This cell is the target,
   // so we have no more work to do
-  if (Cell.equals(target, u)) {
+  if (Cell.equals(maze.target(), u)) {
 
     current = u;
 
@@ -77,13 +79,13 @@ function informedSearch(heuristic) {
     if (cost < v.cost) {
 
       // Update predecessors map
-      parents.set(v.key, u);
+      maze.parents.set(v.key, u);
 
       // Update actual cost, g(n)
       v.cost = cost;
 
       // Update heuristic cost, h(n)
-      v.heuristic = heuristic(v, target);
+      v.heuristic = heuristic(v, maze.target());
 
       // Add to heap to visit later
       queue.push(v);

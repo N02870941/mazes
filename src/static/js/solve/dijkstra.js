@@ -2,7 +2,7 @@
  * One-time setup for Dijkstra's algorithm.
  */
 function initDijkstra() {
-  
+
   // Create heap that compares
   // vertices by their cost attribute
   queue = new Heap(Cell.heuristics.comparators.pureCost);
@@ -22,7 +22,7 @@ function dijkstra() {
   u.gradient();
 
   // Found target?
-  if (Cell.equals(target, u)) {
+  if (Cell.equals(maze.target(), u)) {
 
     // Set current for
     // backtracking
@@ -44,7 +44,7 @@ function dijkstra() {
     if (cost < v.cost) {
 
       // Update parent
-      parents.set(v.key, u);
+      maze.parents.set(v.key, u);
 
       // Update cost, and decrease key
       // If the key is new, a push() occurs
