@@ -22,6 +22,11 @@ class Queue {
     this.queue.push(value);
   }
 
+  peek() {
+
+    return this.queue[0]
+  }
+
   /**
    * Dequeue a value.
    */
@@ -35,6 +40,11 @@ class Queue {
     this.length--;
 
     return this.queue.shift();
+  }
+
+  dequeue() {
+
+    return this.pop()
   }
 
   /**

@@ -11,16 +11,53 @@ function setup() {
   let elementsToSelect = [
 
     // Message
-    {map : message, key : keys.MESSAGE,      selector : elements.message.MESSAGE},
-    {map : message, key : keys.TITLE,        selector : elements.message.TITLE},
-    {map : message, key : keys.CONTENT,      selector : elements.message.CONTENT},
+    {
+      map      : message,
+      key      : keys.MESSAGE,
+      selector : elements.message.MESSAGE
+    },
+    {
+      map      : message,
+      key      : keys.TITLE,
+      selector : elements.message.TITLE
+    },
+    {
+      map      : message,
+      key      : keys.CONTENT,
+      selector : elements.message.CONTENT
+     },
 
     // Sliders
-    {map : sliders, key : keys.CANVAS,       selector : elements.slider.CANVAS,     initializer : s => $(s).slider()},
-    {map : sliders, key : keys.PATH,         selector : elements.slider.PATH,       initializer : s => $(s).slider()},
-    {map : sliders, key : keys.FRAMES,       selector : elements.slider.FRAMES,     initializer : s => $(s).slider()},
-    {map : sliders, key : keys.SUBTRACT_V,   selector : elements.slider.SUBTRACT_V, initializer : s => $(s).slider()},
-    {map : sliders, key : keys.SUBTRACT_H,   selector : elements.slider.SUBTRACT_H, initializer : s => $(s).slider()},
+    {
+      map         : sliders,
+      key         : keys.CANVAS,
+      selector    : elements.slider.CANVAS,
+      initializer : s => $(s).slider()
+    },
+    {
+      map         : sliders,
+      key         : keys.PATH,
+      selector    : elements.slider.PATH,
+      initializer : s => $(s).slider()
+    },
+    {
+      map         : sliders,
+      key         : keys.FRAMES,
+      selector    : elements.slider.FRAMES,
+      initializer : s => $(s).slider()
+    },
+    {
+      map         : sliders,
+      key         : keys.SUBTRACT_V,
+      selector    : elements.slider.SUBTRACT_V,
+      initializer : s => $(s).slider()
+    },
+    {
+      map         : sliders,
+      key         : keys.SUBTRACT_H,
+      selector    : elements.slider.SUBTRACT_H,
+      initializer : s => $(s).slider()
+    },
 
     // Labels
     {map : labels,  key : keys.CANVAS,       selector : elements.label.CANVAS_W},
@@ -70,10 +107,30 @@ function setup() {
   // Buttons to initialize
   let buttonsToInit = [
 
-    {key  : keys.GENERATE, onclick : generate, disable : [events.SOLVING],                    enable  : [events.GENERATED, events.SOLVED]},
-    {key  : keys.SOLVE,    onclick : solve,    disable : [events.GENERATING],                 enable  : [events.GENERATED]},
-    {key  : keys.EXPORT,   onclick : download, disable : [events.GENERATING, events.SOLVING], enable  : [events.GENERATED,  events.SOLVED]},
-    {key  : keys.CANCEL,   onclick : cancel,   disable : [],                                  enable  : []}
+    {
+      key     : keys.GENERATE,
+      onclick : generate,
+      disable : [events.SOLVING],
+      enable  : [events.GENERATED, events.SOLVED, events.INITIALIZING]
+    },
+    {
+      key     : keys.SOLVE,
+      onclick : solve,
+      disable : [events.GENERATING, events.INITIALIZING],
+      enable  : [events.GENERATED]
+    },
+    {
+      key     : keys.EXPORT,
+      onclick : download,
+      disable : [events.GENERATING, events.SOLVING, events.INITIALIZING],
+      enable  : [events.GENERATED,  events.SOLVED]
+    },
+    {
+      key     : keys.CANCEL,
+      onclick : cancel,
+      disable : [],
+      enable  : []
+    }
   ];
 
   // Algorithms for generating, solving, etc
@@ -89,10 +146,10 @@ function setup() {
     {map : generators, key : algorithms.generator.subtract.VERTICAL,   algorithm : subtract.vertical},
 
     // Solvers
-    {map : solvers, key : algorithms.solver.DFS,      algorithm : DFS},
-    {map : solvers, key : algorithms.solver.BFS,      algorithm : BFS},
-    {map : solvers, key : algorithms.solver.A_STAR,   algorithm : aStar},
-    {map : solvers, key : algorithms.solver.DIJKSTRA, algorithm : dijkstra},
+    {map : solvers, key : algorithms.solver.DFS,      algorithm : dfs.DFS},
+    {map : solvers, key : algorithms.solver.BFS,      algorithm : bfs.BFS},
+    {map : solvers, key : algorithms.solver.A_STAR,   algorithm : aStar.aStar},
+    {map : solvers, key : algorithms.solver.DIJKSTRA, algorithm : dijkstra.dijkstra},
 
     // Visualizers
     {map : visualizers, key : algorithms.visualizer.HIGHLIGHT, algorithm : maze.highlight}
@@ -111,5 +168,5 @@ function setup() {
   initMaps.forEach(e => e.array.forEach(v => e.initializer(v)))
 
   // Grid
-  init();
+  trigger.initializing()
 }

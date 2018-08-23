@@ -99,24 +99,35 @@ function cancel() {
 
   confirm(strings.CONFIRM_CANCEL, () => {
 
-    let prev = action
+    // Get previous action
+    let prev = maze.action
 
-    action    = null
-    callbacks = []
+    // Clear task queue
+    maze.action = null
+    maze.tasks  = []
 
-    // Were we solving
+    // Check what type of task
+    // we were executing before
+    // being interrupted, if it was
+    // a solver, just clean the maze,
+    // so all highlighting is gone
     if (maze.solved || solver(prev)) {
 
-      maze.forEach(c => c.clear());
+      maze.forEach(c => {
+
+        c.clear()
+      });
 
       trigger.prepared();
 
       maze.solved = false;
 
-    // Or generating
+    // If it was not a solver, and
+    // we were generating, just
+    // completely reinitialize the maze
     } else {
 
-      init();
+      trigger.initializing()
     }
 
   });
@@ -139,11 +150,11 @@ function download() {
   }
 
   // Save the maze
-  save(images.maze, 'maze', 'png');
+  save(maze.images.maze, 'maze', 'png');
 
   if (maze.solved) {
 
-    confirm(strings.DOWNLOAD_MSG, () => save(images.solution, 'maze-solution', 'png'));
+    confirm(strings.DOWNLOAD_MSG, () => save(maze.images.solution, 'maze-solution', 'png'));
   }
 
 }

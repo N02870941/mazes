@@ -2,6 +2,9 @@
 // a non-threadsafe Singleton
 const Maze = (() => {
 
+// PRIVATE ATTRIBUTES START HERE
+//==============================================================================
+
   // Single Maze instance
   let instance
 
@@ -9,7 +12,11 @@ const Maze = (() => {
   function init() {
 
     // Private attributes
-    const grid = new Array()
+    const grid  = new Array()
+
+    // p5 Canvas object that
+    // represents the html canvas
+    let canvas
 
     // Cells
     let source
@@ -24,9 +31,21 @@ const Maze = (() => {
     /**
      * Makes sure row, cols, and width are valid.
      */
-    function validate({rows=undefined, cols=undefined, wid=undefined}) {
+    function validate({
+      rows   = undefined,
+      cols   = undefined,
+      pathW  = undefined,
+      width  = undefined,
+      height = undefined
+    }) {
 
-      if (!rows || !cols || !wid) {
+      if (
+        !rows   ||
+        !cols   ||
+        !pathW  ||
+        !width  ||
+        !height
+      ) {
 
         throw new Error('Row / col count  and width must be positive integers')
       }
@@ -52,16 +71,32 @@ const Maze = (() => {
       return i + j * c;
     }
 
-//------------------------------------------------------------------------------
+// PUBLIC ATTRIBUTES START HERE
+//==============================================================================
 
     // Public attributes
     return {
 
+      // Current cell in
+      // walk of maze
+      current : undefined,
+
+      // Booelan flags
       generated : false,
       solved    : false,
 
+      // Number of walls to subtract
+      subtractionsV : 0,
+      subtractionsH : 0,
+
       // Map for reconstructing a path
       parents : new Map(),
+
+      // Current task
+      action : undefined,
+
+      // Tasks queue
+      tasks : [],
 
       // Stats on a given
       // walk of the maze
@@ -72,16 +107,57 @@ const Maze = (() => {
         algorithm : undefined
       },
 
+      // Images taken of the
+      // maze at various points
+      // at runtime
+      images : {
+
+        maze     : undefined,
+        solution : undefined
+      },
+
+      // TODO - MANHATTAN IS OVEREVESTIMATING BY 2, WHY?????
+
       // Default heuristic is euclidian distance
-      heuristic : Cell.heuristics.euclidian,
+      // heuristic : Cell.heuristics.euclidian,
+      heuristic : Cell.heuristics.manhattan,
 
       /**
        * Creates new grid
        */
-      create : function({rows=undefined, cols=undefined, wid=undefined}) {
+      create : function({
+
+        pathW  = undefined,
+        width  = undefined,
+        height = undefined,
+        rows   = undefined,
+        cols   = undefined,
+        walls  = {
+
+          vertical   : undefined,
+          horizontal : undefined
+        }
+      }) {
 
         // Argument validation
-        validate({rows:rows, cols:cols, wid:wid})
+        validate({
+          rows   : rows,
+          cols   : cols,
+          pathW  : pathW,
+          width  : width,
+          height : height
+        })
+
+        // Create p5 canvas object
+        canvas = createCanvas(
+          width,
+          height
+        );
+
+        // Assign canvas to inline html element
+        canvas.parent(elements.canvas.MAIN);
+
+        // Init canvas
 
         r = rows
         c = cols
@@ -104,7 +180,7 @@ const Maze = (() => {
           for (let i = 0; i < c; i++) {
 
             // New cell
-            let t = new Cell(i, j, wid)
+            let t = new Cell(i, j, pathW)
 
             t.clear()
 
@@ -115,10 +191,14 @@ const Maze = (() => {
         // Set default src and tgt
         source = grid[0]
         target = grid[grid.length-1]
+
+        // Get subtraction count from sliders
+        this.subtractionsV = subtractions.vertical(walls.vertical);
+        this.subtractionsH = subtractions.horizontal(walls.horizontal);
       },
 
       /**
-       *
+       * Resets the current walk.
        */
       resetWalk : function(algo) {
 
@@ -179,25 +259,25 @@ const Maze = (() => {
         // They are next to each other
         if (x === 1) {
 
-          u.bounds &= masks.unset.LEFT;
-          v.bounds &= masks.unset.RIGHT;
+          u.bounds &= Cell.masks.unset.LEFT;
+          v.bounds &= Cell.masks.unset.RIGHT;
 
         } else if (x === -1) {
 
-          u.bounds &= masks.unset.RIGHT;
-          v.bounds &= masks.unset.LEFT;
+          u.bounds &= Cell.masks.unset.RIGHT;
+          v.bounds &= Cell.masks.unset.LEFT;
         }
 
         // They are on top of each other
         if (y === 1) {
 
-          u.bounds &= masks.unset.TOP;
-          v.bounds &= masks.unset.BOTTOM;
+          u.bounds &= Cell.masks.unset.TOP;
+          v.bounds &= Cell.masks.unset.BOTTOM;
 
         } else if (y === -1) {
 
-          u.bounds &= masks.unset.BOTTOM;
-          v.bounds &= masks.unset.TOP;
+          u.bounds &= Cell.masks.unset.BOTTOM;
+          v.bounds &= Cell.masks.unset.TOP;
         }
 
         // Update view
@@ -217,6 +297,7 @@ const Maze = (() => {
           c.clear()
         })
 
+        return true
       },
 
       /**
@@ -225,10 +306,7 @@ const Maze = (() => {
        */
       clean : function() {
 
-        grid.forEach( c => {
-
-          c.clear()
-        })
+        grid.forEach( c => c.clear())
 
         return true
       },
@@ -239,16 +317,16 @@ const Maze = (() => {
         let stop = true;
 
         // Highlight current vertex
-        current.shade();
+        maze.current.shade();
 
         // Increment walk count
         maze.walk.length++;
 
         // Get previous vertex
-        current = maze.parents.get(current.key);
+        maze.current = maze.parents.get(maze.current.key);
 
         // If one came back
-        if (current) {
+        if (maze.current) {
 
           // Return false to indicate
           // we still have more vertices
@@ -257,6 +335,22 @@ const Maze = (() => {
         }
 
         return stop;
+      },
+
+      /**
+       * Saves the maze into a variable.
+       */
+      saveMaze : function() {
+
+        maze.images.maze = canvas.get()
+      },
+
+      /**
+       * Saves the solved maze into a variable.
+       */
+      saveSolution : function() {
+
+        maze.images.solution = canvas.get()
       }
     }
   }

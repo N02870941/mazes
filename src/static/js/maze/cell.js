@@ -146,7 +146,10 @@ class Cell {
    */
   verticalNeighbors() {
 
-    return this.specificNeighbors(TOP, BOTTOM)
+    return this.specificNeighbors(
+      Cell.indices.TOP,
+      Cell.indices.BOTTOM
+    )
   }
 
 //------------------------------------------------------------------------------
@@ -157,7 +160,10 @@ class Cell {
    */
   horizontalNeighbors() {
 
-    return this.specificNeighbors(LEFT, RIGHT)
+    return this.specificNeighbors(
+      Cell.indices.LEFT,
+      Cell.indices.RIGHT
+    )
   }
 
 //------------------------------------------------------------------------------
@@ -185,17 +191,17 @@ class Cell {
     let n = this.potentials();
     let t = [];
 
-    if (n[TOP] && !this.top())
-      t.push(n[TOP])
+    if (n[Cell.indices.TOP] && !this.top())
+      t.push(n[Cell.indices.TOP])
 
-    if (n[RIGHT] && !this.right())
-      t.push(n[RIGHT])
+    if (n[Cell.indices.RIGHT] && !this.right())
+      t.push(n[Cell.indices.RIGHT])
 
-    if (n[BOTTOM] && !this.bottom())
-      t.push(n[BOTTOM])
+    if (n[Cell.indices.BOTTOM] && !this.bottom())
+      t.push(n[Cell.indices.BOTTOM])
 
-    if (n[LEFT] && !this.left())
-      t.push(n[LEFT])
+    if (n[Cell.indices.LEFT] && !this.left())
+      t.push(n[Cell.indices.LEFT])
 
     return t;
   }
@@ -243,7 +249,7 @@ class Cell {
    */
   top() {
 
-    return this.wall(masks.set.TOP);
+    return this.wall(Cell.masks.set.TOP);
   }
 
 //------------------------------------------------------------------------------
@@ -255,7 +261,7 @@ class Cell {
    */
   right() {
 
-    return this.wall(masks.set.RIGHT);
+    return this.wall(Cell.masks.set.RIGHT);
   }
 
 //------------------------------------------------------------------------------
@@ -267,7 +273,7 @@ class Cell {
    */
   bottom() {
 
-    return this.wall(masks.set.BOTTOM);
+    return this.wall(Cell.masks.set.BOTTOM);
   }
 
 //------------------------------------------------------------------------------
@@ -279,7 +285,7 @@ class Cell {
    */
   left() {
 
-    return this.wall(masks.set.LEFT);
+    return this.wall(Cell.masks.set.LEFT);
   }
 
 //------------------------------------------------------------------------------
@@ -522,6 +528,8 @@ Object.defineProperty(Cell, 'heuristics', {
       return sqrt( sq(a) + sq(b) );
     },
 
+//------------------------------------------------------------------------------
+
     // Manhattan distance
     manhattan : (src, dst) => {
 
@@ -538,6 +546,59 @@ Object.defineProperty(Cell, 'heuristics', {
       pureCost      : (a, b) => a.cost < b.cost
     }
 
+  },
+
+  writable     : false,
+  enumerable   : false,
+  configurable : false
+});
+
+//------------------------------------------------------------------------------
+
+/**
+ * Bitmasks for walls.
+ */
+Object.defineProperty(Cell, 'masks', {
+
+  value : {
+
+    set : {
+
+      TOP    : 0b1000,
+      RIGHT  : 0b0100,
+      BOTTOM : 0b0010,
+      LEFT   : 0b0001
+    },
+
+    unset : {
+
+      TOP    : 0b0111,
+      RIGHT  : 0b1011,
+      BOTTOM : 0b1101,
+      LEFT   : 0b1110
+    }
+
+  },
+
+  writable     : false,
+  enumerable   : false,
+  configurable : false
+});
+
+//------------------------------------------------------------------------------
+
+/**
+ * Array indices for
+ * adjacent neighors.
+ */
+Object.defineProperty(Cell, 'indices', {
+
+  value : {
+
+    TOP    : 0,
+    RIGHT  : 1,
+    BOTTOM : 2,
+    LEFT   : 3
   },
 
   writable     : false,

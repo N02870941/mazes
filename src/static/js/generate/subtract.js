@@ -53,8 +53,8 @@ const subtract = (() => {
 
       return takeaway(
         (c) => c.horizontalNeighbors(),
-        ()  => subtractionsV--,
-        ()  => subtractionsV
+        ()  => maze.subtractionsV--,
+        ()  => maze.subtractionsV
       )
     },
 
@@ -67,8 +67,8 @@ const subtract = (() => {
 
       return takeaway(
         (c) => c.verticalNeighbors(),
-        ()  => subtractionsH--,
-        ()  => subtractionsH
+        ()  => maze.subtractionsH--,
+        ()  => maze.subtractionsH
       )
     }
   }

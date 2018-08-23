@@ -1,21 +1,17 @@
 /**
- * Event triggers
+ * Event triggers.
  */
 const trigger = (() => {
 
   /**
-   * Triggers an event on
-   * an array of JQuery elements
+   * Triggers an specified event on
+   * all of it's subscribers from
+   * the subscribers map.
+   *
    */
   function trigger(ev) {
 
-    console.log(ev)
-
-    subscribers[ev].forEach( element => {
-
-      element.trigger(ev)
-    })
-
+    subscribers[ev].forEach(element => element.trigger(ev))
   }
 
   // Public functions
@@ -27,26 +23,21 @@ const trigger = (() => {
      */
     initializing : () => {
 
+      // Notify all subscribers
+      trigger(events.INITIALIZING)
+
       // Show default message
       showMessage(strings.messages.initial)
 
-      // TODO - Turn into event
-
-      buttons[keys.GENERATE].prop(attributes.DISABLED, false)
-      buttons[keys.SOLVE].prop(attributes.DISABLED, true)
-      buttons[keys.EXPORT].prop(attributes.DISABLED, true)
-
       const width  = sliders[keys.CANVAS].data(keys.SLIDER).getValue()
-      const height = width
+      const height = sliders[keys.CANVAS].data(keys.SLIDER).getValue()
       const pathW  = sliders[keys.PATH].data(keys.SLIDER).getValue()
+      const cols   = floor(width  / pathW)
+      const rows   = floor(height / pathW)
+      const v      = rows * (cols - 1)
+      const h      = cols * (rows - 1)
 
-      let cols = floor(width  / pathW)
-      let rows = floor(height / pathW)
-
-      let v = rows * (cols - 1)
-      let h = cols * (rows - 1)
-
-      return {
+      let config =  {
 
         pathW  : pathW,
         width  : width,
@@ -55,10 +46,13 @@ const trigger = (() => {
         cols   : cols,
         walls  : {
 
-          vertical : v,
+          vertical   : v,
           horizontal : h
         }
       };
+
+      // Create the maze
+      maze.create(config)
     },
 
     /**
@@ -67,17 +61,17 @@ const trigger = (() => {
      */
     generating : () => {
 
-      // Disable appropriate buttons
+      // Notify all subscribers
       trigger(events.GENERATING)
 
       // Flag to false
-      maze.generated = false;
+      maze.generated = false
 
       // Get generator algorithm name
-      let val = dropdowns[keys.GENERATE].val();
+      let val = dropdowns[keys.GENERATE].val()
 
       // Return correct algorithm
-      return generators[val];
+      return generators[val]
     },
 
     /**
@@ -86,15 +80,16 @@ const trigger = (() => {
      */
     prepared : () => {
 
-      maze.generated = true;
+      // Notify all subscribers
+      trigger(events.GENERATED)
 
-      images.maze = canvas.get();
+      // Set generated flag
+      maze.generated = true
 
-      buttons[keys.GENERATE].trigger(events.GENERATED);
-      buttons[keys.SOLVE].trigger(events.GENERATED);
-      buttons[keys.EXPORT].trigger(events.GENERATED);
+      // Save the maze in memory
+      maze.saveMaze()
 
-      return true;
+      return true
     },
 
     /**
@@ -103,18 +98,17 @@ const trigger = (() => {
      */
     solving : () => {
 
-      // Disable appropriate buttons
-      buttons[keys.GENERATE].trigger(events.SOLVING);
-      buttons[keys.EXPORT].trigger(events.SOLVING);
+      // Notify all subscribers
+      trigger(events.SOLVING)
 
       // Flag to false
-      maze.solved = false;
+      maze.solved = false
 
       // Get solver algorithm name
-      let val = dropdowns[keys.SOLVE].val();
+      let val = dropdowns[keys.SOLVE].val()
 
       // Return correct algorithm
-      return solvers[val];
+      return solvers[val]
     },
 
     /**
@@ -123,14 +117,16 @@ const trigger = (() => {
      */
     complete : () => {
 
-      maze.solved = true;
+      // Notify all subscribers
+      trigger(events.SOLVED)
 
-      images.solution = canvas.get();
+      // Set solved flag to true
+      maze.solved = true
 
-      buttons[keys.GENERATE].trigger(events.SOLVED);
-      buttons[keys.EXPORT].trigger(events.SOLVED);
+      // Save the image in memory
+      maze.saveSolution()
 
-      return true;
+      return true
     }
 
   }

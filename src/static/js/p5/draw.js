@@ -18,7 +18,7 @@ function draw() {
 
   // Stop draw() to avoid infinite
   // loop and resource leaks
-  if (!action) {
+  if (!maze.action) {
 
     noLoop()
 
@@ -27,9 +27,9 @@ function draw() {
   // action from queue, and jump
   // back to the top. Otherwise,
   // just keep repeating action()
-  } else if (action()) {
+} else if (maze.action()) {
 
-    action = callbacks.shift();
+    maze.action = maze.tasks.shift();
   }
 
 }
@@ -58,15 +58,15 @@ function execute() {
   // undefined (falsy), and we
   // will drop out of the outer loop
   // and all tasks will be complete.
-  while (action) {
+  while (maze.action) {
 
     do {
 
-      exit = action();
+      exit = maze.action();
 
     } while (!exit);
 
-    action = callbacks.shift();
+    maze.action = maze.tasks.shift();
   }
 
 }

@@ -7,10 +7,10 @@ function solve() {
   let algorithm = trigger.solving();
 
   // Set solver algorithm
-  action = () => showMessage(strings.messages.solve.start);
+  maze.action = () => showMessage(strings.messages.solve.start);
 
   // Callbacks
-  callbacks = [
+  maze.tasks = [
     algorithm,
     noGradient,
     () => showMessage(strings.messages.solve.reconstructing),
@@ -58,19 +58,19 @@ function reset(algo) {
   maze.reset()
 
   // Start at first cell
-  current = maze.source();
+  maze.current = maze.source();
 
   // Set the cost to 0
-  current.cost = 0;
+  maze.current.cost = 0;
 
   // Enqueue to start processing
-  queue.push(current);
+  queue.push(maze.current);
 
   // Clear the parents map
   maze.parents.clear();
 
   // Indicates beginning of path
-  maze.parents.set(current.key, null);
+  maze.parents.set(maze.current.key, null);
 
   return true;
 }
@@ -84,17 +84,17 @@ function solverInit(algorithm) {
 
   switch (algorithm) {
 
-    case dijkstra:
-      initDijkstra(); break;
+    case dijkstra.dijkstra:
+      dijkstra.init(); break;
 
-    case aStar:
-      initAStar();    break;
+    case aStar.aStar:
+      aStar.init();    break;
 
-    case DFS:
-      initDFS();      break;
+    case dfs.DFS:
+      dfs.init();      break;
 
-    case BFS:
-      initBFS();      break;
+    case bfs.BFS:
+      bfs.init();      break;
 
     default:
       break;

@@ -70,13 +70,38 @@ const attributes = {
 // Jquery event strings
 const events = {
 
-  SLIDE      : 'slide',
-  CLICK      : 'click',
-  REFRESH    : 'refresh',
-  GENERATED  : 'generated',
-  GENERATING : 'generating',
-  SOLVED     : 'solved',
-  SOLVING    : 'solving'
+  SLIDE        : 'slide',
+  CLICK        : 'click',
+  REFRESH      : 'refresh',
+  GENERATED    : 'generated',
+  GENERATING   : 'generating',
+  SOLVED       : 'solved',
+  SOLVING      : 'solving',
+  INITIALIZING : 'initializing'
+};
+
+// Keys for lookup in
+// associative arrays
+// of UI elements
+const keys = {
+
+  CANCEL     : 'cancel',
+  CANVAS     : 'canvas',
+  PATH       : 'path',
+  WIDTH      : 'width',
+  HEIGHT     : 'height',
+  GENERATE   : 'generate',
+  SOLVE      : 'solve',
+  EXPORT     : 'export',
+  FRAMES     : 'frame-rate',
+  SLIDER     : 'slider',
+  HIGHLIGHT  : 'highlight',
+  ANIMATE    : 'animate',
+  SUBTRACT_V : 'vertical',
+  SUBTRACT_H : 'horizontal',
+  MESSAGE    : 'message',
+  TITLE      : 'title',
+  CONTENT    : 'content'
 };
 
 // Associative arrays
@@ -89,8 +114,15 @@ const dropdowns   = [];
 const checkboxes  = [];
 
 /**
- * Event to list pairing
- * for each key in events map.
+ * For each event, create an
+ * associated set of subscribers.
+ * This way, when the event is fired,
+ * We just lookup the set of subscribers
+ * and notify all of them that the event
+ * was triggered. Assuming they have the
+ * appropriate event-listener registered,
+ * each subscriber will respond to the
+ * event appropriately.
  */
 const subscribers = (() => {
 

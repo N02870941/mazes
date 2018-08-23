@@ -10,7 +10,7 @@ const gui = {
     max = undefined,
     def = undefined}) => {
 
-    let slider = sliders[key]
+    const slider = sliders[key]
 
     slider.slider(attributes.SET_ATTRIBUTE, attributes.MIN,   min);
     slider.slider(attributes.SET_ATTRIBUTE, attributes.MAX,   max);
@@ -34,8 +34,8 @@ const gui = {
       callback    = undefined
     }) => {
 
-      let slider = sliders[sliderKey];
-      let label  = labels[labelKey];
+      const slider = sliders[sliderKey];
+      const label  = labels[labelKey];
 
     // On slide event
     slider.on(events.SLIDE, (e) => {
@@ -50,10 +50,11 @@ const gui = {
       if (callback) {
         callback(v)
       }
+
     });
 
     // Get initial value from label
-    let data = slider.data(keys.SLIDER).getValue();
+    const data = slider.data(keys.SLIDER).getValue();
 
     // Display on screen
     label.text(data);
@@ -76,7 +77,7 @@ const gui = {
       disable = []
     }) => {
 
-    let button = buttons[key]
+    const button = buttons[key]
 
     // Set on click
     button.click(onclick);

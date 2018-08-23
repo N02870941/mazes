@@ -1,44 +1,45 @@
-function initBFS() {
+const bfs = {
 
-  queue = new Queue();
-}
+  init : () => queue = new Queue(),
 
 //------------------------------------------------------------------------------
 
-function BFS() {
+  BFS : () => {
 
-  // Dequeue
-  let u = queue.pop();
+    // Dequeue
+    let u = queue.pop();
 
-  // Found target
-  if (Cell.equals(u, maze.target())) {
+    // Found target
+    if (Cell.equals(u, maze.target())) {
 
-    current = u;
+      maze.current = u;
 
-    return true;
-  }
-
-  // Get neighbors
-  let neighbors = u.x();
-
-  // Explore each one
-  neighbors.forEach( v => {
-
-    // Do not enqueue visited vertices
-    if (maze.parents.has(v.key)) {
-
-      return;
+      return true;
     }
 
-    // Highlight it
-    v.gradient();
+    // Get neighbors
+    let neighbors = u.x();
 
-    // Store in map
-    maze.parents.set(v.key, u)
+    // Explore each one
+    neighbors.forEach( v => {
 
-    // Enqueue for processing
-    queue.push(v);
-  });
+      // Do not enqueue visited vertices
+      if (maze.parents.has(v.key)) {
 
-  return queue.length === 0;
+        return;
+      }
+
+      // Highlight it
+      v.gradient();
+
+      // Store in map
+      maze.parents.set(v.key, u)
+
+      // Enqueue for processing
+      queue.push(v);
+    });
+
+    return queue.length === 0;
+  }
+
 }

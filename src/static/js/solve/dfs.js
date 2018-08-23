@@ -1,40 +1,41 @@
-function initDFS() {
+const dfs = {
 
-  queue = new Stack();
-}
+  init : () => queue = new Stack(),
 
 //------------------------------------------------------------------------------
 
-function DFS() {
+  DFS : () => {
 
-  let u = queue.pop();
+    let u = queue.pop();
 
-  if (Cell.equals(u, maze.target())) {
+    if (Cell.equals(u, maze.target())) {
 
-    current = u;
+      maze.current = u;
 
-    return true;
+      return true;
+    }
+
+    if (!u.visited) {
+
+      u.visited = true
+
+      let neighbors = u.x();
+
+      neighbors.forEach( v => {
+
+        if (!maze.parents.has(v.key)) {
+
+          v.gradient();
+
+          maze.parents.set(v.key, u)
+
+          queue.push(v);
+        }
+
+      });
+    }
+
+    return queue.length === 0;
   }
 
-  if (!u.visited) {
-
-    u.visited = true
-
-    let neighbors = u.x();
-
-    neighbors.forEach( v => {
-
-      if (!maze.parents.has(v.key)) {
-
-        v.gradient();
-
-        maze.parents.set(v.key, u)
-
-        queue.push(v);
-      }
-
-    });
-  }
-
-  return queue.length === 0;
 }

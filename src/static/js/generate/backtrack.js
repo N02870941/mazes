@@ -13,13 +13,13 @@ const backtrack = (() => {
   function make(discover, dequeue) {
 
     // Mark as visited
-    current.visited = true;
+    maze.current.visited = true;
 
     // Set back to white
-    current.clear();
+    maze.current.clear();
 
     // Get random neighbor
-    let next = discover(current);
+    let next = Cell.randomNeighbor(maze.current);
 
     // Did one come back?
     if (next) {
@@ -29,23 +29,23 @@ const backtrack = (() => {
 
       // Push current onto stack
       // for backtracking purposes
-      stack.push(current);
+      stack.push(maze.current);
 
       // Remove the wall between
       // these two adjacent vertices
-      maze.pave(current, next);
+      maze.pave(maze.current, next);
 
       // Highlight end of path
-      current.highlight();
+      maze.current.highlight();
 
       // Shift the pointers
-      current = next;
+      maze.current = next;
 
     // We have reached a dead end
     // so we start back tracking
     } else if (stack.length > 0) {
 
-      current = dequeue(stack);
+      maze.current = dequeue(stack);
     }
 
     // Exit condition

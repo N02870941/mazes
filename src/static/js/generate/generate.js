@@ -9,10 +9,10 @@ function generate() {
   // Change main event
   // loop algorithm to
   // the specified generator
-  action = () => showMessage(strings.messages.generate.start);
+  maze.action = () => showMessage(strings.messages.generate.start);
 
   // List of callbacks
-  callbacks = [
+  maze.tasks = [
     algorithm,
     maze.clean,
     () => showMessage(strings.messages.generate.subtractV),
@@ -27,11 +27,11 @@ function generate() {
   ];
 
   // Initialize the grid
-  init();
+  trigger.initializing()
 
   stack.length = 0;
 
-  current = maze.source();
+  maze.current = maze.source();
 
   // Start the process
   start();
