@@ -35,8 +35,24 @@ function generate() {
   // Start at source
   maze.current = maze.source();
 
-  // Start the process
-  start();
+  // Start the process in async mode
+  if (animated()) {
+
+    if (autosolve())
+      maze.tasks.push(solve)
+
+    start();
+
+  // Start synchronously
+  } else {
+
+    start()
+
+    if (autosolve())
+      solve()
+  }
+
+
 }
 
 //------------------------------------------------------------------------------

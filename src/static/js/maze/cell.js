@@ -544,53 +544,39 @@ Object.defineProperty(Cell, 'heuristics', {
     // Cross product helps break ties
     crossProduct : function (src, dst) {
 
-      let determinant = (matrix) => {
-
-        let a = matrix[0][0]
-        let b = matrix[1][0]
-        let c = matrix[0][1]
-        let d = matrix[1][1]
-
-        return (a * d) - (b * c)
-      }
-
       // http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#breaking-ties
 
+      // Here to target
+      let dx1 = src.j - dst.j
+      let dy1 = src.i - dst.i
+
+      // First to target
+      let dx2 = maze.source().j - maze.target().j
+      let dy2 = maze.source().i - maze.target().i
+
       // Manhattan distance from here to target
-      let heuristic = abs(dst.j - src.j) +
-                      abs(dst.i - src.i)
+      let expected = abs(dx1) + abs(dy1)
 
       // Get max path length in the current maze
       let max = abs(maze.target().j - maze.source().j) +
                 abs(maze.target().i - maze.source().i)
 
-
-      // Compute Determinant
-      let dx1 = src.j - dst.j
-      let dy1 = src.i - dst.i
-
-      let dx2 = maze.source().j - maze.target().j
-      let dy2 = maze.source().i - maze.target().i
-
-      // Determinant
-      let matrix = [
+      // Compute the determinant
+      let det = determinant([
         [dx1, dy1],
         [dx2, dy2]
-      ]
-
-      // Compute the determinant
-      let det = determinant(matrix)
+      ])
 
       // Get absolute value, then square root
       // to preserve the units of the heuristic
       let weight = sqrt( abs(det) )
 
-      // Scale factor p should not exceed:
+      // Scale factor should not exceed:
       // min(step cost) / max(# steps)
       let scale = 1 / max
 
-      // Add to heuristic
-      heuristic = (scale * weight) + heuristic
+      // Add weight to the expected heuristic
+      heuristic = (scale * weight) + expected
 
       return heuristic
     },

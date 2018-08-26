@@ -351,6 +351,20 @@ const Maze = (() => {
       saveSolution : function() {
 
         maze.images.solution = canvas.get()
+      },
+
+      /**
+       * Labels a cell visited.
+       */
+      visit : function(cell) {
+
+        this.walk.visits++
+
+        if (!cell.visited) {
+          cell.visited = true
+        }
+
+        cell.gradient()
       }
     }
   }

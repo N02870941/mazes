@@ -20,8 +20,8 @@ const dijkstra = {
     // Extract min from heap
     let u = queue.pop();
 
-    // Highlight it
-    u.gradient();
+    // Mark as visited
+    maze.visit(u)
 
     // Found target?
     if (Cell.equals(maze.target(), u)) {

@@ -37,6 +37,9 @@ const aStar = {
     // f(n) = g(n) + h(n)
     let u = queue.pop();
 
+    // Mark as visited
+    maze.visit(u)
+
     // This cell is the target,
     // so we have no more work to do
     if (Cell.equals(maze.target(), u)) {
@@ -45,12 +48,6 @@ const aStar = {
 
       return true;
     }
-
-    // Mark as visited
-    u.visited = true;
-
-    // Highlight it
-    u.gradient();
 
     // Get neighbors
     let neighbors = u.x();

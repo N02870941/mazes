@@ -76,6 +76,7 @@ function setup() {
     // Checkboxes
     {map : checkboxes, key : keys.HIGHLIGHT, selector : elements.checkbox.HIGHLIGHT},
     {map : checkboxes, key : keys.ANIMATE,   selector : elements.checkbox.ANIMATE},
+    {map : checkboxes, key : keys.AUTOSOLVE, selector : elements.checkbox.AUTOSOLVE},
 
     // Buttons
     {map : buttons, key : keys.GENERATE,     selector : elements.button.GENERATE},
@@ -89,8 +90,8 @@ function setup() {
 
     {key : keys.CANVAS,     min : MIN_CANVAS_WIDTH, max : MAX_CANVAS_WIDTH, def : DEFAULT_CANVAS_WIDTH},
     {key : keys.PATH,       min : MIN_PATH_WIDTH,   max : MAX_PATH_WIDTH,   def : DEFAULT_PATH_WIDTH},
-    {key : keys.SUBTRACT_V, min : 0,                max : 100,              def : 0},
-    {key : keys.SUBTRACT_H, min : 0,                max : 100,              def : 0},
+    {key : keys.SUBTRACT_V, min : 0,                max : 100,              def : 5},
+    {key : keys.SUBTRACT_H, min : 0,                max : 100,              def : 10},
     {key : keys.FRAMES,     min : MIN_FRAME_RATE,   max : MAX_FRAME_RATE,   def : MAX_FRAME_RATE}
   ];
 
@@ -141,12 +142,13 @@ function setup() {
     {
       key     : keys.HEURISTIC,
       options : [
-        {name : 'Manhattan distance (admissible, decent speed)', value : 'manhattan'},
-        {name : 'Euclidian distance (admissible, but slow)', value : 'euclidian'},
         {
-          name : 'Weighted euclidian using √(determinant) (not admissible, but fast)',
+          name : 'Weighted manhattan using √(determinant) (not admissible, but fast)',
           value : 'crossProduct'
-        }
+        },
+        {name : 'Manhattan distance (admissible, decent speed)', value : 'manhattan'},
+        {name : 'Euclidian distance (admissible, but slow)', value : 'euclidian'}
+
       ],
       onchange : function() {maze.heuristic = Cell.heuristics[this.value]}
     }

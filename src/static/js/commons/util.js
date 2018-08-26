@@ -251,6 +251,17 @@ function animated() {
 //------------------------------------------------------------------------------
 
 /**
+ * Determines if we are
+ * doing auto solve or not.
+ */
+function autosolve() {
+
+  return checked(checkboxes[keys.AUTOSOLVE]);
+}
+
+//------------------------------------------------------------------------------
+
+/**
  * Returns the number of vertical
  * and horizontal wall subtractions
  * from the respective sliders.
@@ -306,4 +317,16 @@ function showMessage({title = '', content = ''}) {
   message[keys.CONTENT].text(content)
 
   return true;
+}
+
+//------------------------------------------------------------------------------
+
+function determinant(matrix) {
+
+  let a = matrix[0][0]
+  let b = matrix[1][0]
+  let c = matrix[0][1]
+  let d = matrix[1][1]
+
+  return (a * d) - (b * c)
 }

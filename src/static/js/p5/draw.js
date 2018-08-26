@@ -69,4 +69,5 @@ function execute() {
     maze.action = maze.tasks.shift();
   }
 
+  return true
 }

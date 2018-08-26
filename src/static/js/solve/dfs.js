@@ -10,6 +10,8 @@ const dfs = {
 
     if (Cell.equals(u, maze.target())) {
 
+      maze.visit(u)
+
       maze.current = u;
 
       return true;
@@ -17,15 +19,14 @@ const dfs = {
 
     if (!u.visited) {
 
-      u.visited = true
+      // Mark as visited
+      maze.visit(u)
 
       let neighbors = u.x();
 
       neighbors.forEach( v => {
 
         if (!maze.parents.has(v.key)) {
-
-          v.gradient();
 
           maze.parents.set(v.key, u)
 

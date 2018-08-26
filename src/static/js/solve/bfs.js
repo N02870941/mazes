@@ -9,6 +9,9 @@ const bfs = {
     // Dequeue
     let u = queue.pop();
 
+    // Mark as visited
+    maze.visit(u)
+
     // Found target
     if (Cell.equals(u, maze.target())) {
 
@@ -28,9 +31,6 @@ const bfs = {
 
         return;
       }
-
-      // Highlight it
-      v.gradient();
 
       // Store in map
       maze.parents.set(v.key, u)

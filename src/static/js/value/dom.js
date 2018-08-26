@@ -46,6 +46,7 @@ const elements = {
 
   checkbox : {
 
+    AUTOSOLVE : '#checkbox-autosolve',
     HIGHLIGHT : '#checkbox-highlight-visited',
     ANIMATE   : '#checkbox-animate'
   },
@@ -93,6 +94,7 @@ const events = {
 // of UI elements
 const keys = {
 
+  AUTOSOLVE  : 'autosolve',
   HEURISTIC  : 'heuristic',
   CANCEL     : 'cancel',
   CANVAS     : 'canvas',
