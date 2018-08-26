@@ -4,14 +4,14 @@
 A simple maze generator and solver available in the form of a [web app][site].
 
 # Intuition
-Maze generating and solving can be described in terms of graph theory. For the
+One way of describing the process of generating and solving a maze is through graph theory. For the
 purpose of clarity, we will use the words maze and graph interchangeably. If you
 are not familiar with graph theory, here is an explanation of the information
-relevant to understand this problem.
+about graph theory that is relevant to understand this problem.
 
 A graph `G` is a pair denoted as `G = {V, E}` where `V` is a set of vertices and
-`E` is a set of edges where each edge connects some vertex `u` to some vertex `v` from set vertex set `V`. A vertex is an abstract
-**node** in a network. An edge is a **branch** that links them together. Graphs
+`E` is a set of edges where each edge connects some vertex `u` to some vertex `v` from the vertex set `V`. A vertex is an abstract
+**node or location** in a network. An edge is a **branch** that links vertices together. Graphs
 come in various ways:
 
 1. Weighted
@@ -39,9 +39,9 @@ each city.
 </p>
 
 A directed graph is a graph where an edge `e`  from vertex `u` to
-`v` is not equal to an edge `f` from `v` to `u`. For example, in our city
+`v` is not equal to an edge `f` from `v` to `u` - they are directional. For example, in our city
 graph we may have an edge (road) from New York to Chicago with weight 200 miles.
-But, we have a **different** edge going from Chicago to New York may be 250 miles because the route the other way may require you to take a different road.
+But, we have a **different** edge going from Chicago to New York that is 250 miles because the return route may require taking a different road.
 
 <p align="center">
   <img src="img/png/undirected-weighted.png"><br>
@@ -62,15 +62,14 @@ It is worth noting for this particular implementation, we will have a
 tad of redundancy where each cell in the grid has information regarding all 4
 adjacent vertices. This causes overlap in that for a vertex `u` that is to the
 left of vertex `v`, `u`'s `right` vertex is the same as `v`'s `left` vertex pointer.
-So from a technical coding standpoint, it will be directed, but edges `{u,v}` and `{v,u}` will
-be treated the same. So if we delete one, we delete the other. So we still consider it undirected.
+So from a technical coding standpoint, the graph created in memory will be directed, but edges `{u,v}` and `{v,u}` will
+be treated the same. For example, if we delete one, we delete the other. So we still consider the graph undirected.
 This can be optimized if an abstract "`Graph`" object were created in memory. But, that
 is unnecessary for the scope of this problem.
 
 # Maze generating
-Generating a maze requires a modified depth-first search of the graph. A depth-first
-search is an algorithm used to **traverse** a graph. Traversing the graph means to
-*visit* each node (usually) from a specified starting vertex. If an undirected graph is
+Generating a maze requires a modified graph traversal algorithm. Traversing the graph means to
+**visit** each node (usually) from a specified starting vertex. If an undirected graph is
 **connected** then there exists a path from each vertex to every other vertex in the graph.
 
 <p align="center">
@@ -79,10 +78,14 @@ search is an algorithm used to **traverse** a graph. Traversing the graph means 
 </p>
 
 In the case of a **blank** `n x n` image where `n` is the width (and height) of the image
-in pixels, the image *always* represents connected graph. The reason is that
-there are no missing pixels assuming your photo is not corrupted. So, in terms of
-traversing the image, there exist a path from each pixel to each other pixel - this too many
-in fact. This is why we have black lines to represent the **absence** of edges, or a boundary that terminates a particular path. But, in the case of our full grid, we have too many boundaries as well - resulting in zero paths. Our goal is to traverse our image full of boundaries and **remove** (recreate) as many (paths) as possible but still resulting in a graph that has the connected property. This will result in a maze that leaves a
+in pixels, the image **always** represents connected graph. The reason is that
+there are no missing pixels. So, in terms of
+traversing the image, there exist a path from each white pixel to every other white pixel - this is too many
+in fact. 
+
+This is why we have black lines to represent the **absence** of edges, or a boundary that terminates a particular path. But, in the case of our full grid, we have too many boundaries as well - resulting in zero paths. 
+
+Our goal is to traverse our image full of boundaries and **remove** (recreate) as many (paths) as possible but still resulting in a graph that has the connected property. This will result in a maze that leaves a
 **path** from any vertex to any other vertex, but in a much less cluttered way.
 The result is called a **spanning tree**.
 
@@ -93,18 +96,17 @@ The result is called a **spanning tree**.
 
 A spanning tree `S` is a sub-graph of a graph `G = {V, E}` that contains the minimum
 number of edges required to connect all vertices in `G`. If we denote the number of
-vertices as `|V|` and number of edges as `|E|`, then for graph `S`, `|V|`
-remains the same, and `|E| = |V| - 1`. It also turns out that graph `S` has the **acyclic** property of a graph. 
+vertices as `|V|` and number of edges as `|E|`, then for graph `S`, `|V'| = |V|` and `|E'| = |V| - 1`. It also turns out that graph `S` has the **acyclic** property of a graph. 
 
 <p align="center">
   <img src="img/png/cyclic-acyclic.png"><br>
   <i>A cyclic graph, and it's acyclic sub-graph.</i>
 </p>
 
-A graph is acyclic if there is *no way* to start
+A graph is acyclic if there is **no way** to start
 at a specified vertex `v` and follow an alternating sequence of vertices and edges `v1, e1, v2, e2...`
 where edge `ei` connects `vi` and `vi+1` and visit the same vertex twice. In other words, there
-are no loops or repitition.
+are no loops or repitition in a walk of the graph.
 
 For simplicity, we will consider white (squares of) pixels valid vertices, and black (lines of)
 pixels the absence of a connecting edge. This means, as we go through our graph removing walls, we will
@@ -117,20 +119,22 @@ are the absence of edges, or area that does not allow us to go from one vertex t
   <i>Our result once the correct amount of walls is removed will look like this.</i>
 </p>
 
-Now that we have framed the problem we can see some of the algorithms used to do this.
+Now that we have framed the problem, we can see some of the algorithms used to actually generate the mazes.
 
 # Notes on runtime and space analysis
 
 We will explore the runtime of both generating the maze, and solving it. But, before we do that
 we must prove a few things and understand that runtime analysis on graphs is often times
-dependent on **how** the graph is implemented. Let's explore the worst case scenario.
+dependent on **how** the graph is implemented. Let's explore the worst case scenarios.
 
-As stated, a graph `G = {V, E}` can have a vertex set with cardinality `|V|` of vertices. Provided
+As stated, a graph `G = {V, E}` can have a vertex set with cardinality `|V|`. Provided
 that each vertex can be connected to at most, every other vertex, the cardinality of the edge set
 `E` can be expressed as `|E| ≈ |V|²`. **However, for this particular problem, we can assert otherwise**.
 
 The reason is because we are working on an image where edges only exist between **adjacent** pixels. A pixel can only be adjacent to at most 4 other vertices.
-Consider a grid composed of n x n pixels or n² vertices. We are only considering adjacent vertices.
+Consider a grid composed of n x n pixels or n² vertices. 
+
+
 A vertex has at most 4 adjacent vertices:
 
 1. Top
@@ -163,7 +167,7 @@ Cell {
 }
 ```
 
-Each `Cell` object contains a 4-bit binary string containing boolean values indicating whether or not any of the 4 walls are present for that `Cell`. If is a particular bit is set to 0, then there is **no** wall, or there **is** and edge between that cell and the cell indicated by the position of the bit. If the bit is set to 1, a wall **does** exist or there is **not** an edge to the adjacent vertex. The bit mapping goes as follows:
+Each `Cell` object contains a 4-bit binary string containing boolean values indicating whether or not any of the 4 walls are present for that `Cell`. If a particular bit is set to 0, then there is **no** wall, or there **is** and edge between that cell and the cell indicated by the position of the bit. If the bit is set to 1, a wall **does** exist or there is **not** an edge to the adjacent vertex. The bit mapping goes as follows:
 
 | Bit | Neighbor |
 |:---:| :------: |
@@ -172,18 +176,18 @@ Each `Cell` object contains a 4-bit binary string containing boolean values indi
 | 2   | bottom   |
 | 3   | left     |
 
-For example, if `wall = 1010`, then the cell has a top, and bottom wall, but it does not have a left or right wall. In order to actually check the value of or modify these flags, we must use bitwise operations.
+For example, if `wall = 1010`, then the cell has a top, and bottom wall, but it does not have a left or right wall. In order to actually check the value of or modify on of the flags, we must use bitwise operations.
 
-In regards to edge weight, there is no need to actually store that information. As noted, all edges have a weight of 1 because the distance between two adjacent pixels is always 1. So, we can simply ignore it. Instead, we just give each cell a `cost` field that represents the **aggregated weight** associated with **getting to** that vertex.
+In regards to edge weight, there is no need to actually store that information. As noted, all edges have a weight of 1 because the distance between two adjacent pixels is always 1. So, we can simply ignore it. Instead, we just give each cell a `cost` field that represents the **aggregated weight** associated with **getting to** that vertex from a specified start vertex.
 
 <p align="center">
   <img src="img/png/uniform-costs.png"><br>
   <i>A walk from vertex A to I on a weighted graph.</i>
 </p>
 
-For a given walk of the graph, the cost of a vertex `v_i` is always the cost of vertex `v_(i-1) + 1`, where `v_(i+1)` is the vertex just before vertex `v` in the walk. So, when we traverse the graph, we just keep incrementing as we go instead of wasting space on information we can confidently predict and compute when it is needed. We see for vertices that we not discovered or visited, by default their cost is infinite - this will come in handy when finding the shortest path.
+For a given walk of the graph, the cost of a vertex `v_i` is always the cost of vertex `v_(i-1) + 1`, where `v_(i-1)` is the vertex just before vertex `v` in the walk. So, when we traverse the graph, we just keep incrementing as we go instead of wasting space on information we can confidently predict and compute when it is needed. We see for vertices that we have not discovered or visited, by default their cost is infinite - this will come in handy when finding the shortest path between two vertices.
 
-# Generating with Randomized Depth/Breadth-first search
+# Generating with backtracking
 
 The [Randomized Depth / Breadth-first search][wiki] follows:
 
@@ -252,14 +256,14 @@ backtrack(src) {
 
 In essence, this algorithm starts at a vertex `u`, randomly visits an adjacent
 vertex `v` that has not been visited yet - destroying barriers (walls of pixels) between
-the current and previous vertex to create an edge, and repeats this until all vertices are visited and we have a spanning tree.
+the current and previous vertices to create an edge, and repeats this until all vertices are visited and we have a spanning tree.
 
 <p align="center">
   <img src="img/png/maze-dfs.png"><br>
   <i>A maze generated with DFS and solved with A*.</i>
 </p>
 
-The above algorithm can be written as DFS, BFS, or even a hybrid. if implemented with DSF, the resulting maze will have a longer solution path, but relatively "easy" to solve by a computer using graph algorithms because there is a lower brancing factor. This means dead ends are relatively short, and there are less paths that are seemingly reasonable. Instead, the solution may take many twists and turns around the entire maze to get to the target. We see there are less highlighted squares, meaning the path finding algorithm did not visit too many nodes that did not contribute to the final solution.
+The above algorithm can be written as DFS, BFS, or even a hybrid. if implemented with DFS, the resulting maze will have a longer solution path, but relatively "easy" to solve by a computer using graph algorithms because there is a lower brancing factor. This means dead ends are relatively short, and there are less paths that are seemingly reasonable but lead no where. Instead, the solution may take many twists and turns around the entire maze to get to the target. We see there are less highlighted squares, meaning the path finding algorithm did not visit too many nodes that did not contribute to the final solution.
 
 <p align="center">
   <img src="img/png/maze-bfs.png"><br>
@@ -273,39 +277,38 @@ Generating the maze with BFS will result in a maze with much higher branching fa
   <i>A maze generated with BFS / DFS hybrid and solved with A*.</i>
 </p>
 
-Finally, we can implement a hybrid where sometimes we push, and sometimes we pop. This will result in a maze that is less difficult than DFS, so still solvable by a human, but less predictable than BFS so it remains interesting. Altering between pushing and popping with 50:50 probability works well. Here we see, the path finding algorithm needed to visit a decent amount of nodes before finding the solution and the solution still seems "doable" by a human.
+Finally, we can implement a hybrid where sometimes we push, and sometimes we pop. This will result in a maze that is less difficult than DFS, so still solvable by a human, but less predictable than BFS so it remains interesting. Alternating between pushing and popping with 50:50 probability works well. Here we see, the path finding algorithm needed to visit a decent amount of nodes before finding the solution and the solution still seems "doable" by a human.
 
-## Time complexity with DFS / BFS + backtracking
-As noted, we are using depth / breadth-first search to generate the graph. To *traverse* a graph
+## Time complexity with backtracking
+As noted, we are using depth / breadth-first search to generate the graph. To **traverse** a graph
 we visit each node once, which is `O(|V|)`. But, we also must check all adjacent vertices per vertex.
 This we can do in `O(1)` time because edges are simply stored as boolean values per grid cell.
 We must check all four (top, bottom, left and right) edges, per vertex. This is `4 * O(1)`
 which is still `O(1)`. So, we are doing `|V|` loop iterations, each of which does `O(1)` work.
 
-**Generating the maze is done in** `O(|V|)` **or** `O(n²)` **time.**
+**Generating the maze is done in** `O(|V|)` **time.**
 
-## Space complexity with DFS / BFS + backtracking
+## Space complexity with backtracking
 The only auxiliary space we use is the stack / queue
 structure for queuing vertices for processing. In the worst case, the depth / breadth-first search
 traverses the entire graph without repetition / backtracking. This would mean all `|V|` vertices are
 pushed on to the stack before any popping (visiting) occurs.
 
-**Generating the maze required** `O(|V|)` **or** `O(n²)` **space.**
+**Generating the maze required** `O(|V|)` **space.**
 
 # Solving with Depth-first search (DFS)
 
 A modified depth-first search can be used, stopping once we come across the
-target vertex, then back tracking to discover the path from source to destination. This is a brute force method that would take a lot longer
-that more strategic methods and may not always result in the optimal solution if there is more than one path from beginning to end. 
+target vertex, then back tracking to discover the path from source to destination. This is a brute force method that may not always result in the optimal solution if there is more than one path from beginning to end. However, in practice it runs relatively fast in comparison to other search algorithms.
 
 Pseudo code follows:
 
 ```javascript
 dfs(src, dst) {
 
-	var unvisited = []	// Stack
-	var neighbors = []	// Set
-	var parents   = []	// Map
+	var unvisited = []  // Stack
+	var neighbors = []  // Set
+	var parents   = []  // Map
 	var current
 	
 	// The start vertex has no parent
@@ -538,7 +541,8 @@ dijkstra(graph, src, dst) {
 				parents[neighbor.key] = current.key
 				
 				// Decrease the key of the neighbor with new cost
-		    	unvisited.decreaseKey(neighbor, cost)
+				unvisited.decreaseKey(neighbor, cost
+			 	
 			}
 		
 		})
@@ -567,7 +571,7 @@ Dijkstra's algorithm uses a priority queue to process unvisited vertices. In the
 
 The limitations of Dijkstra's algorithm is the reason we use A* (A Star) as our primary approach in **path finding**. It can be considered a generalization of Dijkstra's algorithm
 that uses a heuristic value (specific to the problem) that prevents us from straying away on non-optimal paths and helps make more intelligent intermediate
-steps that lead to the overall optimal solution. We can also say Dijkstra's algorithm is a specific case of A* where the heuristic of all adjacent vertices are equal or zero - thus having no impact on decision making. This fact, along with the fact that edge weights are all equal is why Dijkstra for simple (single solution) mazes degrades to a greedy BFS.
+steps that lead to the overall optimal solution. We can also say Dijkstra's algorithm is a specific case of A* where the heuristic of all adjacent vertices are equal or zero - thus having no impact on decision making. This fact, along with the fact that edge weights are all equal for a maze is why Dijkstra for simple (single solution) mazes degrades to a greedy best-first search.
 
 The heuristic is an easy-to-compute value computed per iteration (or beforehand) that we use to determine whether or not we are getting closer to our target. It is a problem-specific computation because for arbitrary graphs (a set of edges and vertices) we do not have any information nor a concept of "how close" we are. Since we have our graph in terms of a grid, a good choice for the heuristic is the (euclidian or manhattan) distance between the current pixel and the target. 
 
@@ -578,6 +582,10 @@ Again, algorithms like Dijkstra's or A* have limited benefit if there is only on
 Pseudo code follows:
 
 ## Time complexity of A*
+
+A* is the worst case degrades to Dijkstra's algorithm. We visit all `|V|` vertices, each of which requires a `log |V|` extract min operation on the min heap. This results in `O(|V| * log |V|)` operations.
+
+**Solving the maze with A* is done in** `O(|V| * log |V|)` **time.**
 
 ## Space complexity of A*
 
