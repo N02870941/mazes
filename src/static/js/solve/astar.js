@@ -14,8 +14,6 @@ const aStar = {
    */
   init : () => {
 
-    // TODO - Get heuristic / comparator from drop down
-
     // Comparator for heap that minimizes: f(n) = g(n) + h(n)
     let comparator = Cell.heuristics.comparators.standard;
 

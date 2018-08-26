@@ -29,8 +29,10 @@ function generate() {
   // Initialize the grid
   trigger.initializing()
 
-  stack.length = 0;
+  // Initialize the queue
+  queue = new List()
 
+  // Start at source
   maze.current = maze.source();
 
   // Start the process

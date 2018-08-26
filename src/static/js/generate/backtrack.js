@@ -1,16 +1,15 @@
 
 /**
  * Maze generating based on backtracking. The
- * discover() function determines how to choose
- * the next adjacent vertex. The dequeue function
- * determines how to select the next node to dequeue.
- * This has a direct connection with the branching
- * factor and difficulty of the maze.
+ * The dequeue function determines how to select
+ * the next node to dequeue. This has a direct
+ * connection with the branching factor and
+ * difficulty of the maze.
  */
 const backtrack = (() => {
 
   // Private functions
-  function make(discover, dequeue) {
+  function backtrack(dequeue) {
 
     // Mark as visited
     maze.current.visited = true;
@@ -29,7 +28,7 @@ const backtrack = (() => {
 
       // Push current onto stack
       // for backtracking purposes
-      stack.push(maze.current);
+      queue.push(maze.current);
 
       // Remove the wall between
       // these two adjacent vertices
@@ -43,13 +42,13 @@ const backtrack = (() => {
 
     // We have reached a dead end
     // so we start back tracking
-    } else if (stack.length > 0) {
+    } else if (queue.size() > 0) {
 
-      maze.current = dequeue(stack);
+      maze.current = dequeue(queue);
     }
 
     // Exit condition
-    return stack.length === 0;
+    return queue.size() === 0;
   }
 
   // Public functions
@@ -63,7 +62,7 @@ const backtrack = (() => {
      * algorithmically because there are many potentially
      * promising paths.
      */
-    bfs : () => make(Cell.randomNeighbor, (s) => s.shift()),
+    bfs : () => backtrack(s => s.shift()),
 
     /**
      * Generates using depth-first search. This
@@ -74,7 +73,7 @@ const backtrack = (() => {
      * shorter, and there are far fever potentially promising paths
      * when compared with breadth-first search.
      */
-    dfs : () => make(Cell.randomNeighbor, (s) => s.pop()),
+    dfs : () => backtrack(s => s.pop()),
 
     /**
      * Generates using a 50:50 hybrid of breadth-first
@@ -88,7 +87,7 @@ const backtrack = (() => {
      */
     hybrid : () => {
 
-      return make(Cell.randomNeighbor, (s) => {
+      return backtrack((s) => {
 
         let n = floor(random(1, 101));
 

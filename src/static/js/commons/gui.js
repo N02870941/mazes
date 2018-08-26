@@ -136,9 +136,34 @@ const gui = {
    */
   initDropdown : ({
 
+    key      = undefined,
+    options  = undefined,
+    onchange = undefined
+
   }) => {
 
-      // TODO - Implement
+    // Get the dropdown
+    let dropdown = dropdowns[key]
+
+    // If one an onchange
+    // event was supplied
+    if (onchange) {
+
+        dropdown.change(onchange)
+    }
+
+    // Append all options
+    for (option of options) {
+
+      dropdown.append(`<option value="${option.value}">${option.name}</option>`)
+    }
+
+    // Trigger the change event so
+    // that all of the dropdown's
+    // dependencies are in a valid
+    // initial state
+    dropdown.trigger(events.CHANGE)
+
   }
 
 };

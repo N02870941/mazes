@@ -1,5 +1,7 @@
 // https://stackoverflow.com/questions/42919469/efficient-way-to-implement-priority-queue-in-javascript
 
+// TODO - Move to inside heap class
+
 // const top = 0;
 const left   = i => (i << 1) + 1;
 const right  = i => (i + 1) << 1;

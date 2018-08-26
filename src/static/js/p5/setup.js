@@ -71,6 +71,7 @@ function setup() {
     // Dropdowns
     {map : dropdowns, key : keys.GENERATE,   selector : elements.dropdown.GENERATE},
     {map : dropdowns, key : keys.SOLVE,      selector : elements.dropdown.SOLVE},
+    {map : dropdowns, key : keys.HEURISTIC,  selector : elements.dropdown.HEURISTIC},
 
     // Checkboxes
     {map : checkboxes, key : keys.HIGHLIGHT, selector : elements.checkbox.HIGHLIGHT},
@@ -102,6 +103,53 @@ function setup() {
     {sliderKey : keys.SUBTRACT_V, labelKey : keys.SUBTRACT_V},
     {sliderKey : keys.SUBTRACT_H, labelKey : keys.SUBTRACT_H},
     {sliderKey : keys.FRAMES,     labelKey : keys.FRAMES, transformer : (v) => abs(int(v)), callback : frameRate}
+  ];
+
+  // Drop downs
+  let dropdownsToInit = [
+
+    // TODO - Use constants
+
+    {
+      key     : keys.GENERATE,
+      options : [
+        {name : 'Breadth-first search (BFS)', value : 'bfs'},
+        {name : 'Depth-first search (DFS)',   value : 'dfs'},
+        {name : 'BFS DFS 50:50 hybrid',       value : 'hybrid'}
+      ]
+    },
+
+    {
+      key     : keys.SOLVE,
+      options : [
+        {name : 'A* search',                  value : 'aStar'},
+        {name : 'Dijkstra\'s algorithm',      value : 'dijkstra'},
+        {name : 'Breadth-first search (BFS)', value : 'BFS'},
+        {name : 'Depth-first search (DFS)',   value : 'DFS'}
+      ],
+      onchange : function() {
+
+        let heuristics = $('#row-dropdown-heuristic')
+
+        if (this.value === aStar.aStar.name)
+          heuristics.show()
+
+        else
+          heuristics.hide()
+      }
+    },
+    {
+      key     : keys.HEURISTIC,
+      options : [
+        {name : 'Manhattan distance (admissible, decent speed)', value : 'manhattan'},
+        {name : 'Euclidian distance (admissible, but slow)', value : 'euclidian'},
+        {
+          name : 'Weighted euclidian using √(determinant) (not admissible, but fast)',
+          value : 'crossProduct'
+        }
+      ],
+      onchange : function() {maze.heuristic = Cell.heuristics[this.value]}
+    }
   ];
 
   // Buttons to initialize
@@ -160,6 +208,7 @@ function setup() {
     {array : elementsToSelect,      initializer : gui.initElement},
     {array : slidersToInit,         initializer : gui.initSlider},
     {array : sliderLabelsToConnect, initializer : gui.connectSliderLabel},
+    {array : dropdownsToInit,       initializer : gui.initDropdown},
     {array : buttonsToInit,         initializer : gui.initButton},
     {array : algorithmsToInit,      initializer : gui.initAgorithm}
   ];

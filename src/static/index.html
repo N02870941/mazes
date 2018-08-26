@@ -139,46 +139,27 @@
 
         <div class='col-md-6 algo-select'>
 
-          <!-- Label -->
+          <!-- Label + Dropdown -->
           <div>Generator algorithm:</div>
-
-          <!-- Dropdown -->
-          <select id='dropdown-generator' class="form-control form-control-sm">
-            <option value='bfs'>Breadth-first search (BFS)</option>
-            <option value='dfs'>Depth-first search (DFS)</option>
-            <option value='hybrid'>BFS DFS 50:50 Hybrid</option>
-          </select>
+          <select id='dropdown-generator' class="form-control form-control-sm"></select>
         </div>
 
         <!-- Solver algorithm selector -->
         <div class='col-md-6 algo-select'>
 
-          <!-- Label -->
+          <!-- Label + Dropdown -->
           <div>Solver algorithm:</div>
-
-          <!-- Dropdown -->
-          <select id='dropdown-solver' class="form-control form-control-sm">
-            <option value='aStar'>A* search</option>
-            <option value='dijkstra'>Dijkstra's Algorithm</option>
-            <option value='DFS'>Depth-first search (DFS)</option>
-            <option value='BFS'>Breadth-first search (BFS)</option>
-          </select>
+          <select id='dropdown-solver' class="form-control form-control-sm"></select>
         </div>
 
       </div>
 
       <!-- Dropdown for selecting Heuristic for A* -->
-      <div class='col algo-select' style='display:none;'>
+      <div id='row-dropdown-heuristic' class='col algo-select'>
 
-        <!-- Label -->
+        <!-- Label + Dropdown -->
         <div>Heuristic:</div>
-
-        <!-- Dropdown -->
-        <select id='dropdown-heuristic' class="form-control form-control-sm">
-          <option value='euclidian'>Euclidian Distance</option>
-          <option value='manhattan'>Manhattan Distance</option>
-          <option value='crossProduct'>Cross Product</option>
-        </select>
+        <select id='dropdown-heuristic' class="form-control form-control-sm"></select>
       </div>
 
       <!-- Checkbox for highlighting the solution -->
@@ -187,7 +168,7 @@
 
           <input id="checkbox-highlight-visited" class="form-check-input" type="checkbox">
           <label class="form-check-label" for="defaultCheck1">
-            Color all visited nodes in solution
+            Leave all visited nodes highlighted in solution
           </label>
         </div>
       </div>
@@ -251,9 +232,16 @@
 
     <!-- Custom JS -->
 
+    <!-- Utility functions -->
+    <script type="text/javascript" src="js/commons/util.js"></script>
+    <script type="text/javascript" src="js/commons/trigger.js"></script>
+    <script type="text/javascript" src="js/commons/gui.js"></script>
+    <script type="text/javascript" src="js/commons/sort.js"></script>
+
     <!-- Custom data types -->
     <script type="text/javascript" src="js/structure/disjoint.js"></script>
     <script type="text/javascript" src="js/structure/funda.js"></script>
+    <script type="text/javascript" src="js/structure/list.js"></script>
     <script type="text/javascript" src="js/structure/stack.js"></script>
     <script type="text/javascript" src="js/structure/queue.js"></script>
     <script type="text/javascript" src="js/structure/heap.js"></script>
@@ -269,12 +257,6 @@
     <script type="text/javascript" src="js/value/param.js"></script>
     <script type="text/javascript" src="js/value/algorithm.js"></script>
     <script type="text/javascript" src="js/value/variable.js"></script>
-
-    <!-- Utility functions -->
-    <script type="text/javascript" src="js/commons/util.js"></script>
-    <script type="text/javascript" src="js/commons/trigger.js"></script>
-    <script type="text/javascript" src="js/commons/gui.js"></script>
-    <script type="text/javascript" src="js/commons/sort.js"></script>
 
     <!-- Solvers -->
     <script type="text/javascript" src="js/solve/astar.js"></script>

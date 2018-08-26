@@ -12,8 +12,9 @@ const elements = {
 
   dropdown : {
 
-    GENERATE : '#dropdown-generator',
-    SOLVE    : '#dropdown-solver'
+    GENERATE  : '#dropdown-generator',
+    SOLVE     : '#dropdown-solver',
+    HEURISTIC : '#dropdown-heuristic'
   },
 
   button : {
@@ -57,6 +58,8 @@ const elements = {
   }
 };
 
+//------------------------------------------------------------------------------
+
 // HTML element attributes / states
 const attributes = {
 
@@ -67,9 +70,12 @@ const attributes = {
   SET_ATTRIBUTE : 'setAttribute'
 };
 
+//------------------------------------------------------------------------------
+
 // Jquery event strings
 const events = {
 
+  CHANGE       : 'change',
   SLIDE        : 'slide',
   CLICK        : 'click',
   REFRESH      : 'refresh',
@@ -80,11 +86,14 @@ const events = {
   INITIALIZING : 'initializing'
 };
 
+//------------------------------------------------------------------------------
+
 // Keys for lookup in
 // associative arrays
 // of UI elements
 const keys = {
 
+  HEURISTIC  : 'heuristic',
   CANCEL     : 'cancel',
   CANVAS     : 'canvas',
   PATH       : 'path',
@@ -104,6 +113,8 @@ const keys = {
   CONTENT    : 'content'
 };
 
+//------------------------------------------------------------------------------
+
 // Associative arrays
 // of UI elements
 const message     = [];
@@ -112,6 +123,8 @@ const sliders     = [];
 const labels      = [];
 const dropdowns   = [];
 const checkboxes  = [];
+
+//------------------------------------------------------------------------------
 
 /**
  * For each event, create an
@@ -136,3 +149,10 @@ const subscribers = (() => {
   return s
 
 })();
+
+//------------------------------------------------------------------------------
+
+/**
+ * Singleton maze object.
+ */
+const maze = Maze.getInstance();

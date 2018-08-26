@@ -405,12 +405,12 @@ class Cell {
 
     if (this.highlighted) {
 
-      return;
+      return
     }
 
-    this.color(0, 0, 255, 50);
+    this.color(0, 0, 255, 50)
 
-    this.highlighted = true;
+    this.highlighted = true
   }
 
 //------------------------------------------------------------------------------
@@ -538,6 +538,64 @@ Object.defineProperty(Cell, 'heuristics', {
 
       return a + b
     },
+
+//------------------------------------------------------------------------------
+
+    // Cross product helps break ties
+    crossProduct : function (src, dst) {
+
+      let determinant = (matrix) => {
+
+        let a = matrix[0][0]
+        let b = matrix[1][0]
+        let c = matrix[0][1]
+        let d = matrix[1][1]
+
+        return (a * d) - (b * c)
+      }
+
+      // http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html#breaking-ties
+
+      // Manhattan distance from here to target
+      let heuristic = abs(dst.j - src.j) +
+                      abs(dst.i - src.i)
+
+      // Get max path length in the current maze
+      let max = abs(maze.target().j - maze.source().j) +
+                abs(maze.target().i - maze.source().i)
+
+
+      // Compute Determinant
+      let dx1 = src.j - dst.j
+      let dy1 = src.i - dst.i
+
+      let dx2 = maze.source().j - maze.target().j
+      let dy2 = maze.source().i - maze.target().i
+
+      // Determinant
+      let matrix = [
+        [dx1, dy1],
+        [dx2, dy2]
+      ]
+
+      // Compute the determinant
+      let det = determinant(matrix)
+
+      // Get absolute value, then square root
+      // to preserve the units of the heuristic
+      let weight = sqrt( abs(det) )
+
+      // Scale factor p should not exceed:
+      // min(step cost) / max(# steps)
+      let scale = 1 / max
+
+      // Add to heuristic
+      heuristic = (scale * weight) + heuristic
+
+      return heuristic
+    },
+
+  //------------------------------------------------------------------------------
 
     comparators : {
 
