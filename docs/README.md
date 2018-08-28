@@ -4,7 +4,7 @@
 A simple maze generator and solver available in the form of a [web app][site].
 
 # Intuition
-One way of describing the process of generating and solving a maze is through graph theory. For the
+One way of framing the problem of generating and solving a maze is in terms of graph theory. For the
 purpose of clarity, we will use the words maze and graph interchangeably. If you
 are not familiar with graph theory, here is an explanation of the information
 about graph theory that is relevant to understand this problem.
@@ -12,7 +12,7 @@ about graph theory that is relevant to understand this problem.
 A graph `G` is a pair denoted as `G = {V, E}` where `V` is a set of vertices and
 `E` is a set of edges where each edge connects some vertex `u` to some vertex `v` from the vertex set `V`. A vertex is an abstract
 **node or location** in a network. An edge is a **branch** that links vertices together. Graphs
-come in various ways:
+come in various forms:
 
 1. Weighted
 2. Directed
@@ -29,18 +29,17 @@ Any combination is valid:
   <img src="img/png/weighted-unweighted.png"><br>
 </p>
 
-A weighted graph is a graph where edges have a specified **weight** or **cost** associated
+A weighted graph is a graph who's edges have a specified **weight** or **cost** associated
 with branching two vertices. For example, if we represent a country as a graph where
 cities are vertices and roads are edges, the weight of an edge might be the distance between
-each city.
+two cities.
 
 <p align="center">
   <img src="img/png/directed-undirected.png"><br>
 </p>
 
 A directed graph is a graph where an edge `e`  from vertex `u` to
-`v` is not equal to an edge `f` from `v` to `u` - they are directional. For example, in our city
-graph we may have an edge (road) from New York to Chicago with weight 200 miles.
+`v` is not equal to an edge `f` from `v` to `u`. In other words, edges are directional. For example, in our graph that represents a country we may have an edge (road) from New York to Chicago with weight 200 miles.
 But, we have a **different** edge going from Chicago to New York that is 250 miles because the return route may require taking a different road.
 
 <p align="center">
@@ -49,8 +48,7 @@ But, we have a **different** edge going from Chicago to New York that is 250 mil
 </p>
 
 For the purpose of representing a maze, we will use an undirected weighted graph.
-We will consider vertices white pixels (or square groups of white pixels) and edges will be
-placed between adjacent pixels. A vertex is considered adjacent or having an edge with another vertex if there is **no** barrier (black pixels) between them. Edges will have a uniform weight of 1 which
+We will consider vertices white pixel (areas). A vertex is considered adjacent or having an edge with another vertex if there is **no** barrier (black pixels) between them. Edges will have a uniform weight of 1 which
 just indicates that two vertices are one pixel away from each other (adjacent).
 
 <p align="center">
@@ -58,18 +56,9 @@ just indicates that two vertices are one pixel away from each other (adjacent).
   <i>A 30 x 30 square grid that represents a graph with <strong>no</strong> edges.</i>
 </p>
 
-It is worth noting for this particular implementation, we will have a
-tad of redundancy where each cell in the grid has information regarding all 4
-adjacent vertices. This causes overlap in that for a vertex `u` that is to the
-left of vertex `v`, `u`'s `right` vertex is the same as `v`'s `left` vertex pointer.
-So from a technical coding standpoint, the graph created in memory will be directed, but edges `{u,v}` and `{v,u}` will
-be treated the same. For example, if we delete one, we delete the other. So we still consider the graph undirected.
-This can be optimized if an abstract "`Graph`" object were created in memory. But, that
-is unnecessary for the scope of this problem.
-
 # Maze generating
 Generating a maze requires a modified graph traversal algorithm. Traversing the graph means to
-**visit** each node (usually) from a specified starting vertex. If an undirected graph is
+**visit** each node from a specified starting vertex. If an undirected graph is
 **connected** then there exists a path from each vertex to every other vertex in the graph.
 
 <p align="center">
@@ -79,13 +68,13 @@ Generating a maze requires a modified graph traversal algorithm. Traversing the 
 
 In the case of a **blank** `n x n` image where `n` is the width (and height) of the image
 in pixels, the image **always** represents connected graph. The reason is that
-there are no missing pixels. So, in terms of
+there are no missing pixels / black lines. So, in terms of
 traversing the image, there exist a path from each white pixel to every other white pixel - this is too many
 in fact. 
 
 This is why we have black lines to represent the **absence** of edges, or a boundary that terminates a particular path. But, in the case of our full grid, we have too many boundaries as well - resulting in zero paths. 
 
-Our goal is to traverse our image full of boundaries and **remove** (recreate) as many (paths) as possible but still resulting in a graph that has the connected property. This will result in a maze that leaves a
+Our goal is to traverse our image full of boundaries and **remove** (recreate) as many (paths) as possible but still produce a graph that has the connected property. This will result in a maze that leaves a
 **path** from any vertex to any other vertex, but in a much less cluttered way.
 The result is called a **spanning tree**.
 
@@ -96,7 +85,7 @@ The result is called a **spanning tree**.
 
 A spanning tree `S` is a sub-graph of a graph `G = {V, E}` that contains the minimum
 number of edges required to connect all vertices in `G`. If we denote the number of
-vertices as `|V|` and number of edges as `|E|`, then for graph `S`, `|V'| = |V|` and `|E'| = |V| - 1`. It also turns out that graph `S` has the **acyclic** property of a graph. 
+vertices in `G` as `|V|` and number of edges as `|E|`, then for graph `S`, `|V'| = |V|` and `|E'| = |V| - 1`. It also turns out that graph `S` has the **acyclic** property of a graph. 
 
 <p align="center">
   <img src="img/png/cyclic-acyclic.png"><br>
@@ -104,12 +93,11 @@ vertices as `|V|` and number of edges as `|E|`, then for graph `S`, `|V'| = |V|`
 </p>
 
 A graph is acyclic if there is **no way** to start
-at a specified vertex `v` and follow an alternating sequence of vertices and edges `v1, e1, v2, e2...`
+at a specified vertex `vi` and follow an alternating sequence of vertices and edges `v1, e1, v2, e2...`
 where edge `ei` connects `vi` and `vi+1` and visit the same vertex twice. In other words, there
 are no loops or repitition in a walk of the graph.
 
-For simplicity, we will consider white (squares of) pixels valid vertices, and black (lines of)
-pixels the absence of a connecting edge. This means, as we go through our graph removing walls, we will
+As we traverse the graph removing walls, we will
 be generating a continuous path of white pixels that represent traversable vertices
 in the graph. Black pixels that are left over will be the walls of the maze. They
 are the absence of edges, or area that does not allow us to go from one vertex to another.
@@ -128,11 +116,11 @@ we must prove a few things and understand that runtime analysis on graphs is oft
 dependent on **how** the graph is implemented. Let's explore the worst case scenarios.
 
 As stated, a graph `G = {V, E}` can have a vertex set with cardinality `|V|`. Provided
-that each vertex can be connected to at most, every other vertex, the cardinality of the edge set
+that each vertex in an **arbitrary** graph can be connected to at most, every other vertex, the cardinality of the edge set
 `E` can be expressed as `|E| ≈ |V|²`. **However, for this particular problem, we can assert otherwise**.
 
 The reason is because we are working on an image where edges only exist between **adjacent** pixels. A pixel can only be adjacent to at most 4 other vertices.
-Consider a grid composed of n x n pixels or n² vertices. 
+Consider a grid composed of `|V|` vertices. 
 
 
 A vertex has at most 4 adjacent vertices:
@@ -142,7 +130,7 @@ A vertex has at most 4 adjacent vertices:
 3. Left
 4. Right
 
-We can also visualize each vertex from 0,0 to 0,k where k = n-1 as follows:
+We can also visualize each vertex from `(0,0)` to `(k,k)` where `k = n - 1` as follows:
 
 
 <p align="center">
@@ -155,7 +143,7 @@ adjacent vertices. In total, for `|V|` vertices we have 4 * `|V|` edges. `|E|` i
 Although typically we say `O(|E|) = O(|V|²)`, for **this particular problem** we can say `O(|E|) = O(|V|) = O(n²)` where `n` is the number of boxes in our grid.
 
 # Implementation details
-There are many ways to represent a graph in memory. The typical implementations of the graph structure are Edge List, Adjacency Matrix, and Adjacency List. However, since this graph does not need to support all of the standard graph operations, we will implement a modified version of the adjacency list. We will have a single array called `grid` that represents a flattened `n x n` matrix of pixels / vertices. The `grid` array will be of type `Cell`.
+There are many ways to represent a graph in memory. The typical implementations of the graph structure are Edge List, Adjacency Matrix, and Adjacency List. However, since this graph does not need to support all of the standard graph operations, we will implement a modified version of the adjacency list. We will have a single array called `grid` that represents a flattened `n x n` matrix of squares / vertices. The `grid` array will be of type `Cell`.
 
 ```
 Cell {
@@ -185,7 +173,7 @@ In regards to edge weight, there is no need to actually store that information. 
   <i>A walk from vertex A to I on a weighted graph.</i>
 </p>
 
-For a given walk of the graph, the cost of a vertex `v_i` is always the cost of vertex `v_(i-1) + 1`, where `v_(i-1)` is the vertex just before vertex `v` in the walk. So, when we traverse the graph, we just keep incrementing as we go instead of wasting space on information we can confidently predict and compute when it is needed. We see for vertices that we have not discovered or visited, by default their cost is infinite - this will come in handy when finding the shortest path between two vertices.
+For a given walk of the graph, the cost of a vertex `v_i` is always the cost of vertex `v_(i-1) + 1`, where `v_(i-1)` is the vertex just before vertex `v_i` in the walk. So, when we traverse the graph, we just keep incrementing as we go instead of wasting space on information we can confidently predict and compute when it is needed. We see for vertices that we have not discovered or visited, by default their cost is infinite - this will come in handy when finding the shortest path between two vertices.
 
 # Generating with backtracking
 
@@ -202,6 +190,12 @@ The [Randomized Depth / Breadth-first search][wiki] follows:
     2.Else if stack is not empty
         1. Pop a cell from the stack
         2. Make it the current cell
+
+## Implementing backtracking
+In essence, this algorithm starts at a vertex `u`, randomly visits an adjacent
+vertex `v` that has not been visited yet - destroying barriers (walls of pixels) between
+the current and previous vertices to create an edge, and repeats this until all vertices are visited and we have a spanning tree.
+
 
 Pseudo code follows:
 
@@ -254,30 +248,28 @@ backtrack(src) {
 }
 ```
 
-In essence, this algorithm starts at a vertex `u`, randomly visits an adjacent
-vertex `v` that has not been visited yet - destroying barriers (walls of pixels) between
-the current and previous vertices to create an edge, and repeats this until all vertices are visited and we have a spanning tree.
+The above algorithm can be written as DFS, BFS, or even a hybrid.
 
 <p align="center">
   <img src="img/png/maze-dfs.png"><br>
-  <i>A maze generated with DFS..</i>
+  <i>A maze generated with DFS.</i>
 </p>
 
-The above algorithm can be written as DFS, BFS, or even a hybrid. if implemented with DFS, the resulting maze will have a longer solution path, but relatively "easy" to solve by a computer using graph algorithms because there is a lower brancing factor. This means dead ends are relatively short, and there are less paths that are seemingly reasonable but lead no where. Instead, the solution may take many twists and turns around the entire maze to get to the target. We see there are less highlighted squares, meaning the path finding algorithm did not visit too many nodes that did not contribute to the final solution.
+If implemented with DFS, the resulting maze will have a relatively long solution path, but relatively "easy" to solve by a computer using graph algorithms because there is a lower brancing factor. This means dead ends are relatively short and there are less paths that are seemingly reasonable but lead no where. Instead, the solution may take many twists and turns around the entire maze to get to the target.
 
 <p align="center">
   <img src="img/png/maze-bfs.png"><br>
   <i>A maze generated with BFS.</i>
 </p>
 
-Generating the maze with BFS will result in a maze with much higher branching factor, meaning the depth of the tree will be lower. This means we will get a shorter path, so the maze is more solvable for humans. However, for graph algorithms, they will generally take longer to solve because there are many more "promising" paths that branch off to dead ends. Notice that the path finding algorithm visited nearly all nodes to find the optimal solution, even though by "looking" at it, the solution appears obvious.
+Generating the maze with BFS will result in a maze with a much higher branching factor, meaning the depth of the spanning tree will be lower. This means we will get a shorter solution path, so the maze is more solvable for humans. However, for graph algorithms, they will generally take longer to solve because there are many more "promising" paths that branch off to eventual dead ends.
 
 <p align="center">
   <img src="img/png/maze-bfs-dfs.png"><br>
   <i>A maze generated with BFS / DFS hybrid.</i>
 </p>
 
-Finally, we can implement a hybrid where sometimes we push, and sometimes we pop. This will result in a maze that is less difficult than DFS, so still solvable by a human, but less predictable than BFS so it remains interesting. Alternating between pushing and popping with 50:50 probability works well. Here we see, the path finding algorithm needed to visit a decent amount of nodes before finding the solution and the solution still seems "doable" by a human.
+Finally, we can implement a hybrid where sometimes we push, and sometimes we pop from the unvisited queue. This will result in a maze that is less difficult than mazes produced by DFS, so still solvable by a human, but less predictable than BFS mazes, so it remains interesting. Alternating between pushing and popping with 50:50 probability works well.
 
 ## Time complexity with backtracking
 As noted, we are using depth / breadth-first search to generate the graph. To **traverse** a graph
@@ -286,7 +278,7 @@ This we can do in `O(1)` time because edges are simply stored as boolean values 
 We must check all four (top, bottom, left and right) edges, per vertex. This is `4 * O(1)`
 which is still `O(1)`. So, we are doing `|V|` loop iterations, each of which does `O(1)` work.
 
-**Generating the maze is done in** `O(|V|)` **time.**
+**Generating the maze with backtracking is done in** `O(|V|)` **time.**
 
 ## Space complexity with backtracking
 The only auxiliary space we use is the stack / queue
@@ -294,12 +286,14 @@ structure for queuing vertices for processing. In the worst case, the depth / br
 traverses the entire graph without repetition / backtracking. This would mean all `|V|` vertices are
 pushed on to the stack before any popping (visiting) occurs.
 
-**Generating the maze required** `O(|V|)` **space.**
+**Generating the maze with backtracking requires** `O(|V|)` **space.**
 
 # Solving with Depth-first search (DFS)
-
 A modified depth-first search can be used, stopping once we come across the
-target vertex, then back tracking to discover the path from source to destination. This is a brute force method that may not always result in the optimal solution if there is more than one path from beginning to end. However, in practice it runs relatively fast in comparison to other search algorithms.
+target vertex. We then backtrack to reconstruct the path from source to destination. This is a brute force method that may not always result in the optimal solution if there is more than one path from beginning to end. However, in practice it runs relatively fast in comparison to other search algorithms.
+
+## Implementing DFS
+To implement DFS we start by pushing the source vertex onto a stack of unvisited. We then loop until the unvisited node stack is empty. Within the loop, we `pop()` a node. If this node is the target, we break, otherwise we check if the node is unvisited. If so, we mark it as visited, then push all of it's unvisited neighbors onto the stack.
 
 Pseudo code follows:
 
@@ -370,7 +364,6 @@ dfs(src, dst) {
 ```
 
 ## Time complexity of DFS
-
 Depth-first search visits all `|V|` vertices in the outer loop. Each loop iteration visits at most all of that vertex's edges, which for a grid is always 4. Discovering adjacent vertices is done in `O(1)` time. The `push()` and `pop()` operation on the stack are also done in constant time. So, `O(|V| * 1)` results in linear time with respect to vertices.
 
 **The runtime of DFS is** `O(|V|)`.
@@ -383,8 +376,11 @@ push all `|V|` vertices before popping. This is the case where we visit **all** 
 **The space complexity of DFS is** `O(|V|)`.
 
 # Solving with Breadth-first search (BFS)
+Breadth-first search is another general purpose graph traversal algorithm. The intuition behind BFS can be looked at as roughly the "opposite" of that of DFS. In DFS we try to go as deep as possible until we hit a dead end. With BFS, we try to go as wide as possible until we hit a dead end, or find our target. For acyclic graphs (trees) it is the equivalent of a level-order traversal. 
 
-Breadth-first search is another general purpose graph traversal algorithm. The intuition behind BFS can be looked at as roughly the "opposite" of that of DFS. In DFS we try to go as deep as possible until we hit a dead end. With BFS, we try to go as wide as possible until we hit a dead end, or find our target. For acyclic graphs (trees) it is the equivalent of a level-order traversal. It also turns out that the only difference between implementing BFS and DFS is the data structure used to process vertices. For DFS we used a stack (FILO) structure. For BFS we will use a standard queue (FIFO) structure. The code is otherwise, roughly the same.
+## Implementing BFS
+It turns out that the only difference between implementing BFS and DFS is the data structure used to process vertices. For DFS we used a stack (FILO) structure. For BFS we will use a standard queue (FIFO) structure. The code is otherwise, roughly the same.
+
 
 Pseudo code follows:
 
@@ -455,25 +451,25 @@ bfs(src, dst) {
 ```
 
 ## Time complexity of BFS
-
 Breadth-first search's outer loop visits all `|V|` vertices. Within each loop iteration, we perform one `dequeue()` and at most 4 `enqueue()` operations - constant time. Discovering adjacent vertices is also done in constant time. In total, we have `|V| * O(1)` which is `O(|V|)`.
 
 **The runtime of BFS is** `O(|V|)`.
 
 ## Space complexity of BFS
-
 To process vertices, BFS uses a queue. In the worst case, the queue is storing all the vertices - `O(|V|)`. We also use a map to store references to vertices to reconstruct the path. In the worst case, the map holds references to all vertices - `O(|V|)`.
 
 **The space complexity of BFS is** `O(|V|)`.
 
 # Solving with Dijkstra's algorithm
-
 We can (theoretically) improve the above BFS by running Dijkstra's algorithm, which is a generic shortest path algorithm for arbitrary weighted graphs. Instead of blindly visiting each unvisited adjacent vertex until we have found our target, we will give them a priority. We will visit adjacent verticies that have **lower** associated cost first. This is a greedy approach that takes steps that may be optimal for
 **intermediate** solutions, but not optimal for the **overall** solution. So we run the risk of diverging off on to many sub-optimal paths if the maze has a high branching factor.
 
-In fact, since each adjacent vertex has the same cost to visit, if the graph only has **one solution**, Dijkstra will behave exactly like a greedy BFS.
+In fact, since each adjacent vertex has the same cost to visit, if the graph only has **one solution**, Dijkstra will behave nearly identically to BFS. In other words, Dijkstra degrades to a greedy best-first search.
 
 The only way we get value out of Dijkstra's algorithm is if there are **multiple ways** to get to the same vertex because that way we could actually **compare** and update costs if a **better** route is found. With this in mind, it makes it clear that the added benefit of Dijkstra's algorithm is null and void unless the maze has multiple solutions. 
+
+## Implementing Dijkstra
+Dijkstra's algorithm is very similar to BFS. The difference is that we update costs upon finding better paths and we do not use the visited flag.
 
 Pseudo code follows:
 
@@ -512,9 +508,6 @@ dijkstra(graph, src, dst) {
 	
 		// Get next vertex with min cost
 		current = unvisited.min()
-		
-		// Label is visited
-		current.visited = true
 		
 		// We found the target
 		if (current == dst) {
@@ -555,30 +548,25 @@ dijkstra(graph, src, dst) {
 ```
 
 ## Time complexity of Dijkstra
-
 For this particular problem, we have chosen to implement Dijkstra's
 algorithm with a min priority binary heap. We must loop through `|V|` vertices. For each iteration, we perform 1 `pop()` which is `O(log |V|)` and at most 4 `push()` operations for each adjacent neighbor - also `O(log |V|)`. So, multiplying the inner runtime by the outer runtime, we get `O(|V| * log |V|)`.
 
 **Solving the maze with Dijkstra's algorithm is done in** `O(|V| * log |V|)` **time.**
 
 ## Space complexity of Dijkstra
-
-Dijkstra's algorithm uses a priority queue to process unvisited vertices. In the worst case we will push `|V|` vertices before our first pop. We also use a map for backtracking to discover the path from source to destination. Since we are **only working with spanning trees**, the max size of a path is `|V| - 1`. In fact, no **path** in a graph can have more than `|V|` vertices because a path by definition says a vertex cannot be repeated. So, the map cannot grow greater than `O(|V|)`. 
+Dijkstra's algorithm uses a priority queue to process unvisited vertices. In the worst case we will push `|V|` vertices before our first pop. We also use a map for backtracking to discover the path from source to destination. The map used to reconstruct the path will also have at most `|V|` entries. 
 
 **The space complexity is** `O(|V|)`.
 
 # Solving with A* search
-
 The limitations of Dijkstra's algorithm is the reason we use A* (A Star). A* is an **informed search** that uses a heuristic function to help guide our search.
 
 ## What is a heuristic?
-
 The heuristic is an easy-to-compute value computed for each discovered vertex that we use to determine whether or not we are getting closer to our target. The equation follows. 
 
 <p align="center">
   <img src="img/png/informed-search-equation.png"><br>
 </p>
-
 
 The function `g(n)` is the cost associated with getting to that vertex. `h(n)` is the estimate (heuristic) cost **between** that vertex and the target vertex. The sum `f(n)` is an overall **estimated** cost from start to finish if the current node is in the final solution. In other words:
 
@@ -606,7 +594,7 @@ So, even though A* with a weighted heuristic will run very fast, if it is not ad
 Deciding on a heuristic function is highly dependent on the nature of the problem. For example, for a grid where diagonal movement is allowed, the straight-line (euclidian) distance is a good choice. 
 
 
-However, for grids where only lateral movement is allowed euclidian almost always **underestimates**. This is okay, as it will still lead to an optimal solution, but because it consistently underestimates, we will branch out very far and explore many more options than necessary. A better heuristic is manhattan distance. 
+However, for grids where only lateral movement is allowed euclidian almost always **underestimates** because we cannot actually ever go in a straight line. This is okay, as it will still lead to an optimal solution, but because it consistently underestimates, we will branch out very far and explore many more options than necessary. A better heuristic is manhattan distance. 
 
 Manhattan distance is essentially creating a triangle between two points and instead of taking the length of the hypotenuse (euclidian distance), we sum the lengths of the other two sides. It can also be seen as follows:
 
@@ -622,7 +610,7 @@ Pseudo code follows:
 
 ## Time complexity of A*
 
-A* in the worst case degrades to Dijkstra's algorithm. This occurs when the heurisitc function severly underestimates on each iteration and never rules out any adjacent nodes to visit. In other words, if `h(n) = 0` for all nodes, A* is equivalent to Dijkstra's algorithm. In that event, we visit all `|V|` vertices, each of which requires a `log |V|` extract min operation on the min heap. This results in `O(|V| * log |V|)` operations.
+A* in the worst case degrades to Dijkstra's algorithm. This occurs when the heurisitc function severly underestimates on each iteration and never rules out any adjacent nodes to visit. In other words, if `h(n) = 0` for all nodes, A* is equivalent to Dijkstra's algorithm. In that event, we visit all `|V|` vertices, each of which requires a `pop()` and up to 4 `push()`operations on the min heap - each of which is `O(log |V|)`. This results in `O(|V| * log |V|)` operations.
 
 **Solving the maze with A* is done in** `O(|V| * log |V|)` **time.**
 
@@ -636,7 +624,7 @@ push all `|V|` vertices before popping. This is the case where we visit **all** 
 # Performance comparison when solving (in practice)
 The asymptotic runtime of solving the maze is roughly the same for each solution. Generally speaking, it is `|V|` multiplied by the longer runtime between the `push()` and `pop()` operation for the specified data structure used to queue unvisited nodes. 
 
-For DFS and BFS we use stack and queue respectively, each of which performing `push()` and `pop()` in `O(1)` time - hence `O(|V|)` overall runtime. For A* and Dijkstra we use a priority queue that performs `push()` and `pop()` in `O(log |V|)` runtime - hence `O(|V| * log |V|)` overall runtime. This is the worst case. 
+For DFS and BFS we use a stack and a queue respectively, each of which performs `push()` and `pop()` in `O(1)` time - hence `O(|V|)` overall runtime. For A* and Dijkstra we use a priority queue that performs `push()` and `pop()` in `O(log |V|)` runtime - hence `O(|V| * log |V|)` overall runtime.
 
 We are not going to prove the average case runtime because the math can get quite complex. However, we are going to look at **runtime in practice** to make some **observations** and potentially determine one of the methods as the best method for solving the **mazes generated by this** application.
 
@@ -647,7 +635,7 @@ We start with a 300 x 300 square maze.
   <i>A maze generated with BFS + backtracking.</i>
 </p>
 
-Above is a 300 x 300 square maze with 40% of the vertical walls removed and 52% of the horizontal walls removed so that there are many paths from start to finish.  When searching for our target (from top left to bottom right) there are a total of 90,000 squares we can visit before exhausting our search and there is an optimal path length of about 599. Note, multiple optimal solutions may exist.
+Above is a 300 x 300 square maze with 40% of the vertical walls removed and 52% of the horizontal walls removed so that there are many paths from start to finish.  When searching for our target (from top left to bottom right) there are a total of 90,000 squares we can visit before exhausting our search. There is an optimal path length of about 599, although multiple optimal (and sub-optimal) solutions may exist.
 
 <p align="center">
   <img src="img/png/performance/
@@ -655,7 +643,7 @@ maze-solution-depth-first-search-5017-6574.png"><br>
   <i>Maze solved with DFS.</i>
 </p>
 
-Here we solve with depth-first search. Meaning we go as deep as possible before turning around and trying new paths. It works, but it does not give us an optimal solution. Here we found the target by visiting 6574 squares with a path of length 5017. We visited 7% of the grid, but do not have an good solution.
+Here we solve with depth-first search. It is a brute force approach where we go as deep as possible before turning around and trying new paths. It works, but it does not give us an optimal solution. Here we found the target by visiting 6574 squares with a path of length 5017. We visited 7% of the grid, but do not have am optimal solution or anything close.
 
 <p align="center">
   <img src="img/png/performance/
@@ -663,7 +651,7 @@ maze-solution-breadth-first-search-599-89999.png"><br>
   <i>Maze solved with BFS.</i>
 </p>
 
-We can find the optimal path by using a brute force method. This means try every option until we eventually stumble across the solution. One way to do that is breadth-first search. Which is, expanding as wide as possible before turning around. This gives us the optimal solution of length 599 but we visited all 90000 squares to find it. Not efficient.
+We can find the optimal path by using another brute force method, breadth-first search. Which is, expanding as wide as possible before turning around. This gives us the optimal solution of length 599 but we visited all 90000 squares to find it. Not efficient.
 
 <p align="center">
   <img src="img/png/performance/
@@ -671,7 +659,7 @@ maze-solution-dijkstra-uniform-cost-search-599-89999.png"><br>
   <i>Maze solved with Dijkstra's algorithm.</i>
 </p>
 
-In theory, we could improve BFS by using Dijkstra's algorithm. Which is a uniform cost search algorithm that choses to visit vertices that contribute minimally to the overall cost. Unfortunately, for a maze, the cost to make any turn is always exactly 1, so we are technically sorting 1's every time. Dijkstra's algorithm degrades to best-first search (almost identical to BFS) and acts nearly identically to BFS. The only difference is sometimes the shape of the path. Here we still visited all 90000 squares to compute an optimal path of length 599.
+In theory, we could improve BFS by using Dijkstra's algorithm, a uniform cost search algorithm that choses to visit adjacent neighbors with lower costs first. Unfortunately, for a maze, the cost to visit any neighbor is always exactly 1, so we are technically sorting 1's every time. Dijkstra's algorithm degrades to best-first search and acts nearly identically to breadth-first search. The only difference is sometimes the shape of the path because the ordering of nodes is slightly different. But, for a graph where all edges have the same cost, Dijkstra behaves like a brute force algorithm. Here we still visited all 90000 squares to compute an optimal path of length 599.
 
 <p align="center">
   <img src="img/png/performance/
@@ -679,7 +667,7 @@ maze-solution-astar-euclidian-unweighted-599-84729.png"><br>
   <i>Maze solved with A* using euclidian distance as the heuristic.</i>
 </p>
 
-Another improvement to solving the maze is using the A* search using the euclidian distance as the heuristic. However, since the euclidian distance will often be a diagonal line, this heuristic consistantly underestimates because we **cannot actually go diagonally**. So, it only helps us eliminate the extreme corners. So, we still branch off pretty far. We visited 84729 out of 90000 squares. We visited 94% of all squares - very inefficient. 
+Another improvement to solving the maze is using the A* search using the euclidian distance as the heuristic. However, since the euclidian distance will often be a diagonal line, this heuristic consistantly underestimates because we **cannot actually go diagonally**. So, it only helps us eliminate the extreme corners and we still branch off pretty far. We visited 84729 out of 90000 (94% of all) squares - very inefficient. 
 
 <p align="center">
   <img src="img/png/performance/
@@ -687,7 +675,7 @@ maze-solution-astar-manhattan-unweighted-599-15764.png"><br>
   <i>Maze solved with A* using manhattan distance as the heuristic.</i>
 </p>
 
-An improvement to A* where only perpendicular movement is allowed is changing the heuristic to manhattan distance. That is, rather than computing straight line distance, we imagine we are in the city of New York, trying to get to from the upper west side to the lower east side. We count the number of blocks downtown we must walk and then add that to the number of blocks east we walk. This gives us a very close approximation as to how many squares we must visit. This produced a path of length 599 but we only visited 15764 squares - 17% of the maze. 
+An improvement to A* where only perpendicular movement is allowed is changing the heuristic to manhattan distance. That is, rather than computing the straight line distance, we imagine we are in the city of New York, trying to get to from the upper west side to the lower east side. We count the number of blocks downtown we must walk and then add that to the number of blocks east we must walk. This gives us a very close approximation as to how many squares we must visit. This produced a path of length 599 but we only visited 15764 squares - 17% of the maze. 
 
 However, we still notice that we are visiting many squares that do not contribute to the final result. The reason is because we have no mechanism for breaking ties between equally good options. For example, we see for this maze, many optimal solutions lie both above and below the straight line from the top-left corner to the bottom-right corner. If we are on a vertex that lies on the line, the vertices both above and to the right of our current position are equally good choices. We consider this a tie. Presently, we have no mechanism for breaking this tie so we explore both. We must add a tie-breaker.
 
@@ -699,19 +687,24 @@ maze-solution-astar-manhattan-weighted-599-2740.png"><br>
 
 Another improvement to A* is adding a weight to the heuristic, or a tie breaker. This allows us to impose a bias when we come across 2 equally weighted choices. This however, if it ever overestimates, will cause A* to output a slightly sub-optimal result. This breaks the admissible property of the heuristic. However, for most applications, this is okay if we are one or two steps off. The benefit is that depending on how much we weight the heuristic, we avoid straying off onto different paths. 
 
-For this particular application,  we consider a step in a particular direction a vector. We compute the determinant of that step vector and the vector from origin to target. We then use some multiple of this value to add that to our heuristic (manhattan distance).
+For this particular application,  we consider a step in a particular direction a vector. We compute the determinant of that step vector and the vector from origin to target. We then use some multiple of this value to add to our heuristic (manhattan distance).
 
 The reason we do this is because the determinant of any 2d vectors tells us information about the angle made between the two vectors. The closer these vectors are to parallel, the small that angle gets - eventually reaching 0 if the vectors are perfectly parallel.
 
 So, if we are above the line, and we have an equal choice to go right (further from the line) or down (closer to the line), even though the cost of both steps is 1 (equal), we break this tie by choosing the vector that produces an angle "most parallel" to the straight line from origin to target, which in this case is down because we are rotating towards the line rather than away from it.
 
-This approach produces the optimal solution of length 599 in 2740 total visits. This is about 3% of the total number of squares. This is a highly efficient approach, although sometimes producing slightly sub-optimal solutions depending on admissibility of the heuristic.
+This approach produces the optimal solution of length 599 in 2740 total visits. This is about 3% of the total number of squares. This is a highly efficient approach, although sometimes producing slightly sub-optimal solutions depending on the admissibility of the heuristic.
 
 ## Conclusion
-Clearly using A* with weighted manhattan distance is the fastest approach at finding a solution. If the maze had one solution, it may perform nearly identically to unweighted manhattan. But, we see the biggest pitfall of A* is tiebreaking. However, this can be easily overcome by slightly breaking admissibility. This is often the favored approach in real life - getting results more quickly even though they may be slightly sub-obtimal.
+Clearly using A* with weighted manhattan distance is the fastest approach at finding a solution. If the maze had one solution, it may perform nearly identically to unweighted manhattan. But, we see the biggest pitfall of A* is tiebreaking. However, this can be easily overcome by slightly breaking admissibility. This is often the favored approach in real life. 
+
+<p align='center'><i>Speed</i> &gt <i>Optimality</i></p>
 
 # How to run
-Ensure you have docker installed before running the following commands:
+was
+
+## Running with Docker
+You can expose the app on `localhost:8080` if you have docker installed by executing the following:
 
 ```
 docker pull jabaridash/mazes
@@ -719,7 +712,8 @@ docker pull jabaridash/mazes
 docker run -p 8080:80 jabaridash/mazes
 ```
 
-You can also run it from source if you have git and node 8+ installed:
+## Running from source with browser-sync
+You can also run it from source if you have `git` and `node 8+` installed. This will run the app on `localhost:8080` and also make it available on `localhost:3000` with `browser-sync` for automatic page refresh when the code is modified.
 
 ```
 git clone https://github.com/N02870941/mazes.git
@@ -729,6 +723,19 @@ cd mazes/src
 npm install
 
 gulp dev
+```
+
+## Running from source without browser-sync
+Lastly, you can run from source as a basic node app without `browser-sync` by executing the following:
+
+```
+git clone https://github.com/N02870941/mazes.git
+
+cd mazes/src
+
+npm install
+
+node app.js
 ```
 
 [site]: http://mazes.jabaridash.com
