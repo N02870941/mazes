@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+    <!-- Search Engine Optimization -->
+    <!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Generating with backtracking | mazes</title>
+<meta property="og:title" content="Generating with backtracking" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/mazes/pages/backtrack.html" />
+<meta property="og:url" content="http://localhost:4000/mazes/pages/backtrack.html" />
+<meta property="og:site_name" content="mazes" />
+<script type="application/ld+json">
+{"name":null,"description":null,"author":null,"@type":"WebPage","url":"http://localhost:4000/mazes/pages/backtrack.html","publisher":null,"image":null,"headline":"Generating with backtracking","dateModified":null,"datePublished":null,"sameAs":null,"mainEntityOfPage":null,"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/mazes/assets/css/style.css?v=f2997125d230ad37bca04874497998b7759dde17">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/mazes/assets/css/main.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/mazes/assets/css/font-awesome.min.css">
+  </head>
+
+  <body>
+
+    <!-- Page header -->
+    <section class="page-header">
+
+      <!-- Headings -->
+      <h1 class="project-name">mazes</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="http://github.com/N02870941/mazes" class="btn" target="_blank">View on GitHub</a>
+      
+
+      <!-- Download buttons -->
+      
+        <a href="https://github.com/N02870941/rpi_cluster/archive/master.zip" class="btn">Download .zip</a>
+        <a href="https://github.com/N02870941/rpi_cluster/archive/master.tar.gz" class="btn">Download .tar.gz</a>
+      
+    </section>
+
+    <!-- Main page content -->
+    <section class="main-content">
+
+      <!-- Back button -->
+      <!-- Back button (Don't show on homepage) -->
+
+  <button onclick="goBack()">
+    <i class='fa fa-arrow-left'></i> Back
+  </button>
+
+  <script>
+  function goBack() {
+      window.history.back();
+  }
+  </script>
+
+
+
+      <!-- Main content -->
+      <h1 id="generating-with-backtracking">Generating with backtracking</h1>
+
+<p>The [Randomized Depth / Breadth-first search][wiki] follows:</p>
+
+<ol>
+  <li>Make the initial cell the current cell and mark it as visited</li>
+  <li>While there are unvisited cells
+    <ol>
+      <li>If the current cell has any neighbors which have not been visited
+        <ol>
+          <li>Choose randomly one of the unvisited neighbors</li>
+          <li>Push the current cell to the stack</li>
+          <li>Remove the wall between the current cell and the chosen cell</li>
+          <li>Make the chosen cell the current cell and mark it as visited</li>
+        </ol>
+      </li>
+    </ol>
+
+    <p>2.Else if stack is not empty
+     1. Pop a cell from the stack
+     2. Make it the current cell</p>
+  </li>
+</ol>
+
+<h2 id="implementing-backtracking">Implementing backtracking</h2>
+<p>In essence, this algorithm starts at a vertex <code class="highlighter-rouge">u</code>, randomly visits an adjacent
+vertex <code class="highlighter-rouge">v</code> that has not been visited yet - destroying barriers (walls of pixels) between
+the current and previous vertices to create an edge, and repeats this until all vertices are visited and we have a spanning tree.</p>
+
+<p>Pseudo code follows:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>backtrack(src) {
+
+	var unvisited = []  // Stack or Queue
+	var neighbors = []  // Array
+	var curr
+	var next
+	var i
+
+	// Make the initial cell the current cell
+	curr = src
+
+	do {
+
+		// Mark current as visited
+		curr.visited = true
+
+		// Get neighbors
+		neighbors = curr.neighbors()
+
+		// If at least one came back
+		if (neighbors.length &gt; 0) {
+
+			// Pick random index
+			i = random(0, neighbors.length)
+
+			// Pick random neighbor
+			next = neighbors[i]
+
+			// Push to stack
+			unvisited.push(next)
+
+			// Remove wall (create edge)
+			removeWall(curr, next)
+
+			// Point current to next
+			curr = next
+
+		// No neighbors, start backtracking
+		} else {
+
+			curr = unvisited.pop()
+		}
+
+	} while (unvisited.length &gt; 0)
+
+}
+</code></pre></div></div>
+
+<p>The above algorithm can be written as DFS, BFS, or even a hybrid.</p>
+
+<p align="center">
+  <img src="../assets/img/png/maze-dfs.png" /><br />
+  <i>A maze generated with DFS.</i>
+</p>
+
+<p>If implemented with DFS, the resulting maze will have a relatively long solution path, but relatively “easy” to solve by a computer using graph algorithms because there is a lower brancing factor. This means dead ends are relatively short and there are less paths that are seemingly reasonable but lead no where. Instead, the solution may take many twists and turns around the entire maze to get to the target.</p>
+
+<p align="center">
+  <img src="../assets/img/png/maze-bfs.png" /><br />
+  <i>A maze generated with BFS.</i>
+</p>
+
+<p>Generating the maze with BFS will result in a maze with a much higher branching factor, meaning the depth of the spanning tree will be lower. This means we will get a shorter solution path, so the maze is more solvable for humans. However, for graph algorithms, they will generally take longer to solve because there are many more “promising” paths that branch off to eventual dead ends.</p>
+
+<p align="center">
+  <img src="../assets/img/png/maze-bfs-dfs.png" /><br />
+  <i>A maze generated with BFS / DFS hybrid.</i>
+</p>
+
+<p>Finally, we can implement a hybrid where sometimes we push, and sometimes we pop from the unvisited queue. This will result in a maze that is less difficult than mazes produced by DFS, so still solvable by a human, but less predictable than BFS mazes, so it remains interesting. Alternating between pushing and popping with 50:50 probability works well.</p>
+
+<h2 id="time-complexity-with-backtracking">Time complexity with backtracking</h2>
+<p>As noted, we are using depth / breadth-first search to generate the graph. To <strong>traverse</strong> a graph
+we visit each node once, which is <code class="highlighter-rouge">O(|V|)</code>. But, we also must check all adjacent vertices per vertex.
+This we can do in <code class="highlighter-rouge">O(1)</code> time because edges are simply stored as boolean values per grid cell.
+We must check all four (top, bottom, left and right) edges, per vertex. This is <code class="highlighter-rouge">4 * O(1)</code>
+which is still <code class="highlighter-rouge">O(1)</code>. So, we are doing <code class="highlighter-rouge">|V|</code> loop iterations, each of which does <code class="highlighter-rouge">O(1)</code> work.</p>
+
+<p><strong>Generating the maze with backtracking is done in</strong> <code class="highlighter-rouge">O(|V|)</code> <strong>time.</strong></p>
+
+<h2 id="space-complexity-with-backtracking">Space complexity with backtracking</h2>
+<p>The only auxiliary space we use is the stack / queue
+structure for queuing vertices for processing. In the worst case, the depth / breadth-first search
+traverses the entire graph without repetition / backtracking. This would mean all <code class="highlighter-rouge">|V|</code> vertices are
+pushed on to the stack before any popping (visiting) occurs.</p>
+
+<p><strong>Generating the maze with backtracking requires</strong> <code class="highlighter-rouge">O(|V|)</code> <strong>space.</strong></p>
+
+
+      <!-- Site footer -->
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="http://github.com/N02870941/mazes">mazes</a> is maintained by <a href="http://github.com/N02870941">N02870941</a>.</span>
+        
+      </footer>
+    </section>
+
+    <!-- Google Analytics -->
+    
+      <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'true', 'auto');
+        ga('send', 'pageview');
+      </script>
+    
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Side navbar -->
+    
+<!--
+  By default sidebar is hidden, that way,
+  when we navigate to a page by the "Back()"
+  event, the menu is not by default open.
+ -->
+<div id="sidebar" style="display:none;">
+
+  <!--
+    Invisiable checkbox, when checked,
+    menu shows. This is accomplished at
+    the CSS level using selectors
+  -->
+  <input type="checkbox" id="navigation" />
+  <label for="navigation">
+        <i class='fa fa-2x fa-bars'></i>
+  </label>
+
+  <!-- List of options -->
+  <nav id="menu">
+    <ul>
+      <li><a name="/mazes/" onclick="navigate_to_page(this.name)">Home</a></li>
+      <li><a name="/mazes/pages/install.html" onclick="navigate_to_page(this.name)">Installation Guide</a></li>
+      <li><a name="/mazes/pages/backtrack.html" onclick="navigate_to_page(this.name)">Generating with backtracking</a></li>
+      <li><a name="/mazes/pages/dfs.html" onclick="navigate_to_page(this.name)">Solving with DFS</a></li>
+      <li><a name="/mazes/pages/bfs.html" onclick="navigate_to_page(this.name)">Solving with BFS</a></li>
+      <li><a name="/mazes/pages/dijkstra.html" onclick="navigate_to_page(this.name)">Solving with Dijkstra's Algorithm</a></li>
+      <li><a name="/mazes/pages/aStar.html" onclick="navigate_to_page(this.name)">Solving with A* search</a></li>
+      <li><a name="/mazes/pages/performance.html" onclick="navigate_to_page(this.name)">Performance comparison</a></li>
+    </ul>
+  </nav>
+</div>
+
+<script>
+
+  // Hides the navbar menu
+  let closeMenu = function() {
+    $('#navigation').prop('checked', false);
+
+    // Resolve promise after 250ms, gives
+    // enough time for close animation to complete
+    return new Promise(resolve => setTimeout(resolve, 250));
+  }
+
+  // By default the sidebare is hidden.
+  // Make sure we uncheck the nav checkbox
+  // so the menu is not out, then we can
+  // show the sidebar (make it clickable)
+  $(document).ready(function() {
+      closeMenu();
+      $('#sidebar').show();
+  });
+
+  // Close menu on Escape press
+  $(document).keyup(function(e) {
+     if (e.keyCode == 27) {
+        closeMenu();
+    }
+  });
+
+  // Close menu if click happens
+  // outside of the sidebar
+  $(document).mouseup(function(e) {
+    let sidebar = $("#sidebar");
+
+    // if the target of the click isn't the container
+    // nor a descendant of the container, close the menue
+    if (!sidebar.is(e.target) && sidebar.has(e.target).length === 0) {
+        closeMenu();
+    }
+  });
+
+  // Closes menu, then navigates to the href
+  let navigate_to_page = async function(href) {
+    await closeMenu();
+
+    document.location.href = href;
+  }
+</script>
+
+
+    <!-- Back to top button -->
+    <div class='scrolltop'>
+  <div class='scroll icon'>
+    <i class='fa fa-4x fa-angle-up'></i>
+  </div>
+</div>
+
+<script>
+(function() {
+    $(window).scroll(function() {
+      if ($(this).scrollTop() > 50) {
+          $('.scrolltop:hidden').stop(true, true).fadeIn();
+      } else {
+          $('.scrolltop').stop(true, true).fadeOut();
+      }
+    });
+    $('.scroll').click(function() {
+  		$('html, body').animate({
+        scrollTop : 0},800);
+  		return false;
+  	});
+})();
+</script>
+
+  </body>
+</html>

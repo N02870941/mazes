@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+    <!-- Search Engine Optimization -->
+    <!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Solving with Dijkstra’s algorithm | mazes</title>
+<meta property="og:title" content="Solving with Dijkstra’s algorithm" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/mazes/pages/dijkstra.html" />
+<meta property="og:url" content="http://localhost:4000/mazes/pages/dijkstra.html" />
+<meta property="og:site_name" content="mazes" />
+<script type="application/ld+json">
+{"name":null,"description":null,"author":null,"@type":"WebPage","url":"http://localhost:4000/mazes/pages/dijkstra.html","publisher":null,"image":null,"headline":"Solving with Dijkstra’s algorithm","dateModified":null,"datePublished":null,"sameAs":null,"mainEntityOfPage":null,"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/mazes/assets/css/style.css?v=f2997125d230ad37bca04874497998b7759dde17">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/mazes/assets/css/main.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/mazes/assets/css/font-awesome.min.css">
+  </head>
+
+  <body>
+
+    <!-- Page header -->
+    <section class="page-header">
+
+      <!-- Headings -->
+      <h1 class="project-name">mazes</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="http://github.com/N02870941/mazes" class="btn" target="_blank">View on GitHub</a>
+      
+
+      <!-- Download buttons -->
+      
+        <a href="https://github.com/N02870941/rpi_cluster/archive/master.zip" class="btn">Download .zip</a>
+        <a href="https://github.com/N02870941/rpi_cluster/archive/master.tar.gz" class="btn">Download .tar.gz</a>
+      
+    </section>
+
+    <!-- Main page content -->
+    <section class="main-content">
+
+      <!-- Back button -->
+      <!-- Back button (Don't show on homepage) -->
+
+  <button onclick="goBack()">
+    <i class='fa fa-arrow-left'></i> Back
+  </button>
+
+  <script>
+  function goBack() {
+      window.history.back();
+  }
+  </script>
+
+
+
+      <!-- Main content -->
+      <h1 id="solving-with-dijkstras-algorithm">Solving with Dijkstra’s algorithm</h1>
+<p>We can (theoretically) improve the above BFS by running Dijkstra’s algorithm, which is a generic shortest path algorithm for arbitrary weighted graphs. Instead of blindly visiting each unvisited adjacent vertex until we have found our target, we will give them a priority. We will visit adjacent verticies that have <strong>lower</strong> associated cost first. This is a greedy approach that takes steps that may be optimal for
+<strong>intermediate</strong> solutions, but not optimal for the <strong>overall</strong> solution. So we run the risk of diverging off on to many sub-optimal paths if the maze has a high branching factor.</p>
+
+<p>In fact, since each adjacent vertex has the same cost to visit, if the graph only has <strong>one solution</strong>, Dijkstra will behave nearly identically to BFS. In other words, Dijkstra degrades to a greedy best-first search.</p>
+
+<p>The only way we get value out of Dijkstra’s algorithm is if there are <strong>multiple ways</strong> to get to the same vertex because that way we could actually <strong>compare</strong> and update costs if a <strong>better</strong> route is found. With this in mind, it makes it clear that the added benefit of Dijkstra’s algorithm is null and void unless the maze has multiple solutions.</p>
+
+<h2 id="implementing-dijkstra">Implementing Dijkstra</h2>
+<p>Dijkstra’s algorithm is very similar to BFS. The difference is that we update costs upon finding better paths and we do not use the visited flag.</p>
+
+<p>Pseudo code follows:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">dijkstra</span><span class="p">(</span><span class="nx">graph</span><span class="p">,</span> <span class="nx">src</span><span class="p">,</span> <span class="nx">dst</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="kd">var</span> <span class="nx">unvisited</span> <span class="o">=</span> <span class="p">[]</span>	<span class="c1">// Heap</span>
+	<span class="kd">var</span> <span class="nx">neighbors</span> <span class="o">=</span> <span class="p">[]</span>	<span class="c1">// Set</span>
+	<span class="kd">var</span> <span class="nx">parents</span>   <span class="o">=</span> <span class="p">[]</span>	<span class="c1">// Map</span>
+	<span class="kd">var</span> <span class="nx">current</span>
+	<span class="kd">var</span> <span class="nx">cost</span>
+
+	<span class="c1">// Add to heap with initial cost of infinity</span>
+	<span class="nx">graph</span><span class="p">.</span><span class="nx">verticies</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span> <span class="nx">v</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">v</span> <span class="o">!=</span> <span class="nx">src</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="nx">v</span><span class="p">.</span><span class="nx">cost</span> <span class="o">=</span> <span class="kc">Infinity</span>
+
+			<span class="nx">unvisited</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
+		<span class="p">}</span>
+
+	<span class="p">})</span>
+
+	<span class="c1">// The start vertex has no parent</span>
+	<span class="nx">parents</span><span class="p">[</span><span class="nx">src</span><span class="p">.</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span>
+
+	<span class="c1">// Cost to get to start is 0</span>
+	<span class="nx">src</span><span class="p">.</span><span class="nx">cost</span> <span class="o">=</span> <span class="mi">0</span>
+
+	<span class="c1">// Push source</span>
+	<span class="nx">unvisited</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">src</span><span class="p">)</span>
+
+	<span class="c1">// Process each vertex</span>
+	<span class="k">while</span> <span class="p">(</span><span class="nx">unvisited</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="c1">// Get next vertex with min cost</span>
+		<span class="nx">current</span> <span class="o">=</span> <span class="nx">unvisited</span><span class="p">.</span><span class="nx">min</span><span class="p">()</span>
+
+		<span class="c1">// We found the target</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">current</span> <span class="o">==</span> <span class="nx">dst</span><span class="p">)</span> <span class="p">{</span>
+
+			<span class="k">break</span>
+		<span class="p">}</span>
+
+		<span class="c1">// Get it's neighbors</span>
+		<span class="nx">neighbors</span> <span class="o">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">neighbors</span><span class="p">()</span>
+
+		<span class="c1">// Discover each neighbor</span>
+		<span class="nx">neighbors</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span> <span class="nx">neighbor</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+			<span class="c1">// Compute cost to go over one vertex</span>
+			<span class="nx">cost</span> <span class="o">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">cost</span> <span class="o">+</span> <span class="mi">1</span>
+
+			<span class="c1">// Have we found a shorter path to this vertex?</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">cost</span> <span class="o">&lt;</span> <span class="nx">neighbor</span><span class="p">.</span><span class="nx">cost</span><span class="p">)</span> <span class="p">{</span>
+
+				<span class="c1">// Update the cost</span>
+				<span class="nx">neighbor</span><span class="p">.</span><span class="nx">cost</span> <span class="o">=</span> <span class="nx">cost</span>
+
+				<span class="c1">// Update path map to indicate new parent vertex</span>
+				<span class="nx">parents</span><span class="p">[</span><span class="nx">neighbor</span><span class="p">.</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">key</span>
+
+				<span class="c1">// Decrease the key of the neighbor with new cost</span>
+				<span class="nx">unvisited</span><span class="p">.</span><span class="nx">decreaseKey</span><span class="p">(</span><span class="nx">neighbor</span><span class="p">,</span> <span class="nx">cost</span>
+
+			<span class="p">}</span>
+
+		<span class="p">})</span>
+
+	<span class="p">}</span>
+
+	<span class="c1">// Backtrack using parent map to display path</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="time-complexity-of-dijkstra">Time complexity of Dijkstra</h2>
+<p>For this particular problem, we have chosen to implement Dijkstra’s
+algorithm with a min priority binary heap. We must loop through <code class="highlighter-rouge">|V|</code> vertices. For each iteration, we perform 1 <code class="highlighter-rouge">pop()</code> which is <code class="highlighter-rouge">O(log |V|)</code> and at most 4 <code class="highlighter-rouge">push()</code> operations for each adjacent neighbor - also <code class="highlighter-rouge">O(log |V|)</code>. So, multiplying the inner runtime by the outer runtime, we get <code class="highlighter-rouge">O(|V| * log |V|)</code>.</p>
+
+<p><strong>Solving the maze with Dijkstra’s algorithm is done in</strong> <code class="highlighter-rouge">O(|V| * log |V|)</code> <strong>time.</strong></p>
+
+<h2 id="space-complexity-of-dijkstra">Space complexity of Dijkstra</h2>
+<p>Dijkstra’s algorithm uses a priority queue to process unvisited vertices. In the worst case we will push <code class="highlighter-rouge">|V|</code> vertices before our first pop. We also use a map for backtracking to discover the path from source to destination. The map used to reconstruct the path will also have at most <code class="highlighter-rouge">|V|</code> entries.</p>
+
+<p><strong>The space complexity is</strong> <code class="highlighter-rouge">O(|V|)</code>.</p>
+
+
+      <!-- Site footer -->
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="http://github.com/N02870941/mazes">mazes</a> is maintained by <a href="http://github.com/N02870941">N02870941</a>.</span>
+        
+      </footer>
+    </section>
+
+    <!-- Google Analytics -->
+    
+      <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'true', 'auto');
+        ga('send', 'pageview');
+      </script>
+    
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Side navbar -->
+    
+<!--
+  By default sidebar is hidden, that way,
+  when we navigate to a page by the "Back()"
+  event, the menu is not by default open.
+ -->
+<div id="sidebar" style="display:none;">
+
+  <!--
+    Invisiable checkbox, when checked,
+    menu shows. This is accomplished at
+    the CSS level using selectors
+  -->
+  <input type="checkbox" id="navigation" />
+  <label for="navigation">
+        <i class='fa fa-2x fa-bars'></i>
+  </label>
+
+  <!-- List of options -->
+  <nav id="menu">
+    <ul>
+      <li><a name="/mazes/" onclick="navigate_to_page(this.name)">Home</a></li>
+      <li><a name="/mazes/pages/install.html" onclick="navigate_to_page(this.name)">Installation Guide</a></li>
+      <li><a name="/mazes/pages/backtrack.html" onclick="navigate_to_page(this.name)">Generating with backtracking</a></li>
+      <li><a name="/mazes/pages/dfs.html" onclick="navigate_to_page(this.name)">Solving with DFS</a></li>
+      <li><a name="/mazes/pages/bfs.html" onclick="navigate_to_page(this.name)">Solving with BFS</a></li>
+      <li><a name="/mazes/pages/dijkstra.html" onclick="navigate_to_page(this.name)">Solving with Dijkstra's Algorithm</a></li>
+      <li><a name="/mazes/pages/aStar.html" onclick="navigate_to_page(this.name)">Solving with A* search</a></li>
+      <li><a name="/mazes/pages/performance.html" onclick="navigate_to_page(this.name)">Performance comparison</a></li>
+    </ul>
+  </nav>
+</div>
+
+<script>
+
+  // Hides the navbar menu
+  let closeMenu = function() {
+    $('#navigation').prop('checked', false);
+
+    // Resolve promise after 250ms, gives
+    // enough time for close animation to complete
+    return new Promise(resolve => setTimeout(resolve, 250));
+  }
+
+  // By default the sidebare is hidden.
+  // Make sure we uncheck the nav checkbox
+  // so the menu is not out, then we can
+  // show the sidebar (make it clickable)
+  $(document).ready(function() {
+      closeMenu();
+      $('#sidebar').show();
+  });
+
+  // Close menu on Escape press
+  $(document).keyup(function(e) {
+     if (e.keyCode == 27) {
+        closeMenu();
+    }
+  });
+
+  // Close menu if click happens
+  // outside of the sidebar
+  $(document).mouseup(function(e) {
+    let sidebar = $("#sidebar");
+
+    // if the target of the click isn't the container
+    // nor a descendant of the container, close the menue
+    if (!sidebar.is(e.target) && sidebar.has(e.target).length === 0) {
+        closeMenu();
+    }
+  });
+
+  // Closes menu, then navigates to the href
+  let navigate_to_page = async function(href) {
+    await closeMenu();
+
+    document.location.href = href;
+  }
+</script>
+
+
+    <!-- Back to top button -->
+    <div class='scrolltop'>
+  <div class='scroll icon'>
+    <i class='fa fa-4x fa-angle-up'></i>
+  </div>
+</div>
+
+<script>
+(function() {
+    $(window).scroll(function() {
+      if ($(this).scrollTop() > 50) {
+          $('.scrolltop:hidden').stop(true, true).fadeIn();
+      } else {
+          $('.scrolltop').stop(true, true).fadeOut();
+      }
+    });
+    $('.scroll').click(function() {
+  		$('html, body').animate({
+        scrollTop : 0},800);
+  		return false;
+  	});
+})();
+</script>
+
+  </body>
+</html>
