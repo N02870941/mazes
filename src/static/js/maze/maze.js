@@ -113,7 +113,8 @@ const Maze = (() => {
       images : {
 
         maze     : undefined,
-        solution : undefined
+        solution : undefined,
+        frames   : []
       },
 
       // TODO - MANHATTAN IS OVEREVESTIMATING BY 2, WHY?????
@@ -351,6 +352,13 @@ const Maze = (() => {
       saveSolution : function() {
 
         maze.images.solution = canvas.get()
+      },
+
+      screenshot : function() {
+
+        maze.images.frames.push(canvas.get())
+
+        return true
       },
 
       /**

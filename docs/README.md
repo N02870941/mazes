@@ -260,21 +260,21 @@ the current and previous vertices to create an edge, and repeats this until all 
 
 <p align="center">
   <img src="img/png/maze-dfs.png"><br>
-  <i>A maze generated with DFS and solved with A*.</i>
+  <i>A maze generated with DFS..</i>
 </p>
 
 The above algorithm can be written as DFS, BFS, or even a hybrid. if implemented with DFS, the resulting maze will have a longer solution path, but relatively "easy" to solve by a computer using graph algorithms because there is a lower brancing factor. This means dead ends are relatively short, and there are less paths that are seemingly reasonable but lead no where. Instead, the solution may take many twists and turns around the entire maze to get to the target. We see there are less highlighted squares, meaning the path finding algorithm did not visit too many nodes that did not contribute to the final solution.
 
 <p align="center">
   <img src="img/png/maze-bfs.png"><br>
-  <i>A maze generated with BFS and solved with A*.</i>
+  <i>A maze generated with BFS.</i>
 </p>
 
 Generating the maze with BFS will result in a maze with much higher branching factor, meaning the depth of the tree will be lower. This means we will get a shorter path, so the maze is more solvable for humans. However, for graph algorithms, they will generally take longer to solve because there are many more "promising" paths that branch off to dead ends. Notice that the path finding algorithm visited nearly all nodes to find the optimal solution, even though by "looking" at it, the solution appears obvious.
 
 <p align="center">
   <img src="img/png/maze-bfs-dfs.png"><br>
-  <i>A maze generated with BFS / DFS hybrid and solved with A*.</i>
+  <i>A maze generated with BFS / DFS hybrid.</i>
 </p>
 
 Finally, we can implement a hybrid where sometimes we push, and sometimes we pop. This will result in a maze that is less difficult than DFS, so still solvable by a human, but less predictable than BFS so it remains interesting. Alternating between pushing and popping with 50:50 probability works well. Here we see, the path finding algorithm needed to visit a decent amount of nodes before finding the solution and the solution still seems "doable" by a human.
@@ -569,21 +569,60 @@ Dijkstra's algorithm uses a priority queue to process unvisited vertices. In the
 
 # Solving with A* search
 
-The limitations of Dijkstra's algorithm is the reason we use A* (A Star) as our primary approach in **path finding**. It can be considered a generalization of Dijkstra's algorithm
-that uses a heuristic value (specific to the problem) that prevents us from straying away on non-optimal paths and helps make more intelligent intermediate
-steps that lead to the overall optimal solution. We can also say Dijkstra's algorithm is a specific case of A* where the heuristic of all adjacent vertices are equal or zero - thus having no impact on decision making. This fact, along with the fact that edge weights are all equal for a maze is why Dijkstra for simple (single solution) mazes degrades to a greedy best-first search.
+The limitations of Dijkstra's algorithm is the reason we use A* (A Star). A* is an **informed search** that uses a heuristic function to help guide our search.
 
-The heuristic is an easy-to-compute value computed per iteration (or beforehand) that we use to determine whether or not we are getting closer to our target. It is a problem-specific computation because for arbitrary graphs (a set of edges and vertices) we do not have any information nor a concept of "how close" we are. Since we have our graph in terms of a grid, a good choice for the heuristic is the (euclidian or manhattan) distance between the current pixel and the target. 
+## What is a heuristic?
 
-Although we may not always know the **direct** path, we know we are getting closer if the distance is shrinking. With this new tool at our disposal, we make our choice to visit a particular vertex that not only minimizes overall cost, but also shrinks the distance between the current vertex in the search and the target vertex - this assures us we are "getting closer." We use both the aggregated cost and the vertex's heuristic as the metric for assigning priority to vertices in the priority queue.
+The heuristic is an easy-to-compute value computed for each discovered vertex that we use to determine whether or not we are getting closer to our target. The equation follows. 
 
-Again, algorithms like Dijkstra's or A* have limited benefit if there is only one solution. However, A* allows us to make more **informed** decisions in our traversal.
+<p align="center">
+  <img src="img/png/informed-search-equation.png"><br>
+</p>
+
+
+The function `g(n)` is the cost associated with getting to that vertex. `h(n)` is the estimate (heuristic) cost **between** that vertex and the target vertex. The sum `f(n)` is an overall **estimated** cost from start to finish if the current node is in the final solution. In other words:
+
+*"If we visit node* `n`*, we anticipate the overall cost of the solution to be* `f(n)` *based on how far we have gone,*`g(n)` *plus how far we think we have to go,*`h(n)`*."*
+
+For this reason, when ordering nodes in the priority queue, we want to sort such that nodes that warrant smaller `f(n)` values have higher priority. 
+
+## Restrictions on heuristics
+The `h(n)` function is very useful in that it helps us rule out expanding too wide and taking too many intermediate steps that stray away from the target. 
+
+However, there are some restrictions on `h(n)`. 
+
+1. The unit should be the same as that `g(n)`.
+2. It **should** be admissible.
+
+If the unit of the heuristic function is not the same as the unit used by `g(n)`, then we are not approximating the **cost** - we are computing some other value. For example, for grids, sometimes the euclidian distance squared is used as the heuristic. If we are computing distance in centimeters, `g(n)` is in centimeters, and `h(n)` is in centimeters squared. We cannot add centimeters and centimeters squared. If we add just their magnitudes (ignoring units), provided that centimeters squared is an order of magnitude larger than centimeters, we will be imposing a **huge** bias on the heuristic over the aggregated cost `g(n)`. It turns out weighting the heuristic may be a good thing, but there are also some draw backs - most notabely that it breaks admissibility.
+
+A heuristic function is **admissible** if it never overestimates. For the purpose of traversing a weighted graph using A*, this means the heuristic never returns an estimate path cost that exceeds the minimum cost path from the current node to the target. If it does, then the `f(n)` overestimates, gets assigned a lower priority in the priority queue, and potentially never gets explored if the target is found before it is dequeued. This will result in a sub-optimal solution because we have **narrowed the search too much**. 
+
+The advantage of a non-admissible heuristic is if there are not many obsticals A* will not stray off on to too many paths because it is making decisions almost entirely based on the heuristic. For a good heuristic, this means we will find a solution very quickly - often times in a small amount of steps. The disadvantage is that a heuristic that overestimates is effectively overlooking potentially better options - kind of like tunnel vision. 
+
+So, even though A* with a weighted heuristic will run very fast, if it is not admissible, it may not always return the optimal solution. For most applications this is okay, as it may be more valuable to find a solution that is slighlty sub-optimal extremely quickly than to do a near exhaustive search to find the exact optimal solution. There is math that says that we can pick a non-admissible heuristic that guarantees solutions with a cost that is some scalar multiple ε of the optimal solutions cost, where ε ≥ 1. Essentially we are "limiting the inefficiency" of the solution by some epsilon. This is called an ε-admissible heuristic. However, that is beyond the scope of this project.
+
+## Chosing a heuristic
+Deciding on a heuristic function is highly dependent on the nature of the problem. For example, for a grid where diagonal movement is allowed, the straight-line (euclidian) distance is a good choice. 
+
+
+However, for grids where only lateral movement is allowed euclidian almost always **underestimates**. This is okay, as it will still lead to an optimal solution, but because it consistently underestimates, we will branch out very far and explore many more options than necessary. A better heuristic is manhattan distance. 
+
+Manhattan distance is essentially creating a triangle between two points and instead of taking the length of the hypotenuse (euclidian distance), we sum the lengths of the other two sides. It can also be seen as follows:
+
+*You are in the upper-west side of Manhattan and you would like to get to the lower-east side. You compute your distance to your target by counting the number of blocks downtown you must walk and summing that with the number of blocks crosstown you must walk.*
+
+This gives us a more accurate yet still admissible approximation. In fact, for our purpose, if our maze had no walls, the manhattan distance would be a perfect heuristic, meaning it always estimates the exact distance to the target every time, thus producing a search that finds the optimal solution on it's first try and does not visit vertices that do not contribute to the final solution.
+
+## Implementing A*
+The code for A* is nearly identical to that of Dijkstra's algorithm. The only difference is the function used when assigning order in the priority queue.
 
 Pseudo code follows:
 
+
 ## Time complexity of A*
 
-A* is the worst case degrades to Dijkstra's algorithm. We visit all `|V|` vertices, each of which requires a `log |V|` extract min operation on the min heap. This results in `O(|V| * log |V|)` operations.
+A* in the worst case degrades to Dijkstra's algorithm. This occurs when the heurisitc function severly underestimates on each iteration and never rules out any adjacent nodes to visit. In other words, if `h(n) = 0` for all nodes, A* is equivalent to Dijkstra's algorithm. In that event, we visit all `|V|` vertices, each of which requires a `log |V|` extract min operation on the min heap. This results in `O(|V| * log |V|)` operations.
 
 **Solving the maze with A* is done in** `O(|V| * log |V|)` **time.**
 
@@ -593,6 +632,83 @@ A* uses a priority queue of unvisited vertices. In the worst case, we
 push all `|V|` vertices before popping. This is the case where we visit **all** vertices in a single walk before hitting a dead end. The map used for backtracking in the worst case will hold references to all `|V|` vertices in the path from source to destination - also using at most `O(|V|)` space. Lastly, if we pre-compute our heuristics for easy lookup (one per vertex), we will need `O(|V|)` extra space - still resulting in linear space.
 
 **The space complexity of A* is** `O(|V|)`.
+
+# Performance comparison when solving (in practice)
+The asymptotic runtime of solving the maze is roughly the same for each solution. Generally speaking, it is `|V|` multiplied by the longer runtime between the `push()` and `pop()` operation for the specified data structure used to queue unvisited nodes. 
+
+For DFS and BFS we use stack and queue respectively, each of which performing `push()` and `pop()` in `O(1)` time - hence `O(|V|)` overall runtime. For A* and Dijkstra we use a priority queue that performs `push()` and `pop()` in `O(log |V|)` runtime - hence `O(|V| * log |V|)` overall runtime. This is the worst case. 
+
+We are not going to prove the average case runtime because the math can get quite complex. However, we are going to look at **runtime in practice** to make some **observations** and potentially determine one of the methods as the best method for solving the **mazes generated by this** application.
+
+We start with a 300 x 300 square maze.
+
+<p align="center">
+  <img src="img/png/performance/maze.png"><br>
+  <i>A maze generated with BFS + backtracking.</i>
+</p>
+
+Above is a 300 x 300 square maze with 40% of the vertical walls removed and 52% of the horizontal walls removed so that there are many paths from start to finish.  When searching for our target (from top left to bottom right) there are a total of 90,000 squares we can visit before exhausting our search and there is an optimal path length of about 599. Note, multiple optimal solutions may exist.
+
+<p align="center">
+  <img src="img/png/performance/
+maze-solution-depth-first-search-5017-6574.png"><br>
+  <i>Maze solved with DFS.</i>
+</p>
+
+Here we solve with depth-first search. Meaning we go as deep as possible before turning around and trying new paths. It works, but it does not give us an optimal solution. Here we found the target by visiting 6574 squares with a path of length 5017. We visited 7% of the grid, but do not have an good solution.
+
+<p align="center">
+  <img src="img/png/performance/
+maze-solution-breadth-first-search-599-89999.png"><br>
+  <i>Maze solved with BFS.</i>
+</p>
+
+We can find the optimal path by using a brute force method. This means try every option until we eventually stumble across the solution. One way to do that is breadth-first search. Which is, expanding as wide as possible before turning around. This gives us the optimal solution of length 599 but we visited all 90000 squares to find it. Not efficient.
+
+<p align="center">
+  <img src="img/png/performance/
+maze-solution-dijkstra-uniform-cost-search-599-89999.png"><br>
+  <i>Maze solved with Dijkstra's algorithm.</i>
+</p>
+
+In theory, we could improve BFS by using Dijkstra's algorithm. Which is a uniform cost search algorithm that choses to visit vertices that contribute minimally to the overall cost. Unfortunately, for a maze, the cost to make any turn is always exactly 1, so we are technically sorting 1's every time. Dijkstra's algorithm degrades to best-first search (almost identical to BFS) and acts nearly identically to BFS. The only difference is sometimes the shape of the path. Here we still visited all 90000 squares to compute an optimal path of length 599.
+
+<p align="center">
+  <img src="img/png/performance/
+maze-solution-astar-euclidian-unweighted-599-84729.png"><br>
+  <i>Maze solved with A* using euclidian distance as the heuristic.</i>
+</p>
+
+Another improvement to solving the maze is using the A* search using the euclidian distance as the heuristic. However, since the euclidian distance will often be a diagonal line, this heuristic consistantly underestimates because we **cannot actually go diagonally**. So, it only helps us eliminate the extreme corners. So, we still branch off pretty far. We visited 84729 out of 90000 squares. We visited 94% of all squares - very inefficient. 
+
+<p align="center">
+  <img src="img/png/performance/
+maze-solution-astar-manhattan-unweighted-599-15764.png"><br>
+  <i>Maze solved with A* using manhattan distance as the heuristic.</i>
+</p>
+
+An improvement to A* where only perpendicular movement is allowed is changing the heuristic to manhattan distance. That is, rather than computing straight line distance, we imagine we are in the city of New York, trying to get to from the upper west side to the lower east side. We count the number of blocks downtown we must walk and then add that to the number of blocks east we walk. This gives us a very close approximation as to how many squares we must visit. This produced a path of length 599 but we only visited 15764 squares - 17% of the maze. 
+
+However, we still notice that we are visiting many squares that do not contribute to the final result. The reason is because we have no mechanism for breaking ties between equally good options. For example, we see for this maze, many optimal solutions lie both above and below the straight line from the top-left corner to the bottom-right corner. If we are on a vertex that lies on the line, the vertices both above and to the right of our current position are equally good choices. We consider this a tie. Presently, we have no mechanism for breaking this tie so we explore both. We must add a tie-breaker.
+
+<p align="center">
+  <img src="img/png/performance/
+maze-solution-astar-manhattan-weighted-599-2740.png"><br>
+  <i>Maze solved with A* using weighted manhattan distance as the heuristic.</i>
+</p>
+
+Another improvement to A* is adding a weight to the heuristic, or a tie breaker. This allows us to impose a bias when we come across 2 equally weighted choices. This however, if it ever overestimates, will cause A* to output a slightly sub-optimal result. This breaks the admissible property of the heuristic. However, for most applications, this is okay if we are one or two steps off. The benefit is that depending on how much we weight the heuristic, we avoid straying off onto different paths. 
+
+For this particular application,  we consider a step in a particular direction a vector. We compute the determinant of that step vector and the vector from origin to target. We then use some multiple of this value to add that to our heuristic (manhattan distance).
+
+The reason we do this is because the determinant of any 2d vectors tells us information about the angle made between the two vectors. The closer these vectors are to parallel, the small that angle gets - eventually reaching 0 if the vectors are perfectly parallel.
+
+So, if we are above the line, and we have an equal choice to go right (further from the line) or down (closer to the line), even though the cost of both steps is 1 (equal), we break this tie by choosing the vector that produces an angle "most parallel" to the straight line from origin to target, which in this case is down because we are rotating towards the line rather than away from it.
+
+This approach produces the optimal solution of length 599 in 2740 total visits. This is about 3% of the total number of squares. This is a highly efficient approach, although sometimes producing slightly sub-optimal solutions depending on admissibility of the heuristic.
+
+## Conclusion
+Clearly using A* with weighted manhattan distance is the fastest approach at finding a solution. If the maze had one solution, it may perform nearly identically to unweighted manhattan. But, we see the biggest pitfall of A* is tiebreaking. However, this can be easily overcome by slightly breaking admissibility. This is often the favored approach in real life - getting results more quickly even though they may be slightly sub-obtimal.
 
 # How to run
 Ensure you have docker installed before running the following commands:

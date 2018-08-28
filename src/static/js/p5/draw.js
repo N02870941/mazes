@@ -27,7 +27,7 @@ function draw() {
   // action from queue, and jump
   // back to the top. Otherwise,
   // just keep repeating action()
-} else if (maze.action()) {
+  } else if (maze.action()) {
 
     maze.action = maze.tasks.shift();
   }
