@@ -56,6 +56,11 @@ const elements = {
     // NOTE - Not a Jquery selector
     // so there is purposely no # symbol
     MAIN : 'sketch-holder'
+  },
+
+  misc : {
+
+      HEURISTIC_ROW : '#row-dropdown-heuristic'
   }
 };
 
@@ -125,6 +130,7 @@ const sliders     = [];
 const labels      = [];
 const dropdowns   = [];
 const checkboxes  = [];
+const misc        = [];
 
 //------------------------------------------------------------------------------
 

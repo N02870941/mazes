@@ -83,6 +83,9 @@ function setup() {
     {map : buttons, key : keys.SOLVE,        selector : elements.button.SOLVE},
     {map : buttons, key : keys.EXPORT,       selector : elements.button.EXPORT},
     {map : buttons, key : keys.CANCEL,       selector : elements.button.CANCEL},
+
+    // Misc
+    {map : misc,    key : keys.HEURISTIC,    selector : elements.misc.HEURISTIC}
   ];
 
   // Sliders to initialize
@@ -90,8 +93,8 @@ function setup() {
 
     {key : keys.CANVAS,     min : MIN_CANVAS_WIDTH, max : MAX_CANVAS_WIDTH, def : DEFAULT_CANVAS_WIDTH},
     {key : keys.PATH,       min : MIN_PATH_WIDTH,   max : MAX_PATH_WIDTH,   def : DEFAULT_PATH_WIDTH},
-    {key : keys.SUBTRACT_V, min : 0,                max : 100,              def : 5},
-    {key : keys.SUBTRACT_H, min : 0,                max : 100,              def : 10},
+    {key : keys.SUBTRACT_V, min : MIN_SUBTRACT_V,   max : MAX_SUBTRACT_V,   def : DEFAULT_SUBTRACT_V},
+    {key : keys.SUBTRACT_H, min : MIN_SUBTRACT_H,   max : MAX_SUBTRACT_H,   def : DEFAULT_SUBTRACT_H},
     {key : keys.FRAMES,     min : MIN_FRAME_RATE,   max : MAX_FRAME_RATE,   def : MAX_FRAME_RATE}
   ];
 
@@ -109,28 +112,17 @@ function setup() {
   // Drop downs
   let dropdownsToInit = [
 
-    // TODO - Use constants
-
     {
       key     : keys.GENERATE,
-      options : [
-        {name : 'Breadth-first search (BFS)', value : 'bfs'},
-        {name : 'Depth-first search (DFS)',   value : 'dfs'},
-        {name : 'BFS DFS 50:50 hybrid',       value : 'hybrid'}
-      ]
+      options : strings.dropdowns.generate
     },
 
     {
-      key     : keys.SOLVE,
-      options : [
-        {name : 'A* search',                  value : 'aStar'},
-        {name : 'Dijkstra\'s algorithm',      value : 'dijkstra'},
-        {name : 'Breadth-first search (BFS)', value : 'BFS'},
-        {name : 'Depth-first search (DFS)',   value : 'DFS'}
-      ],
+      key      : keys.SOLVE,
+      options  : strings.dropdowns.solve,
       onchange : function() {
 
-        let heuristics = $('#row-dropdown-heuristic')
+        let heuristics = $(elements.misc.HEURISTIC_ROW)
 
         if (this.value === aStar.aStar.name)
           heuristics.show()
@@ -140,16 +132,8 @@ function setup() {
       }
     },
     {
-      key     : keys.HEURISTIC,
-      options : [
-        {
-          name : 'Weighted manhattan using √(determinant) (not admissible, but fast)',
-          value : 'crossProduct'
-        },
-        {name : 'Manhattan distance (admissible, decent speed)', value : 'manhattan'},
-        {name : 'Euclidian distance (admissible, but slow)', value : 'euclidian'}
-
-      ],
+      key      : keys.HEURISTIC,
+      options  : strings.dropdowns.heuristic,
       onchange : function() {maze.heuristic = Cell.heuristics[this.value]}
     }
   ];

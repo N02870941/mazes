@@ -12,6 +12,33 @@ const strings = {
   YES             : 'Yes',
   NO              : 'No',
 
+  dropdowns : {
+
+    generate : [
+      {name : 'Breadth-first search (BFS)', value : 'bfs'},
+      {name : 'Depth-first search (DFS)',   value : 'dfs'},
+      {name : 'BFS DFS 50:50 hybrid',       value : 'hybrid'}
+    ],
+
+    solve : [
+      {name : 'A* search',                  value : 'aStar'},
+      {name : 'Dijkstra\'s algorithm',      value : 'dijkstra'},
+      {name : 'Breadth-first search (BFS)', value : 'BFS'},
+      {name : 'Depth-first search (DFS)',   value : 'DFS'}
+    ],
+
+    heuristic : [
+      {
+        name : 'Weighted manhattan using √(determinant) (not admissible, but fast)',
+        value : 'crossProduct'
+      },
+      {name : 'Manhattan distance (admissible, decent speed)', value : 'manhattan'},
+      {name : 'Euclidian distance (admissible, but slow)', value : 'euclidian'}
+
+    ]
+
+  },
+
   messages : {
 
     initial : {
@@ -44,6 +71,5 @@ const strings = {
           }
       }
     }
-
   }
 };

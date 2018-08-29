@@ -1,3 +1,1 @@
 let queue;
-
-let frames = []

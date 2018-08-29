@@ -15,3 +15,11 @@ const DEFAULT_CANVAS_WIDTH = 250;
 const MIN_PATH_WIDTH     = 10;
 const MAX_PATH_WIDTH     = 50;
 const DEFAULT_PATH_WIDTH = MIN_PATH_WIDTH;
+
+// Subtract wall parameters
+const MIN_SUBTRACT_V     = 0;
+const MAX_SUBTRACT_V     = 100;
+const MIN_SUBTRACT_H     = 0;
+const MAX_SUBTRACT_H     = 100;
+const DEFAULT_SUBTRACT_V = 5;
+const DEFAULT_SUBTRACT_H = 10;

@@ -16,8 +16,8 @@ async function sleep(ms) {
 function notify(msg) {
 
   bootbox.alert({
-    message: msg,
-    size: 'small'
+    message : msg,
+    size : 'small'
   });
 
 }
@@ -35,25 +35,25 @@ function confirm(msg, yes, no, always) {
 
   bootbox.confirm({
 
-    message: msg || "MESSAGE",
+    message : msg || "MESSAGE",
 
-    buttons: {
+    buttons : {
 
-        confirm: {
-            label: strings.YES,
-            className: 'btn-success'
+        confirm : {
+            label : strings.YES,
+            className : 'btn-success'
         },
 
-        cancel: {
-            label: strings.NO,
-            className: 'btn-danger'
+        cancel : {
+            label : strings.NO,
+            className : 'btn-danger'
         }
     },
 
     // Function que ejecuta
     // despues de que se cierre
     // el dialogo
-    callback: (result) => {
+    callback : (result) => {
 
       // Si el usuario dijo que si
       if (result && yes) {
