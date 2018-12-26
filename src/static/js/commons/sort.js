@@ -16,8 +16,7 @@ function sort(array, comparator = (a, b) => a.valueOf() - b.valueOf()) {
 //------------------------------------------------------------------------------
 
 /**
- * Quicksort using Lumoto
- * partitioning scheme.
+ * Quicksort using Hoare partitioning scheme.
  */
 function quicksort(a, lo, hi, compare) {
 
