@@ -1,7 +1,7 @@
 # Mazes
 [![Build Status](https://travis-ci.com/N02870941/mazes.svg?branch=master)](https://travis-ci.com/N02870941/mazes)
 
-A simple maze generator and solver available in the form of a [web app][site].
+A simple maze generator and solver available in the form of a [web page](http://mazes.jabaridash.com).
 
 # Running the application locally
 This app can be run using any of the following three programs:
@@ -16,7 +16,7 @@ You can expose the app on `localhost:8080` if you have `docker` installed by exe
 ```
 docker pull jabaridash/mazes
 
-docker run -p 8080:80 jabaridash/mazes
+docker run -p 8080:80 --name=mazes jabaridash/mazes
 ```
 
 ## Running from source (with browser-sync)

@@ -8,17 +8,19 @@
 <title>Intuition | mazes</title>
 <meta property="og:title" content="Intuition" />
 <meta property="og:locale" content="en_US" />
-<link rel="canonical" href="http://localhost:4000/mazes/" />
-<meta property="og:url" content="http://localhost:4000/mazes/" />
+<meta name="description" content="A simple maze generator / solver based on graph theory. http://mazes.jabaridash.com" />
+<meta property="og:description" content="A simple maze generator / solver based on graph theory. http://mazes.jabaridash.com" />
+<link rel="canonical" href="https://n02870941.github.io/mazes/" />
+<meta property="og:url" content="https://n02870941.github.io/mazes/" />
 <meta property="og:site_name" content="mazes" />
 <script type="application/ld+json">
-{"name":"mazes","description":null,"author":null,"@type":"WebSite","url":"http://localhost:4000/mazes/","publisher":null,"image":null,"headline":"Intuition","dateModified":null,"datePublished":null,"sameAs":null,"mainEntityOfPage":null,"@context":"http://schema.org"}</script>
+{"name":"mazes","description":"A simple maze generator / solver based on graph theory. http://mazes.jabaridash.com","author":null,"@type":"WebSite","url":"https://n02870941.github.io/mazes/","publisher":null,"image":null,"headline":"Intuition","dateModified":null,"datePublished":null,"sameAs":null,"mainEntityOfPage":null,"@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#157878">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="/mazes/assets/css/style.css?v=f2997125d230ad37bca04874497998b7759dde17">
+    <link rel="stylesheet" href="/mazes/assets/css/style.css?v=ea1870f290688a935aa340519c9025253e709c3f">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/mazes/assets/css/main.css">
@@ -34,15 +36,15 @@
 
       <!-- Headings -->
       <h1 class="project-name">mazes</h1>
-      <h2 class="project-tagline"></h2>
+      <h2 class="project-tagline">A simple maze generator / solver based on graph theory. http://mazes.jabaridash.com</h2>
       
         <a href="http://github.com/N02870941/mazes" class="btn" target="_blank">View on GitHub</a>
       
 
       <!-- Download buttons -->
       
-        <a href="https://github.com/N02870941/rpi_cluster/archive/master.zip" class="btn">Download .zip</a>
-        <a href="https://github.com/N02870941/rpi_cluster/archive/master.tar.gz" class="btn">Download .tar.gz</a>
+        <a href="http://github.com/N02870941/mazes/zipball/gh-pages" class="btn">Download .zip</a>
+        <a href="http://github.com/N02870941/mazes/tarball/gh-pages" class="btn">Download .tar.gz</a>
       
     </section>
 
@@ -62,8 +64,8 @@ are not familiar with graph theory, here is an explanation of the information
 about graph theory that is relevant to understand this problem.</p>
 
 <p>A graph <code class="highlighter-rouge">G</code> is a pair denoted as <code class="highlighter-rouge">G = {V, E}</code> where <code class="highlighter-rouge">V</code> is a set of vertices and
-<code class="highlighter-rouge">E</code> is a set of edges where each edge connects some vertex <code class="highlighter-rouge">u</code> to some vertex <code class="highlighter-rouge">v</code> from the vertex set <code class="highlighter-rouge">V</code>. A vertex is an abstract
-<strong>node or location</strong> in a network. An edge is a <strong>branch</strong> that links vertices together. Graphs
+<code class="highlighter-rouge">E</code> is a set of edges. Each edge connects some vertex another vertex from the vertex set <code class="highlighter-rouge">V</code>. In other words, a vertex is a
+<strong>location</strong> in a network and an edge is a <strong>connection</strong> between these vertices. Graphs
 come in various forms:</p>
 
 <ol>
@@ -71,7 +73,7 @@ come in various forms:</p>
   <li>Directed</li>
 </ol>
 
-<p>Any combination is valid:</p>
+<p>We can have any of the following types of graphs:</p>
 
 <ol>
   <li>Weighted and directed</li>
@@ -85,8 +87,8 @@ come in various forms:</p>
 </p>
 
 <p>A weighted graph is a graph who’s edges have a specified <strong>weight</strong> or <strong>cost</strong> associated
-with branching two vertices. For example, if we represent a country as a graph where
-cities are vertices and roads are edges, the weight of an edge might be the distance between
+with connecting two vertices. For example, if we represent a country as a graph where
+vertices are cities and edges are roads, the weight of an edge might be the distance between
 two cities.</p>
 
 <p align="center">
@@ -103,7 +105,7 @@ But, we have a <strong>different</strong> edge going from Chicago to New York th
 </p>
 
 <p>For the purpose of representing a maze, we will use an undirected weighted graph.
-We will consider vertices white pixel (areas). A vertex is considered adjacent or having an edge with another vertex if there is <strong>no</strong> barrier (black pixels) between them. Edges will have a uniform weight of 1 which
+We will consider vertices white pixel areas. A vertex is considered adjacent or having an edge with another vertex if there is <strong>no</strong> barrier (black pixels) between them. Equally speaking, edges exist between contiguous blocks of white pixels. Edges will have a uniform weight of 1 which
 just indicates that two vertices are one pixel away from each other (adjacent).</p>
 
 <p align="center">
@@ -121,17 +123,16 @@ just indicates that two vertices are one pixel away from each other (adjacent).<
   <i>A connected unweighted graph.</i>
 </p>
 
-<p>In the case of a <strong>blank</strong> <code class="highlighter-rouge">n x n</code> image where <code class="highlighter-rouge">n</code> is the width (and height) of the image
-in pixels, the image <strong>always</strong> represents connected graph. The reason is that
-there are no missing pixels / black lines. So, in terms of
-traversing the image, there exist a path from each white pixel to every other white pixel - this is too many
-in fact.</p>
+<p>In the case of a <strong>blank white</strong> <code class="highlighter-rouge">n x n</code> image where <code class="highlighter-rouge">n</code> is the width (and height) of the image
+in pixels, the image <strong>always</strong> represents a connected graph. The reason is that
+there are no black lines. So, in terms of
+traversing the image, there exist a path from each white pixel to every other white pixel. In terms of a maze, there are too many paths.</p>
 
 <p>This is why we have black lines to represent the <strong>absence</strong> of edges, or a boundary that terminates a particular path. But, in the case of our full grid, we have too many boundaries as well - resulting in zero paths.</p>
 
-<p>Our goal is to traverse our image full of boundaries and <strong>remove</strong> (recreate) as many (paths) as possible but still produce a graph that has the connected property. This will result in a maze that leaves a
-<strong>path</strong> from any vertex to any other vertex, but in a much less cluttered way.
-The result is called a <strong>spanning tree</strong>.</p>
+<p>Our goal is to traverse our image full of boundaries and <strong>remove</strong> as many walls as possible while maintaining the connected property of the graph. This will result in a maze that leaves exactly <em>one</em>
+<strong>path</strong> from any vertex to any other vertex.
+This is called a <strong>spanning tree</strong>.</p>
 
 <p align="center">
   <img src="assets/img/png/spanning-tree.png" /><br />
