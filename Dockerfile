@@ -5,7 +5,7 @@ FROM jekyll/jekyll as build-docs
 
 ADD ./ /mazes
 WORKDIR /mazes/docs
-RUN bundle install && bundle exec jekyll build
+#RUN bundle install && bundle exec jekyll build
 
 ##############
 # Build page #
@@ -25,7 +25,7 @@ ENV NGINX_DIR /usr/share/nginx/html
 
 COPY --from=build-page /mazes/src/node_modules ${NGINX_DIR}/scripts
 COPY --from=build-page /mazes/src/static ${NGINX_DIR}
-COPY --from=build-docs /mazes/docs/_site ${NGINX_DIR}/docs
+#COPY --from=build-docs /mazes/docs/_site ${NGINX_DIR}/docs
 
 EXPOSE 80
 
