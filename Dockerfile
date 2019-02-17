@@ -1,15 +1,15 @@
 FROM node:8.7 as builder
 
-ADD ./src /app
+ADD ./src /src
 
-WORKDIR /app
+WORKDIR /src
 
 RUN npm install
 
 FROM nginx:1.13.9-alpine
 
-COPY --from=builder app/node_modules /usr/share/nginx/html/scripts
-COPY --from=builder app/static /usr/share/nginx/html
+COPY --from=builder src/node_modules /usr/share/nginx/html/scripts
+COPY --from=builder src/static /usr/share/nginx/html
 
 EXPOSE 80
 
