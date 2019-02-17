@@ -5,28 +5,27 @@ are not familiar with graph theory, here is an explanation of the information
 about graph theory that is relevant to understand this problem.
 
 A graph `G` is a pair denoted as `G = {V, E}` where `V` is a set of vertices and
-`E` is a set of edges where each edge connects some vertex `u` to some vertex `v` from the vertex set `V`. A vertex is an abstract
-**node or location** in a network. An edge is a **branch** that links vertices together. Graphs
+`E` is a set of edges. Each edge connects some vertex another vertex from the vertex set `V`. In other words, a vertex is a
+**location** in a network and an edge is a **connection** between these vertices. Graphs
 come in various forms:
 
 1. Weighted
 2. Directed
 
-Any combination is valid:
+We can have any of the following types of graphs:
 
 1. Weighted and directed
 2. Weighted and undirected
 3. Unweighted and directed
 4. Unweighted and undirected
 
-
 <p align="center">
   <img src="assets/img/png/weighted-unweighted.png"><br>
 </p>
 
 A weighted graph is a graph who's edges have a specified **weight** or **cost** associated
-with branching two vertices. For example, if we represent a country as a graph where
-cities are vertices and roads are edges, the weight of an edge might be the distance between
+with connecting two vertices. For example, if we represent a country as a graph where
+vertices are cities and edges are roads, the weight of an edge might be the distance between
 two cities.
 
 <p align="center">
@@ -43,7 +42,7 @@ But, we have a **different** edge going from Chicago to New York that is 250 mil
 </p>
 
 For the purpose of representing a maze, we will use an undirected weighted graph.
-We will consider vertices white pixel (areas). A vertex is considered adjacent or having an edge with another vertex if there is **no** barrier (black pixels) between them. Edges will have a uniform weight of 1 which
+We will consider vertices white pixel areas. A vertex is considered adjacent or having an edge with another vertex if there is **no** barrier (black pixels) between them. Equally speaking, edges exist between contiguous blocks of white pixels. Edges will have a uniform weight of 1 which
 just indicates that two vertices are one pixel away from each other (adjacent).
 
 <p align="center">
@@ -61,17 +60,16 @@ Generating a maze requires a modified graph traversal algorithm. Traversing the 
   <i>A connected unweighted graph.</i>
 </p>
 
-In the case of a **blank** `n x n` image where `n` is the width (and height) of the image
-in pixels, the image **always** represents connected graph. The reason is that
-there are no missing pixels / black lines. So, in terms of
-traversing the image, there exist a path from each white pixel to every other white pixel - this is too many
-in fact.
+In the case of a **blank white** `n x n` image where `n` is the width (and height) of the image
+in pixels, the image **always** represents a connected graph. The reason is that
+there are no black lines. So, in terms of
+traversing the image, there exist a path from each white pixel to every other white pixel. In terms of a maze, there are too many paths.
 
 This is why we have black lines to represent the **absence** of edges, or a boundary that terminates a particular path. But, in the case of our full grid, we have too many boundaries as well - resulting in zero paths.
 
-Our goal is to traverse our image full of boundaries and **remove** (recreate) as many (paths) as possible but still produce a graph that has the connected property. This will result in a maze that leaves a
-**path** from any vertex to any other vertex, but in a much less cluttered way.
-The result is called a **spanning tree**.
+Our goal is to traverse our image full of boundaries and **remove** as many walls as possible while maintaining the connected property of the graph. This will result in a maze that leaves exactly *one*
+**path** from any vertex to any other vertex.
+This is called a **spanning tree**.
 
 <p align="center">
   <img src="assets/img/png/spanning-tree.png"><br>
