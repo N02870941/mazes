@@ -24,11 +24,11 @@ script:
   - npm test
 
 after_success:
+  - cd ${TRAVIS_BUILD_DIR}
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t jabaridash/mazes:${TRAVIS_BUILD_NUMBER} -t jabaridash/mazes .
   - docker push jabaridash/mazes:${TRAVIS_BUILD_NUMBER}
-  - cd ${TRAVIS_BUILD_DIR}
-
+  
 deploy:
   - provider: script
     script: firebase deploy --token $FIREBASE_TOKEN
