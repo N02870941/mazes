@@ -14,10 +14,6 @@ language: node_js
 node_js:
   - "8.7"
 
-branches:
-  only:
-    - master
-
 before_script:
   - cd src
   - npm install -g firebase-tools
