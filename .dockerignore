@@ -1,0 +1,8 @@
+.firebaserc
+.gitignore
+.travis.yml
+Dockerfile
+firebase.json
+LICENSE
+.git
+.firebase

@@ -30,7 +30,7 @@
     "popper": "^1.0.1"
   },
   "devDependencies": {
-    "browser-sync": "^2.24.6",
+    "browser-sync": "^2.26.3",
     "gulp": "^3.9.1"
   }
 }
