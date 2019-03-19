@@ -14,5 +14,10 @@ after_success:
   - docker push jabaridash/mazes:$TRAVIS_COMMIT
   - docker push jabaridash/mazes
 
+deploy:
+  provider: firebase
+  token:
+    secure: "${FIREBASE_TOKEN}"
+
 on:
   branch: master
