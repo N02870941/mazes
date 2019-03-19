@@ -17,7 +17,7 @@ after_success:
 deploy:
   provider: firebase
   token:
-    secure: "${FIREBASE_TOKEN}"
+    secure: "mhKPh7gXfotf9z460U+LM8yavfLPAg6VyWLK31XMbfNF/2hegdDUr9c3Ga81YTTzBY8uRtyNT19OLZlp3QAqgNNFAOZz0SMvyBBxhLsyteNKHtsO6/4V1FlocyUt7gfZ9reIXy17rUDLx1Hd9aIkxW1rPQ5jtuFSm7Nmhms5zjiF1Ox88/JICKR9FrP6sj3Ipn6SVXGHjlOssY/auvpIJ4CwmiVBFYRU+ZEfeNBY9OGIXdK/5ZfaMFwZkM+9NQ9bbk8ss248axS6H11bSP7hKJn5EvNH/htlliWBnwAdKnfLR6JPdFWS9PXI7wJLgh5/muwUjwcSyUf/SXjT1PzX8XDO/fPnFd7Nkyh3cKv2RfXOKc4eWjdq0hw764/hzXMgMyPKZL0367tKrpRTHeJ6EIHq+DA9XLiZEea1XbfzvqMEBuNwV1J2lFgFD9M3n4D/iJ9YdOSNDRkpTJwEB55rCuMKaXp3yZJqM4lSPP5E4TaZPHf9v0sPhhG/aZEaIxvdugzlG+eoqEifY7IviifvjVY8Kmg/S4pNntta6jU1bcpFXs1ya5HXS5yo6LU92aePjp0t4YmNeD1gLeTnkzOhzk2dsF0cDvj+IU7TuEfGOg7nNg7iKUbG4k1ajVLJW5uale7lyw95EXX4vVjCsI+QKmQ3iim+Ok4BGH8GB1yu9Z8="
 
 on:
   branch: master
