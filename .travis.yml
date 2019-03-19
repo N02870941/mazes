@@ -2,6 +2,18 @@ sudo: required
 
 services:
   - docker
+
+language: node_js
+node_js:
+  - "8.7"
+
+branches:
+  only:
+    - master
+
+before_script:
+  - npm install -g firebase-tools
+
 script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t jabaridash/mazes:$TRAVIS_COMMIT -t jabaridash/mazes .
@@ -9,11 +21,7 @@ script:
   - sleep 5
   - curl localhost:8080
 
-# after_success:
+after_success:
+  - firebase deploy --token $FIREBASE_TOKEN
 #   - docker push jabaridash/mazes:$TRAVIS_COMMIT
 #   - docker push jabaridash/mazes
-
-deploy:
-  provider: firebase
-  token:
-    secure: lKQARx1Kj4om/zVHf4q0PgNd+wjLZ1tkwDLNCODPASAiakGdRJMreHwjmB0KNQhVvy9S1Ngy10416l5G0b+oo8/Sw9ss4TFI5DmVxOAti2a5m4ERpQKo6P6yExKsgjFDodbKl19pmAfPF+Jqvt5lGuIBtf3ItTVWQH504vF+G71PoaZiIpRaC1X0nhGZzE5mj4c7VVed4MECoH3otWVqKFQcXSnZcM/L7ezTdhUYIYfFClykL4rygiMULmuKeO3+g9x7brJM8euz1tJz88fXTdlfdv/CjxJR8hyzTbHVt84VLZhMavFMu/UE59nwAgirAjcQuEOL5gPS6vamu10yXujGFpkwGRoTjS/ITPWR2uNB7C9pSjZqokOOe9ZyD0bxydE0/2/wQ+DqO8evTzbxIJO6fXgh1h+RN1Ebwtr5dddAMsLrCs+Mkj0qBBZJ2LdA10TywMNQN6AoT9UJUOZx1UuTBbS/XwiOsBbjloMQ/sxyUnbAC1b+QFZApVhQgB+yCW0C3xvmKpL0XKeK63iS4ZOomGV6klyMQ2InJ5/2/XzmAKud8c5YVoB7A71ZW8zhBZj6oxtlVFvaat8m6lpNz9wqKhRnaK+Fnf2a3N+PYKkuhcAm5y2BTq+5SQxybyJbgIKBIJ9FknLxiEo8ewNqUadvalk1YQjoZrpvB2bkTjQ=
