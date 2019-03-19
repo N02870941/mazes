@@ -16,21 +16,16 @@ cache:
     - src/node_modules
 
 install:
-  - cd src
-  - npm install -g firebase-tools
-  - npm install
+  - ./install.sh
 
 script:
-  - npm test
+  - ./test.sh
 
 after_success:
-  - cd ${TRAVIS_BUILD_DIR}
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker build -t jabaridash/mazes:${TRAVIS_BUILD_NUMBER} -t jabaridash/mazes .
-  - docker push jabaridash/mazes:${TRAVIS_BUILD_NUMBER}
-  
+  - ./publish.sh
+
 deploy:
   - provider: script
-    script: firebase deploy --token $FIREBASE_TOKEN
+    script: ./deploy.sh
     on:
       branch: master
