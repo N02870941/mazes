@@ -4,6 +4,12 @@ sudo: required
 services:
   - docker
 
+cache:
+  directories:
+    # - $(npm config get prefix)/bin/firebase
+    - $(npm root)
+    - src/node_modules
+
 language: node_js
 node_js:
   - "8.7"
@@ -13,20 +19,21 @@ branches:
     - master
 
 before_script:
+  - cd src
   - npm install -g firebase-tools
+  - npm install
 
 script:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker build -t jabaridash/mazes:$TRAVIS_COMMIT -t jabaridash/mazes .
-  - docker run -d --name=mazes -p 8080:80 jabaridash/mazes
-  - sleep 5
-  - curl localhost:8080
+  - npm test
 
 after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build -t jabaridash/mazes:$TRAVIS_COMMIT -t jabaridash/mazes .
   - docker push jabaridash/mazes:$TRAVIS_COMMIT
+  - cd ${TRAVIS_BUILD_DIR}
 
 deploy:
   - provider: script
-    script: docker push jabaridash/mazes && firebase deploy --token $FIREBASE_TOKEN
+    script: firebase deploy --token $FIREBASE_TOKEN
     on:
       branch: master
