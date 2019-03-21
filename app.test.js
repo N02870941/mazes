@@ -1,4 +1,4 @@
-const app     = require('../app/app')
+const app     = require('./app')
 const request = require('supertest');
 
 describe('Test the root path', () => {

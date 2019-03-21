@@ -2,7 +2,7 @@
   "name": "mazes",
   "version": "1.0.0",
   "scripts": {
-    "start": "node app/app",
+    "start": "node serve",
     "test": "node ./node_modules/jest/bin/jest --detectOpenHandles"
   },
   "author": "Jabari Dash",
