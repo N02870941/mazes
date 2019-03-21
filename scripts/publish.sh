@@ -1,7 +1,5 @@
 set -e
 
-cd ${TRAVIS_BUILD_DIR}
-
 TAG="${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}"
 
 if [ $TRAVIS_PULL_REQUEST != "false" ]; then

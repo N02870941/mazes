@@ -12,7 +12,7 @@ services:
 cache:
   directories:
     - $(npm root)
-    - src/node_modules
+    - node_modules
 
 install:
   - ./scripts/install.sh
