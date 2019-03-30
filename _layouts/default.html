@@ -14,7 +14,9 @@
   </head>
 
   <body>
-    {% include header.html %}
+    <section class="page-header">
+      {% include header.html %}
+    </section>
 
     <section class="main-content">
       {% include back.html %}
@@ -24,5 +26,8 @@
 
     {% include nav.html %}
     {% include scrolltop.html %}
+    <script type="text/javascript" src="{{ site.baseurl }}/assets/js/nav.js"></script>
+    <script type="text/javascript" src="{{ site.baseurl }}/assets/js/scrolltop.js"></script>
+    <script type="text/javascript" src="{{ site.baseurl }}/assets/js/analytics.js"></script>
   </body>
 </html>

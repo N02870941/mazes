@@ -135,12 +135,9 @@ function cancel() {
  */
 function download() {
 
-  // Do not export
-  // if we are not ready
+  // Do not export if we are not ready
   if (!maze.generated) {
-
     unprepared();
-
     return;
   }
 
@@ -148,7 +145,6 @@ function download() {
   save(maze.images.maze, 'maze', 'png');
 
   if (maze.solved) {
-
     confirm(strings.DOWNLOAD_MSG, () => save(maze.images.solution, 'maze-solution', 'png'));
   }
 
