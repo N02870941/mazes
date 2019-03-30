@@ -6,6 +6,11 @@ canvas {
   display       : block;
 }
 
+select {
+    max-width: 100%;
+    text-overflow: ellipsis;
+}
+
 .container {
   margin     : auto;
   text-align : center;
