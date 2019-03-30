@@ -1,5 +1,5 @@
 theme: jekyll-theme-cayman
 index_page: README.md
 baseurl: "/mazes"
-url: "https://github.jabaridash.com"
+url: "http://github.jabaridash.com"
 repository: "N02870941/mazes"
