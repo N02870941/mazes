@@ -2,7 +2,6 @@
 const algorithms = {
 
   generator : {
-
     BFS     : 'bfs',
     DFS     : 'dfs',
     HYBRID  : 'hybrid',
@@ -10,14 +9,12 @@ const algorithms = {
     PRIM    : 'prim',
 
     subtract : {
-
       VERTICAL   : 'vertical',
       HORIZONTAL : 'horizontal'
     }
   },
 
   solver : {
-
     BFS        : 'BFS',
     DFS        : 'DFS',
     A_STAR     : 'aStar',
@@ -27,7 +24,6 @@ const algorithms = {
   },
 
   visualizer : {
-
     HIGHLIGHT : 'highlight'
   }
 

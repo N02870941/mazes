@@ -7,8 +7,7 @@
 class Wall {
 
   /**
-   * Constructs a wall object
-   * between two adjacent cells.
+   * Constructs a wall object between two adjacent cells.
    */
   construct(u, v) {
 

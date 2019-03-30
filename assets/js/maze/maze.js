@@ -1,5 +1,7 @@
 // IIFE to expose Maze 'class' as
-// a non-threadsafe Singleton
+// a non-threadsafe Singleton. Does thread-safety
+// matter in the browser? IDK. But, to be
+// on the safe side, we make it a singleton.
 const Maze = (() => {
 
 // PRIVATE ATTRIBUTES START HERE
@@ -54,14 +56,13 @@ const Maze = (() => {
 //------------------------------------------------------------------------------
 
     /**
-     * Computes index of cell
-     * by cartesian coordinates
+     * Computes index of cell by cartesian coordinates
      */
     function index(i, j) {
 
       if (
-        i < 0      ||
-        j < 0      ||
+        i < 0   ||
+        j < 0   ||
         i > c-1 ||
         j > r-1) {
 
@@ -77,64 +78,54 @@ const Maze = (() => {
     // Public attributes
     return {
 
-      // Current cell in
-      // walk of maze
+      // Current cell during walk of maze
       current : undefined,
 
-      // Booelan flags
+      // Booelan flags that represent state of maze
       generated : false,
       solved    : false,
 
-      // Number of walls to subtract
+      // Number of walls to subtract when generating maze
       subtractionsV : 0,
       subtractionsH : 0,
 
-      // Map for reconstructing a path
+      // Map for reconstructing a path (during maze solving)
       parents : new Map(),
 
-      // Current task
+      // Current task (are we generating or solving)
       action : undefined,
 
-      // Tasks queue
+      // Tasks queue of operations we can perform on
+      // the mazes such as generate, solve, subtract walls, etc.
       tasks : [],
 
-      // Stats on a given
-      // walk of the maze
+      // Stats about a given walk of the maze
       walk : {
-
         visits    : 0,
         length    : 0,
         algorithm : undefined
       },
 
-      // Images taken of the
-      // maze at various points
-      // at runtime
+      // Images taken of the maze at various points at runtime
       images : {
-
         maze     : undefined,
         solution : undefined,
         frames   : []
       },
 
       // TODO - MANHATTAN IS OVEREVESTIMATING BY 2, WHY?????
-
-      // Default heuristic is euclidian distance
-      // heuristic : Cell.heuristics.euclidian,
       heuristic : Cell.heuristics.manhattan,
 
       /**
        * Creates new grid
        */
       create : function({
-
         pathW  = undefined,
         width  = undefined,
         height = undefined,
         rows   = undefined,
         cols   = undefined,
         walls  = {
-
           vertical   : undefined,
           horizontal : undefined
         }
@@ -159,7 +150,6 @@ const Maze = (() => {
         canvas.parent(elements.canvas.MAIN);
 
         // Init canvas
-
         r = rows
         c = cols
 
@@ -168,10 +158,11 @@ const Maze = (() => {
         this.parents.clear()
 
         // It's just a grid to start with
+        // so we are neither in the generated
+        // state, nor the solved state.
         this.generated = false
         this.solved    = false
 
-        // Walk reset to 0
         this.resetWalk()
 
         // Rows
@@ -179,21 +170,22 @@ const Maze = (() => {
 
           // Cols
           for (let i = 0; i < c; i++) {
-
-            // New cell
             let t = new Cell(i, j, pathW)
 
             t.clear()
-
             grid.push(t)
           }
         }
 
-        // Set default src and tgt
+        // Set default source to be top left node,
+        // and default target to be the bottom right node
         source = grid[0]
         target = grid[grid.length-1]
 
-        // Get subtraction count from sliders
+        // Get subtraction count from sliders, so we know how
+        // many walls we should subtract. This effectively creates
+        // multiple solutions to the maze. Otherwise, there would
+        // only be 1 solution - a walk of the minimum spanning tree.
         this.subtractionsV = subtractions.vertical(walls.vertical);
         this.subtractionsH = subtractions.horizontal(walls.horizontal);
       },
@@ -202,7 +194,6 @@ const Maze = (() => {
        * Resets the current walk.
        */
       resetWalk : function(algo) {
-
         this.walk.visits    = 0
         this.walk.length    = 0
         this.walk.algorithm = algo || undefined
@@ -212,7 +203,6 @@ const Maze = (() => {
        * Specifies source in search.
        */
       source : function(src) {
-
         if (src)
           source = src
 
@@ -223,7 +213,6 @@ const Maze = (() => {
        * Specifies target in search.
        */
       target : function(tgt) {
-
         if (tgt)
           target = tgt
 
@@ -231,25 +220,22 @@ const Maze = (() => {
       },
 
       /**
-       * Performs operation on
-       * each cell in grid.
+       * Performs operation on each cell in grid.
        */
       forEach : function(operation) {
-
         grid.forEach(operation)
       },
 
       /**
-       * Get cell by
-       * cartesian coordinates.
+       * Get cell by cartesian coordinates.
        */
       get : function (i, j) {
-
         return grid[index(i, j)]
       },
 
-      // Deletes a wall between
-      // Cell u and Cell v
+      /**
+       * Deletes a wall between Cell u and Cell v
+       */
       pave : function(u, v) {
 
         // Vertical and horizontal
@@ -339,7 +325,9 @@ const Maze = (() => {
       },
 
       /**
-       * Saves the maze into a variable.
+       * Saves the maze into a variable. This
+       * way, we can continue to solve the maze
+       * and print the original maze later.
        */
       saveMaze : function() {
 
@@ -354,8 +342,10 @@ const Maze = (() => {
         maze.images.solution = canvas.get()
       },
 
+      /**
+       * Takes a screenshot of the maze.
+       */
       screenshot : function() {
-
         maze.images.frames.push(canvas.get())
 
         return true
@@ -377,11 +367,12 @@ const Maze = (() => {
     }
   }
 
-  // Only expose getInstance()
+  // Only expose getInstance(). This way
+  // we ensure that we only have one instance
+  // of the maze object in memory at a time.
   return {
 
-    // Returns reference to
-    // the single Maze instance
+    // Returns reference to Maze singleton
     getInstance : function() {
 
         if (!instance)

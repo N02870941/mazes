@@ -4,12 +4,8 @@ const links = [
     name: "/mazes/"
   },
   {
-    text: "Demo",
-    name: "/mazes/pages/demo.html"
-  },
-  {
-    text: "Installation Guide",
-    name: "/mazes/pages/install.html"
+    text: "Intuition",
+    name: "/mazes/pages/intuition.html"
   },
   {
     text: "Generting with backtracking",
