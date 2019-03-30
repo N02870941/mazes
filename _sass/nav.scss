@@ -1,7 +1,7 @@
 @import "variables";
 
 // https://codepen.io/marclloyd77/pen/gtypB
-@mixin transition{
+@mixin transition {
   -moz-transition:all $transition-speed ease-in;
   -ms-transform:all $transition-speed ease-in;
   -webkit-transition:all $transition-speed ease-in;
@@ -11,7 +11,7 @@
 
 $nav-width: 250px;
 
-nav {
+.my-nav {
     position:fixed;
     top:0;
     left:0;
@@ -52,7 +52,7 @@ nav {
     }
 }
 
-label {
+label.invisible-label {
 
     // So the background
     // fully surrounds icon
@@ -78,15 +78,15 @@ label {
 }
 
 // Hide the checkbox by default
-input[type="checkbox"] {
+.invisible-checkbox {
     display:none;
 }
 
-input[type="checkbox"]:checked ~ nav {
+.invisible-checkbox:checked ~ nav {
     margin:0;
 }
 
 // When checked, move it off the scroll
-input[type="checkbox"]:checked ~ label {
+.invisible-checkbox:checked ~ label {
     left:10 - $nav-width;
 }

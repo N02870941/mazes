@@ -10,16 +10,15 @@ async function sleep(ms) {
 //------------------------------------------------------------------------------
 
 /**
- * Displays an alert dialog
- * with a specified message.
+ * Displays an alert dialog with a specified message.
  */
 function notify(msg) {
-
-  bootbox.alert({
-    message : msg,
-    size : 'small'
-  });
-
+  swal(msg, {
+    buttons: {
+      cancel: false,
+      confirm: true,
+    }
+  })
 }
 
 //------------------------------------------------------------------------------
@@ -32,47 +31,43 @@ function notify(msg) {
  * all callbacks are optional.
  */
 function confirm(msg, yes, no, always) {
-
-  bootbox.confirm({
-
-    message : msg || "MESSAGE",
-
-    buttons : {
-
-        confirm : {
-            label : strings.YES,
-            className : 'btn-success'
-        },
-
-        cancel : {
-            label : strings.NO,
-            className : 'btn-danger'
-        }
-    },
-
-    // Function que ejecuta
-    // despues de que se cierre
-    // el dialogo
-    callback : (result) => {
-
-      // Si el usuario dijo que si
-      if (result && yes) {
-
-        yes();
-
-      // Si dijo que no
-      } else if (no) {
-
-        no();
+  swal({
+    text: msg,
+    buttons: {
+      confirm: {
+        text: "Yes",
+        value: true,
+        visible: true,
+        className: "",
+        closeModal: true
+      },
+      cancel: {
+        text: "No",
+        value: false,
+        visible: true,
+        className: "",
+        closeModal: true,
       }
 
-      // No importa que dijo
-      if (always) {
-
-        always();
-      }
     }
-  });
+  }).then(result => {
+    // Si el usuario dijo que si
+    if (result && yes) {
+
+      yes();
+
+    // Si dijo que no
+    } else if (no) {
+
+      no();
+    }
+
+    // No importa que dijo
+    if (always) {
+
+      always();
+    }
+  })
 }
 
 //------------------------------------------------------------------------------

@@ -1,16 +1,5 @@
 theme: jekyll-theme-cayman
-
 index_page: README.md
-
 baseurl: "/mazes"
 url: "https://n02870941.github.io"
-
 repository: "N02870941/mazes"
-
-show_downloads: true
-
-# github:
-#   zip_url: "https://github.com/N02870941/mazes/archive/master.zip"
-#   tar_url: "https://github.com/N02870941/mazes/archive/master.tar.gz"
-
-google_analytics: true
