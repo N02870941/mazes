@@ -4,3 +4,8 @@
 
 @import 'nav';
 @import 'scrolltop';
+
+table {
+  display: table !important;
+  width: 100%;
+}

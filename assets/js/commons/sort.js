@@ -7,7 +7,6 @@
  * Object.prototype.valueOf() function.
  */
 function sort(array, comparator = (a, b) => a.valueOf() - b.valueOf()) {
-
   quicksort(array, 0, array.length-1, comparator)
 
   return array
@@ -43,7 +42,6 @@ function quicksort(a, lo, hi, compare) {
       j--
 
     if (i <= j) {
-
       [a[j], a[i]] = [a[i], a[j]]
 
       i++

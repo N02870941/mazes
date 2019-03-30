@@ -1,8 +1,6 @@
-// UI element selector ids
-// Most of them are Jquery selectors
-// so they are preceded by a # symbol
+// UI element selector ids Most of them are
+// Jquery selectors so they are preceded by a # symbol
 const elements = {
-
   message : {
     MESSAGE : '#message',
     TITLE   : '#message-title',
@@ -46,7 +44,6 @@ const elements = {
   },
 
   canvas : {
-
     // NOTE - Not a Jquery selector
     // so there is purposely no # symbol
     MAIN : 'sketch-holder'
@@ -55,7 +52,7 @@ const elements = {
   misc : {
       HEURISTIC_ROW : '#row-dropdown-heuristic'
   }
-};
+}
 
 //------------------------------------------------------------------------------
 
@@ -66,7 +63,7 @@ const attributes = {
   VALUE         : 'value',
   DISABLED      : 'disabled',
   SET_ATTRIBUTE : 'setAttribute'
-};
+}
 
 //------------------------------------------------------------------------------
 
@@ -81,7 +78,7 @@ const events = {
   SOLVED       : 'solved',
   SOLVING      : 'solving',
   INITIALIZING : 'initializing'
-};
+}
 
 //------------------------------------------------------------------------------
 
@@ -108,19 +105,18 @@ const keys = {
   MESSAGE    : 'message',
   TITLE      : 'title',
   CONTENT    : 'content'
-};
+}
 
 //------------------------------------------------------------------------------
 
-// Associative arrays
-// of UI elements
-const message     = [];
-const buttons     = [];
-const sliders     = [];
-const labels      = [];
-const dropdowns   = [];
-const checkboxes  = [];
-const misc        = [];
+// Associative arrays of UI elements
+const message     = []
+const buttons     = []
+const sliders     = []
+const labels      = []
+const dropdowns   = []
+const checkboxes  = []
+const misc        = []
 
 //------------------------------------------------------------------------------
 
@@ -139,12 +135,9 @@ const subscribers = (() => {
   }
 
   return s
-
-})();
+})()
 
 //------------------------------------------------------------------------------
 
-/**
- * Singleton maze object.
- */
-const maze = Maze.getInstance();
+ // Singleton maze object
+const maze = Maze.getInstance()

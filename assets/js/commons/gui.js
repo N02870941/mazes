@@ -12,9 +12,9 @@ const gui = {
 
     const slider = sliders[key]
 
-    slider.slider(attributes.SET_ATTRIBUTE, attributes.MIN,   min);
-    slider.slider(attributes.SET_ATTRIBUTE, attributes.MAX,   max);
-    slider.slider(attributes.SET_ATTRIBUTE, attributes.VALUE, def);
+    slider.slider(attributes.SET_ATTRIBUTE, attributes.MIN,   min)
+    slider.slider(attributes.SET_ATTRIBUTE, attributes.MAX,   max)
+    slider.slider(attributes.SET_ATTRIBUTE, attributes.VALUE, def)
     slider.slider(events.REFRESH);
   },
 
@@ -37,7 +37,6 @@ const gui = {
       const slider = sliders[sliderKey];
       const label  = labels[labelKey];
 
-    // On slide event
     slider.on(events.SLIDE, (e) => {
 
       // Transform the data
@@ -46,31 +45,26 @@ const gui = {
       // Set the value
       label.text(v);
 
-      // Follow up action
       if (callback) {
         callback(v)
       }
 
-    });
+    })
 
-    // Get initial value from label
-    const data = slider.data(keys.SLIDER).getValue();
+    const data = slider.data(keys.SLIDER).getValue()
 
     // Display on screen
-    label.text(data);
+    label.text(data)
   },
 
 //------------------------------------------------------------------------------
 
   /**
-   * Initializes a button by setting
-   * the onclick event as well as
-   * attaches event listeners that tell
-   * the button when to activate and
+   * Initializes a button by setting the onclick event as well as
+   * attaches event listeners that tell the button when to activate and
    * deactivate.
    */
   initButton : ({
-
       key     = undefined,
       onclick = undefined,
       enable  = [],
@@ -79,33 +73,29 @@ const gui = {
 
     const button = buttons[key]
 
-    // Set on click
-    button.click(onclick);
+    button.click(onclick)
 
     // For all events in disable array,
     // if fired, disable this button
     disable.forEach(e => {
-
       subscribers[e].add(button)
 
-      button.on(e, (c) => button.prop(attributes.DISABLED, true));
-    });
+      button.on(e, (c) => button.prop(attributes.DISABLED, true))
+    })
 
     // For all events in enable array,
     // if fired, enable this button
     enable.forEach(e => {
-
       subscribers[e].add(button)
 
-      button.on(e, (c) => button.prop(attributes.DISABLED, false));
-    });
+      button.on(e, (c) => button.prop(attributes.DISABLED, false))
+    })
   },
 
 //------------------------------------------------------------------------------
 
   /**
-   * Initializes an HTML
-   * element as a JQuery object.
+   * Initializes an HTML element as a JQuery object.
    */
   initElement : ({
     map         = undefined,
@@ -135,35 +125,24 @@ const gui = {
    * Initializes a dropdown.
    */
   initDropdown : ({
-
     key      = undefined,
     options  = undefined,
     onchange = undefined
-
   }) => {
 
-    // Get the dropdown
     let dropdown = dropdowns[key]
 
-    // If one an onchange
-    // event was supplied
     if (onchange) {
-
         dropdown.change(onchange)
     }
 
-    // Append all options
-    for (option of options) {
-
+    options.forEach(option => {
       dropdown.append(`<option value="${option.value}">${option.name}</option>`)
-    }
+    })
 
-    // Trigger the change event so
-    // that all of the dropdown's
-    // dependencies are in a valid
-    // initial state
+    // Trigger the change event so that all of the dropdown's
+    // dependencies are in a valid initial state
     dropdown.trigger(events.CHANGE)
-
   }
 
-};
+}
