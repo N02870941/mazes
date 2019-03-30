@@ -3,14 +3,13 @@
  */
 function setup() {
 
-  // Stop infinite loop
-  // of draw()
+  // Stop infinite loop of draw()
   noLoop();
 
   // HTML elements to create references for
   let elementsToSelect = [
 
-    // Message
+    // Messages
     {
       map      : message,
       key      : keys.MESSAGE,
@@ -90,7 +89,6 @@ function setup() {
 
   // Sliders to initialize
   let slidersToInit = [
-
     {key : keys.CANVAS,     min : MIN_CANVAS_WIDTH, max : MAX_CANVAS_WIDTH, def : DEFAULT_CANVAS_WIDTH},
     {key : keys.PATH,       min : MIN_PATH_WIDTH,   max : MAX_PATH_WIDTH,   def : DEFAULT_PATH_WIDTH},
     {key : keys.SUBTRACT_V, min : MIN_SUBTRACT_V,   max : MAX_SUBTRACT_V,   def : DEFAULT_SUBTRACT_V},
@@ -111,7 +109,6 @@ function setup() {
 
   // Drop downs
   let dropdownsToInit = [
-
     {
       key     : keys.GENERATE,
       options : strings.dropdowns.generate
@@ -140,7 +137,6 @@ function setup() {
 
   // Buttons to initialize
   let buttonsToInit = [
-
     {
       key     : keys.GENERATE,
       onclick : generate,
@@ -190,7 +186,6 @@ function setup() {
   ];
 
   let initMaps = [
-
     {array : elementsToSelect,      initializer : gui.initElement},
     {array : slidersToInit,         initializer : gui.initSlider},
     {array : sliderLabelsToConnect, initializer : gui.connectSliderLabel},

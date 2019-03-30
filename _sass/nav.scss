@@ -22,13 +22,10 @@ $nav-width: 250px;
 
     ul {
         width:$nav-width;
-
         height:100%;
         padding:0;
         margin:0;
-
-        // Dark background, half opacity
-        background-color:rgba(2, 2, 2, 0.5);
+        background-color:$charcoal;
         overflow:hidden;
     }
 
@@ -53,28 +50,15 @@ $nav-width: 250px;
 }
 
 label.invisible-label {
-
-    // So the background
-    // fully surrounds icon
     padding: 1%;
-
-    // display:block;
-    background-color:rgba(2, 2, 2, 0.5);
-
-    // Center white text
+    background-color: $charcoal;
     color: white;
-    text-align:center;
-
-    // Top left
-    position:fixed;
-    top:10px;
-    left:10px;
-
-    // Animation
+    text-align: center;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 500;
     @include transition;
-
-    // On top of everything
-    z-index:500;
 }
 
 // Hide the checkbox by default
@@ -83,10 +67,10 @@ label.invisible-label {
 }
 
 .invisible-checkbox:checked ~ nav {
-    margin:0;
+    margin: 0;
 }
 
 // When checked, move it off the scroll
 .invisible-checkbox:checked ~ label {
-    left:10 - $nav-width;
+    left: 10 - $nav-width;
 }

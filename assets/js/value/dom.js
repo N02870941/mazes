@@ -4,21 +4,18 @@
 const elements = {
 
   message : {
-
     MESSAGE : '#message',
     TITLE   : '#message-title',
     CONTENT : '#message-content'
   },
 
   dropdown : {
-
     GENERATE  : '#dropdown-generator',
     SOLVE     : '#dropdown-solver',
     HEURISTIC : '#dropdown-heuristic'
   },
 
   button : {
-
     GENERATE : '#button-generate',
     SOLVE    : '#button-solve',
     EXPORT   : '#button-export',
@@ -26,7 +23,6 @@ const elements = {
   },
 
   slider : {
-
     CANVAS     : '#canvas-width-slider',
     PATH       : '#path-width-slider',
     FRAMES     : '#frame-rate-slider',
@@ -35,7 +31,6 @@ const elements = {
   },
 
   label : {
-
     CANVAS_W   : '#canvas-width-slider-value',
     CANVAS_H   : '#canvas-height-slider-value',
     PATH       : '#path-width-slider-value',
@@ -45,7 +40,6 @@ const elements = {
   },
 
   checkbox : {
-
     AUTOSOLVE : '#checkbox-autosolve',
     HIGHLIGHT : '#checkbox-highlight-visited',
     ANIMATE   : '#checkbox-animate'
@@ -59,7 +53,6 @@ const elements = {
   },
 
   misc : {
-
       HEURISTIC_ROW : '#row-dropdown-heuristic'
   }
 };
@@ -68,7 +61,6 @@ const elements = {
 
 // HTML element attributes / states
 const attributes = {
-
   MIN           : 'min',
   MAX           : 'max',
   VALUE         : 'value',
@@ -80,7 +72,6 @@ const attributes = {
 
 // Jquery event strings
 const events = {
-
   CHANGE       : 'change',
   SLIDE        : 'slide',
   CLICK        : 'click',
@@ -98,7 +89,6 @@ const events = {
 // associative arrays
 // of UI elements
 const keys = {
-
   AUTOSOLVE  : 'autosolve',
   HEURISTIC  : 'heuristic',
   CANCEL     : 'cancel',
@@ -135,22 +125,16 @@ const misc        = [];
 //------------------------------------------------------------------------------
 
 /**
- * For each event, create an
- * associated set of subscribers.
- * This way, when the event is fired,
- * We just lookup the set of subscribers
- * and notify all of them that the event
- * was triggered. Assuming they have the
- * appropriate event-listener registered,
- * each subscriber will respond to the
+ * For each event, create an associated set of subscribers.
+ * This way, when the event is fired, We just lookup the set of subscribers
+ * and notify all of them that the event was triggered. Assuming they have the
+ * appropriate event-listener registered, each subscriber will respond to the
  * event appropriately.
  */
 const subscribers = (() => {
-
   let s = []
 
   for (let key in events) {
-
       s[events[key]] = new Set()
   }
 

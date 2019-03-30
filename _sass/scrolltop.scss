@@ -1,3 +1,5 @@
+@import "variables";
+
 @mixin transition($transitions) {
 	transform: $transitions;
   -moz-transition: $transitions;
@@ -21,7 +23,7 @@
 	right:20px;
 	bottom:20px;
 	color: white;
-	background-color:rgba(2, 2, 2, 0.5);
+	background-color:$charcoal;
 	padding:20px;
 	text-align: center;
 	margin: 0 0 0 0;
@@ -38,7 +40,7 @@
 }
 
 .scroll:hover {
-	background:rgba(178,178,178,1.0);
+	background: $light-grey;
 	@include transition(0.5s);
 
 	.fa {

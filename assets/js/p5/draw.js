@@ -19,7 +19,6 @@ function draw() {
   // Stop draw() to avoid infinite
   // loop and resource leaks
   if (!maze.action) {
-
     noLoop()
 
   // Call action(), if it
@@ -31,7 +30,6 @@ function draw() {
 
     maze.action = maze.tasks.shift();
   }
-
 }
 
 //------------------------------------------------------------------------------
@@ -44,7 +42,6 @@ function draw() {
  * painting one frame at a time.
  */
 function execute() {
-
   let done;
 
   // While there is an
@@ -61,7 +58,6 @@ function execute() {
   while (maze.action) {
 
     do {
-
       done = maze.action();
 
     } while (done === false);

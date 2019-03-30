@@ -23,12 +23,12 @@ is_demo: true
 
     <!-- Slider -->
     <div class="col">
-      <input class='left-column' id="canvas-width-slider" type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="3"/>
+      <input id="canvas-width-slider" type="range"/>
     </div>
 
     <!-- Label -->
     <div class="col">
-      <span class='right-column' id="canvas-width-value-label">
+      <span id="canvas-width-value-label">
         Image Size:
         <span id="canvas-width-slider-value"></span>
         ×
@@ -42,12 +42,12 @@ is_demo: true
 
     <!-- Slider -->
     <div class="col">
-      <input class='left-column' id="path-width-slider" type="text"/>
+      <input id="path-width-slider" type="range"/>
     </div>
 
     <!-- Label -->
     <div class="col">
-      <span class='right-column' id="path-width-value-label">
+      <span id="path-width-value-label">
         Path Width: <span id="path-width-slider-value"></span>
         <span>px</span>
       </span>
@@ -59,12 +59,12 @@ is_demo: true
 
     <!-- Slider -->
     <div class="col">
-      <input class='left-column' id="vertical-wall-slider" type="text"/>
+      <input id="vertical-wall-slider" type="range"/>
     </div>
 
     <!-- Label -->
     <div class="col">
-      <span class='right-column' id="vertical-wall-value-label">
+      <span id="vertical-wall-value-label">
         Subtract vertical walls: <span id="vertical-wall-slider-value"></span>
         <span>%</span>
       </span>
@@ -76,12 +76,12 @@ is_demo: true
 
     <!-- Slider -->
     <div class="col">
-      <input class='left-column' id="horizontal-wall-slider" type="text"/>
+      <input id="horizontal-wall-slider" type="range"/>
     </div>
 
     <!-- Label -->
     <div class="col">
-      <span class='right-column' id="horizontal-wall-value-label">
+      <span id="horizontal-wall-value-label">
         Subtract horizontal walls: <span id="horizontal-wall-slider-value"></span>
         <span>%</span>
       </span>
@@ -93,12 +93,12 @@ is_demo: true
 
     <!-- Slider -->
     <div class="col">
-      <input class='left-column' id="frame-rate-slider" type="text"/>
+      <input id="frame-rate-slider" type="range"/>
     </div>
 
     <!-- Label -->
     <div class="col">
-      <span class='right-column' id="frame-rate-value-label">
+      <span id="frame-rate-value-label">
         Frame rate: <span id="frame-rate-slider-value"></span>
         <span>fps</span>
       </span>
@@ -112,7 +112,7 @@ is_demo: true
 
       <!-- Label + Dropdown -->
       <div>Generator algorithm:</div>
-      <select id='dropdown-generator' class="form-control form-control-sm"></select>
+      <select id='dropdown-generator'></select>
     </div>
 
     <!-- Solver algorithm selector -->
@@ -120,7 +120,7 @@ is_demo: true
 
       <!-- Label + Dropdown -->
       <div>Solver algorithm:</div>
-      <select id='dropdown-solver' class="form-control form-control-sm"></select>
+      <select id='dropdown-solver'></select>
     </div>
 
   </div>
@@ -130,18 +130,16 @@ is_demo: true
     <div id='row-dropdown-heuristic' class='col algo-select'>
 
       <div>Heuristic:</div>
-      <select id='dropdown-heuristic' class="form-control form-control-sm"></select>
+      <select id='dropdown-heuristic'></select>
     </div>
   </div>
 
-
-
   <!-- Checkbox for highlighting the solution -->
   <div class='row'>
-    <div class='col form-check'>
+    <div class='col'>
 
-      <input id="checkbox-highlight-visited" class="form-check-input" type="checkbox">
-      <label class="form-check-label" for="defaultCheck1">
+      <input id="checkbox-highlight-visited" type="checkbox">
+      <label class="form-check-label" for="checkbox-highlight-visited">
         Leave all visited nodes highlighted in solution
       </label>
     </div>
@@ -149,10 +147,10 @@ is_demo: true
 
   <!-- Checkbox for enabling autosolve -->
   <div class='row'>
-    <div class='col form-check'>
+    <div class='col'>
 
-      <input id="checkbox-autosolve" class="form-check-input" type="checkbox" checked>
-      <label class="form-check-label" for="defaultCheck1">
+      <input id="checkbox-autosolve" type="checkbox" checked>
+      <label for="checkbox-autosolve">
         Solve automatically
       </label>
     </div>
@@ -160,10 +158,10 @@ is_demo: true
 
   <!-- Checkbox for enabling animation -->
   <div class='row'>
-    <div class='col form-check'>
+    <div class='col'>
 
-      <input id="checkbox-animate" class="form-check-input" type="checkbox" checked>
-      <label class="form-check-label" for="defaultCheck1">
+      <input id="checkbox-animate" type="checkbox" checked>
+      <label class="form-check-label" for="checkbox-animate">
         Animated
       </label>
     </div>
@@ -179,71 +177,18 @@ is_demo: true
 
     <!-- Solve -->
     <div class="col-md-3">
-      <button id='button-solve' type="button" class="" disabled>Solve</button>
+      <button id='button-solve' type="button" disabled>Solve</button>
     </div>
 
     <!-- Export -->
     <div class="col-md-3">
-      <button id='button-export' type="button" class="" disabled>Export</button>
+      <button id='button-export' type="button" disabled>Export</button>
     </div>
 
     <!-- Cancel -->
     <div class="col-md-3">
-      <button id='button-cancel' type="button" class="">Cancel</button>
+      <button id='button-cancel' type="button">Cancel</button>
     </div>
   </div>
 
 </div>
-
-<!-- Jquery, BootStrap -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/bootstrap-slider.min.js"></script>
-
-<!-- P5 -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
-
-<!-- Custom JS -->
-
-<!-- Utility functions -->
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/commons/util.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/commons/trigger.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/commons/gui.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/commons/sort.js"></script>
-
-<!-- Custom data types -->
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/structure/disjoint.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/structure/funda.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/structure/list.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/structure/stack.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/structure/queue.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/structure/heap.js"></script>
-
-<!-- Maze structures -->
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/maze/cell.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/maze/wall.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/maze/maze.js"></script>
-
-<!-- Variables + constants -->
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/value/dom.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/value/string.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/value/param.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/value/algorithm.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/value/variable.js"></script>
-
-<!-- Solvers -->
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/solve/astar.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/solve/dijkstra.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/solve/dfs.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/solve/bfs.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/solve/solve.js"></script>
-
-<!-- Generators -->
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/generate/backtrack.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/generate/subtract.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/generate/generate.js"></script>
-
-<!-- p5.js code -->
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/p5/setup.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/p5/draw.js"></script>
