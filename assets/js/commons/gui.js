@@ -34,16 +34,16 @@ const gui = {
       callback    = undefined
     }) => {
 
-      const slider = sliders[sliderKey];
-      const label  = labels[labelKey];
+      const slider = sliders[sliderKey]
+      const label  = labels[labelKey]
 
     slider.on(events.SLIDE, (e) => {
 
       // Transform the data
-      let v = transformer ? transformer(e.value) : e.value;
+      let v = transformer ? transformer(e.value) : e.value
 
       // Set the value
-      label.text(v);
+      label.text(v)
 
       if (callback) {
         callback(v)
