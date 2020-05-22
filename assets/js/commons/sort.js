@@ -1,10 +1,7 @@
 /**
- * Sorts an array of values. An optional
- * 2 parameter comparator function is available
- * to specify ordering. If no comparator is
- * supplied, then the values will be sorted
- * based on their primitive values via the
- * Object.prototype.valueOf() function.
+ * Sorts an array of values. An optional 2 parameter comparator function is available
+ * to specify ordering. If no comparator is supplied, then the values will be sorted
+ * based on their primitive values via the Object.prototype.valueOf() function.
  */
 function sort(array, comparator = (a, b) => a.valueOf() - b.valueOf()) {
   quicksort(array, 0, array.length-1, comparator)
@@ -34,7 +31,6 @@ function quicksort(a, lo, hi, compare) {
   pivot = a[r];
 
   while (i <= j) {
-
     while (compare(a[i], pivot) < 0)
       i++
 
@@ -42,7 +38,7 @@ function quicksort(a, lo, hi, compare) {
       j--
 
     if (i <= j) {
-      [a[j], a[i]] = [a[i], a[j]]
+      [a[j], a[i]] = [a[i], a[j]] // swap a[i] and a[j]
 
       i++
       j--

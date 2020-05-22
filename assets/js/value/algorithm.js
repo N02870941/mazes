@@ -29,9 +29,7 @@ const algorithms = {
 
 };
 
-// Arrays of functions
-// used for generating,
-// solving, and visualizing
+// Arrays of functions used for generating, solving, and visualizing
 const solvers     = [];
 const generators  = [];
 const visualizers = [];

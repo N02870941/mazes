@@ -7,7 +7,6 @@ class Queue {
    * Constructs empty queue.
    */
   constructor() {
-
     this.queue  = [];
     this.length = 0;
   }
@@ -23,7 +22,6 @@ class Queue {
   }
 
   peek() {
-
     return this.queue[0]
   }
 
@@ -31,9 +29,7 @@ class Queue {
    * Dequeue a value.
    */
   pop() {
-
     if (this.length === 0) {
-
       return undefined;
     }
 
@@ -43,7 +39,6 @@ class Queue {
   }
 
   dequeue() {
-
     return this.pop()
   }
 
@@ -51,7 +46,6 @@ class Queue {
    * Empties the queue.
    */
   clear() {
-
     this.queue.length = 0;
     this.lenghth      = 0;
   }

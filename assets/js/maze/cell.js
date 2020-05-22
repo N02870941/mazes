@@ -1,7 +1,5 @@
 /**
- * Cell object that represents
- * a cell in the grid that makes
- * up the main canvsas (the maze).
+ * Cell object that represents a cell in the grid that makes up the main canvsas (the maze).
  */
 class Cell {
 
@@ -92,7 +90,6 @@ class Cell {
    * to ignore / filter out falsy values to avoid errors.
    */
   potentials() {
-
     return [
 
       // Top, right, bottom, left
@@ -113,24 +110,19 @@ class Cell {
    * ignores whether or not a neighbor has been visited.
    */
   neighbors() {
-
-    return this.potentials()
-               .filter(Boolean);
+    return this.potentials().filter(Boolean);
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Returns specific neighbors
-   * by array of indices
+   * Returns specific neighbors by array of indices
    */
   specificNeighbors(...indices) {
-
     let potentials = this.potentials()
     let neighbors  = []
 
     indices.forEach(i => {
-
       if (potentials[i])
         neighbors.push(potentials[i])
     })
@@ -141,11 +133,9 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Returns references to top
-   * and bottom adjacent cells.
+   * Returns references to top and bottom adjacent cells.
    */
   verticalNeighbors() {
-
     return this.specificNeighbors(
       Cell.indices.TOP,
       Cell.indices.BOTTOM
@@ -155,11 +145,9 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Returns references to left
-   * and right adjacent cells.
+   * Returns references to left and right adjacent cells.
    */
   horizontalNeighbors() {
-
     return this.specificNeighbors(
       Cell.indices.LEFT,
       Cell.indices.RIGHT
@@ -175,19 +163,15 @@ class Cell {
    * as visited as well as falsy values (null, undefined).
    */
   unvisited() {
-
-    return this.potentials().filter( (c) => c && !c.visited)
+    return this.potentials().filter((c) => c && !c.visited)
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Returns references to all adjacent
-   * vertices for which there exists no
-   * wall.
+   * Returns references to all adjacent vertices for which there exists no wall.
    */
   x() {
-
     let n = this.potentials();
     let t = [];
 
@@ -213,16 +197,13 @@ class Cell {
    * be blended with pixels that are already there.
    */
   fill(r, g, b, a, x, y, l, w) {
-
     noStroke();
 
     if (typeof r === 'string') {
-
       fill(r);
       rect(g, b, a, x);
 
     } else {
-
       fill(r, g, b, a);
       rect(x, y, w, w);
     }
@@ -231,87 +212,66 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Determines whether or not
-   * a wall exists based on the bit
-   * mask.
+   * Determines whether or not a wall exists based on the bit mask.
    */
   wall(mask) {
-
     return (this.bounds & mask) != 0;
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Determines whether or not
-   * there is a wall above
-   * this cell.
+   * Determines whether or not there is a wall above this cell.
    */
   top() {
-
     return this.wall(Cell.masks.set.TOP);
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Determines whether or not
-   * there is a wall to the right
-   * of this cell.
+   * Determines whether or not there is a wall to the right of this cell.
    */
   right() {
-
     return this.wall(Cell.masks.set.RIGHT);
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Determines whether or not
-   * there is a wall the below
-   * this cell.
+   * Determines whether or not there is a wall the below this cell.
    */
   bottom() {
-
     return this.wall(Cell.masks.set.BOTTOM);
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Determines whether or not
-   * there is a wall to the left
-   * of this cell.
+   * Determines whether or not there is a wall to the left of this cell.
    */
   left() {
-
     return this.wall(Cell.masks.set.LEFT);
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Draws the lines that
-   * represent the walls of this cell.
+   * Draws the lines that represent the walls of this cell.
    */
   outline(x, y, w) {
-
     stroke(BLACK);
     strokeWeight(LINE_WIDTH);
 
-    // There's a top wall
     if (this.top())
       line(x, y , x + w, y);
 
-    // There's a right wall
     if (this.right())
       line(x + w, y  , x + w, y + w);
 
-    // There's a bottom wall
     if (this.bottom())
       line(x + w, y + w, x , y + w);
 
-    // There's a left wall
     if (this.left())
       line(x , y + w, x , y);
   }
@@ -319,22 +279,18 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Colors the cell a specified color
-   * and re-draws walls so they maintain
+   * Colors the cell a specified color and re-draws walls so they maintain
    * their opacity / darkness.
    */
   color(r, g, b, a) {
-
     const w = this.w;
     const x = this.i * w;
     const y = this.j * w;
 
     if (typeof r === 'string') {
-
       this.fill(r, x, y, w, w);
 
     } else {
-
       this.fill(r, g, b, a, x, y, w, w);
     }
 
@@ -344,15 +300,11 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Shades a cell in pink
-   * to highlight it. This is
-   * used to highlight a path
-   * or given walk of the maze.
+   * Shades a cell in pink to highlight it. This is
+   * used to highlight a path or given walk of the maze.
    */
   shade() {
-
     this.clear();
-
     this.color(255, 0, 255, 100);
   }
 
@@ -398,13 +350,10 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Highlights the current node
-   * as it is being processed.
+   * Highlights the current node as it is being processed.
    */
   highlight() {
-
     if (this.highlighted) {
-
       return
     }
 
@@ -416,21 +365,17 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Clears any coloring and
-   * resets cell color to white.
+   * Clears any coloring and resets cell color to white.
    */
   clear() {
-
     this.color(255, 255, 255, 255);
-
     this.highlighted = false;
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Return hex color from scalar
-   * value between 0 and 1.
+   * Return hex color from scalar value between 0 and 1.
    */
   static makeColor(val) {
 
@@ -462,13 +407,11 @@ class Cell {
     let gre;
 
     if (val < 255) {
-
         red = 255;
         gre = sqrt(val) * 16;
         gre = round(gre);
 
     } else {
-
       gre = 255;
       val = val - 255;
       red = 255 - (sq(val) / 255);
@@ -481,11 +424,9 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Checks equality between two
-   * cells based on their coordinates.
+   * Checks equality between two cells based on their coordinates.
    */
   static equals(u, v) {
-
     return u.i === v.i &&
            u.j === v.j;
   }
@@ -493,8 +434,7 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Returns random unvisited
-   * adjacent vertex.
+   * Returns random unvisited adjacent vertex.
    */
   static randomNeighbor(cell) {
 
@@ -511,17 +451,14 @@ class Cell {
 }
 
 /**
- * Define readonly psuedo-static
- * attributes called heuristics.
+ * Define readonly psuedo-static attributes called heuristics.
  * https://stackoverflow.com/questions/32647215/declaring-static-constants-in-es6-classes
  */
 Object.defineProperty(Cell, 'heuristics', {
-
   value : {
 
     // Euclidian distance
     euclidian : (src, dst) => {
-
       const a = dst.j - src.j;
       const b = dst.i - src.i;
 
@@ -584,12 +521,10 @@ Object.defineProperty(Cell, 'heuristics', {
   //------------------------------------------------------------------------------
 
     comparators : {
-
       standard      : (a, b) => a.heuristic + a.cost < b.heuristic + b.cost,
       pureHeuristic : (a, b) => a.heuristic < b.heuristic,
       pureCost      : (a, b) => a.cost < b.cost
     }
-
   },
 
   writable     : false,
@@ -603,25 +538,19 @@ Object.defineProperty(Cell, 'heuristics', {
  * Bitmasks for walls.
  */
 Object.defineProperty(Cell, 'masks', {
-
   value : {
-
     set : {
-
       TOP    : 0b1000,
       RIGHT  : 0b0100,
       BOTTOM : 0b0010,
       LEFT   : 0b0001
     },
-
     unset : {
-
       TOP    : 0b0111,
       RIGHT  : 0b1011,
       BOTTOM : 0b1101,
       LEFT   : 0b1110
     }
-
   },
 
   writable     : false,
@@ -632,13 +561,10 @@ Object.defineProperty(Cell, 'masks', {
 //------------------------------------------------------------------------------
 
 /**
- * Array indices for
- * adjacent neighors.
+ * Array indices for adjacent neighors.
  */
 Object.defineProperty(Cell, 'indices', {
-
   value : {
-
     TOP    : 0,
     RIGHT  : 1,
     BOTTOM : 2,

@@ -1,11 +1,9 @@
 const subtract = (() => {
 
   /**
-   * Deletes walls between
-   * adjacent vertices.
+   * Deletes walls between adjacent vertices.
    */
   function takeaway(discover, decrement, count) {
-
     if (count() <= 0)
       return true
 
@@ -45,12 +43,9 @@ const subtract = (() => {
   return {
 
     /**
-     * Subtracts a specified number
-     * of randomly selected vertical
-     * walls from the grid.
+     * Subtracts a specified number of randomly selected vertical walls from the grid.
      */
     vertical : () => {
-
       return takeaway(
         (c) => c.horizontalNeighbors(),
         ()  => maze.subtractionsV--,
@@ -59,12 +54,9 @@ const subtract = (() => {
     },
 
     /**
-     * Subtracts a specified number
-     * of randomly selected horizontal
-     * walls from the grid.
+     * Subtracts a specified number of randomly selected horizontal walls from the grid.
      */
     horizontal : () => {
-
       return takeaway(
         (c) => c.verticalNeighbors(),
         ()  => maze.subtractionsH--,
@@ -72,5 +64,4 @@ const subtract = (() => {
       )
     }
   }
-
 })();

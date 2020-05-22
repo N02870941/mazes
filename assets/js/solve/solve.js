@@ -19,14 +19,8 @@ function solve() {
     () => showMessage(strings.messages.solve.getWalkInfo())
   ];
 
-  // Initialize solver
-  // by specified algorithm
   solverInit(algorithm);
-
-  // Reset grid
   reset(algorithm);
-
-  // Start the process
   start();
 
   return false
@@ -35,11 +29,9 @@ function solve() {
 //------------------------------------------------------------------------------
 
   /**
-   * Clears the gradient if
-   * the checkbox is unchecked.
+   * Clears the gradient if the checkbox is unchecked.
    */
   function noGradient() {
-
     if (!highlighted())
       maze.clean();
 
@@ -52,26 +44,12 @@ function solve() {
  * Reset the grid.
  */
 function reset(algo) {
-
-  // Reset walk stats
   maze.resetWalk(algo)
-
-  // Reset the grid
   maze.reset()
-
-  // Start at first cell
   maze.current = maze.source();
-
-  // Set the cost to 0
   maze.current.cost = 0;
-
-  // Enqueue to start processing
   queue.push(maze.current);
-
-  // Clear the parents map
   maze.parents.clear();
-
-  // Indicates beginning of path
   maze.parents.set(maze.current.key, null);
 
   return true;
@@ -83,20 +61,18 @@ function reset(algo) {
  * Initializes the solver.
  */
 function solverInit(algorithm) {
-
   switch (algorithm) {
-
     case dijkstra.dijkstra:
       dijkstra.init(); break;
 
     case aStar.aStar:
-      aStar.init();    break;
+      aStar.init(); break;
 
     case dfs.DFS:
-      dfs.init();      break;
+      dfs.init(); break;
 
     case bfs.BFS:
-      bfs.init();      break;
+      bfs.init(); break;
 
     default:
       break;

@@ -10,7 +10,6 @@ class Funda {
    * Constructs empty funda.
    */
   constructor() {
-
     this.map  = new Map()
     this.list = new Array()
   }
@@ -18,8 +17,7 @@ class Funda {
 //------------------------------------------------------------------------------
 
   /**
-   * Inserts new value into bag
-   * if it is not already present.
+   * Inserts new value into bag if it is not already present.
    */
   push(element) {
 
@@ -42,32 +40,24 @@ class Funda {
 //------------------------------------------------------------------------------
 
   /**
-   * Removes and returns a random
-   * value from the funda.
+   * Removes and returns a random value from the funda.
    */
   pop() {
-
-    // Get random element
     let element = this.get()
 
-    // Delete it
     if (element) {
-
       this.delete(element)
     }
 
-    // Return it
     return element
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Deletes an element
-   * from the funda.
+   * Deletes an element from the funda.
    */
   delete(element) {
-
     let temp
     let last
     let size
@@ -79,7 +69,6 @@ class Funda {
 
     // Nothing came back
     if (i === undefined || i === null) {
-
       return
     }
 
@@ -116,19 +105,16 @@ class Funda {
 //------------------------------------------------------------------------------
 
   /**
-   * Determines if the funda
-   * has an element or not.
+   * Determines if the funda has an element or not.
    */
   has(element) {
-
     return this.map.has(element)
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Returns random value
-   * from the funda.
+   * Returns random value from the funda.
    */
   get() {
 
@@ -145,8 +131,7 @@ class Funda {
 //------------------------------------------------------------------------------
 
   /**
-   * Returns number of
-   * elements in funda.
+   * Returns number of elements in funda.
    */
   size() {
 
@@ -156,11 +141,9 @@ class Funda {
 //------------------------------------------------------------------------------
 
   /**
-   * Determines whether or
-   * not the funda is empty.
+   * Determines whether or not the funda is empty.
    */
   empty() {
-
     return this.size() === 0
   }
 }

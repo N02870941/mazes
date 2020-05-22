@@ -1,8 +1,6 @@
 const gui = {
-
   /**
-   * Sets min, max, initial value for a
-   *jquery  bootstrap-slider object reference.
+   * Sets min, max, initial value for a jquery  bootstrap-slider object reference.
    */
   initSlider : ({
     key = undefined,
@@ -21,11 +19,8 @@ const gui = {
 //------------------------------------------------------------------------------
 
   /**
-   * Connects a slider to a label with
-   * an optional transformer function that
-   * performs data type conversion and an
-   * optional callback that takes in the transformed
-   * value.
+   * Connects a slider to a label with an optional transformer function that
+   * performs data type conversion and an optional callback that takes in the transformed value.
    */
   connectSliderLabel : ({
       sliderKey   = undefined,

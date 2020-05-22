@@ -7,8 +7,7 @@ class Stack {
    * Constructs an empty stack.
    */
   constructor() {
-
-    this.stack  = [];
+    this.stack = [];
     this.length = 0;
   }
 
@@ -16,9 +15,7 @@ class Stack {
    * Push a value.
    */
   push(value) {
-
     this.length++;
-
     this.stack.push(value);
   }
 
@@ -26,9 +23,7 @@ class Stack {
    * Pop a value.
    */
   pop() {
-
     if (this.length === 0) {
-
       return undefined;
     }
 
@@ -43,6 +38,6 @@ class Stack {
   clear() {
 
     this.stack.length = 0;
-    this.lenghth      = 0;
+    this.lenghth = 0;
   }
 }

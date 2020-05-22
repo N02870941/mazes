@@ -35,7 +35,6 @@ class Heap {
    * contains a specific cell.
    */
   has(cell) {
-
     return this._map.has(cell.key);
   }
 
@@ -45,18 +44,15 @@ class Heap {
    * Size of heap.
    */
   size() {
-
     return this._heap.length;
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Determines if
-   * heap is empty.
+   * Determines if heap is empty.
    */
   empty() {
-
     return this.size() == 0;
   }
 
@@ -66,20 +62,16 @@ class Heap {
    * Returns min value of heap.
    */
   peek() {
-
     return this._heap[0];
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Adds new value to heap.
-   * Note, we jus decrease key
-   * so that we are not adding
-   * duplicate keys.
+   * Adds new value to heap. Note, we jus decrease key
+   * so that we are not adding duplicate keys.
    */
   push(value) {
-
     return this.decrease(value, value.cost);
   }
 
@@ -89,7 +81,6 @@ class Heap {
    * Extract min from heap.
    */
   pop() {
-
     return this._delete(0);
   }
 
@@ -115,10 +106,8 @@ class Heap {
 //------------------------------------------------------------------------------
 
   /**
-   * Decreases a cells priority
-   * with a new specified cost.
-   * If the key is not in the heap,
-   * add it first.
+   * Decreases a cells priority with a new specified cost.
+   * If the key is not in the heap, add it first.
    */
   decrease(cell, cost) {
 
@@ -184,7 +173,6 @@ class Heap {
 //------------------------------------------------------------------------------
 
   _greater(i, j) {
-
     return this._comparator(
       this._heap[i],
       this._heap[j]

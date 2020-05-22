@@ -5,8 +5,7 @@ const dijkstra = {
    */
   init : () => {
 
-    // Create heap that compares
-    // vertices by their cost attribute
+    // Create heap that compares vertices by their cost attribute
     queue = new Heap(Cell.heuristics.comparators.pureCost);
   },
 
@@ -52,7 +51,6 @@ const dijkstra = {
         // If the key is new, a push() occurs
         queue.decrease(v, cost);
       }
-
     });
 
     return queue.empty();

@@ -1,6 +1,5 @@
 /**
- * List Object that enqueues to back
- * and supports dequeue from both
+ * List Object that enqueues to back and supports dequeue from both
  * the front and the back.
  */
 function List() {
@@ -38,7 +37,6 @@ function List() {
   this.has = (element, comparator = (a, b) => a === b) => {
 
     for (let i = 0; i < list.length; i++) {
-
       if (comparator(list[i], element))
         return true
     }

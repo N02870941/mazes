@@ -8,7 +8,6 @@ const trigger = (() => {
    * of it's subscribers from the subscribers map.
    */
   function trigger(ev) {
-
     subscribers[ev].forEach(element => element.trigger(ev))
   }
 

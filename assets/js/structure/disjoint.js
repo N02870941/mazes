@@ -1,26 +1,21 @@
 /**
- * Implementation of Disjoint set
- * for use with Kruskal's algorithm.
+ * Implementation of Disjoint set for use with Kruskal's algorithm.
  */
 class DisjointSet {
 
   /**
-   * Constructs empty
-   * disjoint set.
+   * Constructs empty disjoint set.
    */
   constructor() {
-
     this.map = new Map()
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Determines if the set
-   * contains a specified element.
+   * Determines if the set contains a specified element.
    */
   has(element) {
-
     return this.map.has(element)
   }
 
@@ -30,22 +25,18 @@ class DisjointSet {
    * Adds an element to set.
    */
   add(element) {
-
     this.map.set(element, new Node(element))
   }
 
 //------------------------------------------------------------------------------
 
   /**
-   * Find the root node associated
-   * with a specified node.
+   * Find the root node associated with a specified node.
    */
   _find(node) {
-
     t = node
 
     while (t !== t.parent) {
-
       t = t.parent
     }
 
@@ -58,11 +49,9 @@ class DisjointSet {
    * Find element by value.
    */
   find(element) {
-
     let node = this._find(this.get(element))
 
     if (node === node.parent) {
-
       return node.data
     }
 
@@ -77,11 +66,9 @@ class DisjointSet {
    * Get element by value.
    */
   get(element) {
-
     let node = this.map.get(element)
 
     if (!node) {
-
       this.add(element)
     }
 
@@ -94,7 +81,6 @@ class DisjointSet {
    * Union between two inner sets.
    */
   union(first, second) {
-
     let one = this._find(this.get(first));
     let two = this._find(this.get(second));
 
@@ -129,23 +115,18 @@ class DisjointSet {
 //------------------------------------------------------------------------------
 
   /**
-   * Returns number of values
-   * in the disjoint set.
+   * Returns number of values in the disjoint set.
    */
   size() {
-
     return map.length
   }
-
 }
 
 /**
  * Inject inner final static class.
  */
 Object.defineProperty(DisjointSet, 'Node', {
-
   value : class Node {
-
     constructor(data) {
 
       this.rank   = 0

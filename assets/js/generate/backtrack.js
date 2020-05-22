@@ -86,7 +86,6 @@ const backtrack = (() => {
      * is still a lot more solvable than a pure DFS.
      */
     hybrid : () => {
-
       return backtrack((s) => {
 
         let n = floor(random(1, 101));

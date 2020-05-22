@@ -33,8 +33,7 @@ const aStar = {
    */
   aStar : () => {
 
-    // Extract min by minimizing
-    // f(n) = g(n) + h(n)
+    // Extract min by minimizing: f(n) = g(n) + h(n)
     let u = queue.pop();
 
     // Mark as visited
@@ -43,7 +42,6 @@ const aStar = {
     // This cell is the target,
     // so we have no more work to do
     if (Cell.equals(maze.target(), u)) {
-
       maze.current = u;
 
       return true;
