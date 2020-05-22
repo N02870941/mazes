@@ -1,84 +1,68 @@
 # Generating with backtracking
 
-The [Randomized Depth / Breadth-first search][wiki] follows:
+The [Randomized Depth / Breadth-first search](wiki) follows:
 
 1. Make the initial cell the current cell and mark it as visited
 2. While there are unvisited cells
-    1. If the current cell has any neighbors which have not been visited
+    1. If the current cell has any neighbors that have not been visited
         1. Choose randomly one of the unvisited neighbors
         2. Push the current cell to the stack
         3. Remove the wall between the current cell and the chosen cell
         4. Make the chosen cell the current cell and mark it as visited
 
-    2.Else if stack is not empty
+    2. Else if stack is not empty
         1. Pop a cell from the stack
         2. Make it the current cell
 
 ## Implementing backtracking
 In essence, this algorithm starts at a vertex `u`, randomly visits an adjacent
 vertex `v` that has not been visited yet - destroying barriers (walls of pixels) between
-the current and previous vertices to create an edge, and repeats this until all vertices are visited and we have a spanning tree.
+the current and previous vertices to create an edge, and repeats this until all vertices are visited and we have a minimum spanning tree.
 
 
 Pseudo code follows:
 
-```
+```javascript
 backtrack(src) {
+	let unvisited = []  // Stack or Queue
+	let neighbors = []  // Array
+	let curr
+	let next
+	let i
 
-	var unvisited = []  // Stack or Queue
-	var neighbors = []  // Array
-	var curr
-	var next
-	var i
-
-	// Make the initial cell the current cell
 	curr = src
 
 	do {
-
-		// Mark current as visited
 		curr.visited = true
 
-		// Get neighbors
 		neighbors = curr.neighbors()
 
-		// If at least one came back
 		if (neighbors.length > 0) {
-
-			// Pick random index
 			i = random(0, neighbors.length)
 
-			// Pick random neighbor
 			next = neighbors[i]
 
-			// Push to stack
-			unvisited.push(next)
+			unvisited.add(next)
 
-			// Remove wall (create edge)
 			removeWall(curr, next)
 
-			// Point current to next
 			curr = next
-
-		// No neighbors, start backtracking
 		} else {
-
-			curr = unvisited.pop()
+			curr = unvisited.remove()
 		}
 
 	} while (unvisited.length > 0)
-
 }
 ```
 
-The above algorithm can be written as DFS, BFS, or even a hybrid.
+The above algorithm can be written as Depth-first Search (DFS), Breadth-first Search (BFS), or even a hybrid of both.
 
 <p align="center">
   <img src="../assets/img/png/maze-dfs.png"><br>
   <i>A maze generated with DFS.</i>
 </p>
 
-If implemented with DFS, the resulting maze will have a relatively long solution path, but relatively "easy" to solve by a computer using graph algorithms because there is a lower brancing factor. This means dead ends are relatively short and there are less paths that are seemingly reasonable but lead no where. Instead, the solution may take many twists and turns around the entire maze to get to the target.
+If implemented with DFS, the resulting maze will have a relatively long solution path, but it will be relatively "easy" to solve by a computer using graph algorithms because there is a lower branching factor. This means dead ends are relatively short and there are less paths that are seemingly reasonable but lead no where. Instead, the solution may take many twists and turns around the entire maze to get to the target.
 
 <p align="center">
   <img src="../assets/img/png/maze-bfs.png"><br>

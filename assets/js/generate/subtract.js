@@ -7,32 +7,19 @@ const subtract = (() => {
     if (count() <= 0)
       return true
 
-    // Dequeue
     let u = queue.pop()
 
-    // If we have not
-    // visited vertex yet
     if (!u.visited) {
-
-      // Mark it as visited
       u.visited = true
 
-      // Get adjacent vertices
       let neighbors = discover(u)
 
-      // Explore each neighbor
-      neighbors.forEach( v => {
-
-        // Do not revisit
+      neighbors.forEach(v => {
         if (v.visited) {
-
           return
         }
 
-        // Pave a wall
         maze.pave(u, v)
-
-        // Decrement counter
         decrement()
       });
     }

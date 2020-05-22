@@ -70,16 +70,14 @@ const gui = {
 
     button.click(onclick)
 
-    // For all events in disable array,
-    // if fired, disable this button
+    // For all events in disable array, if fired, disable this button
     disable.forEach(e => {
       subscribers[e].add(button)
 
       button.on(e, (c) => button.prop(attributes.DISABLED, true))
     })
 
-    // For all events in enable array,
-    // if fired, enable this button
+    // For all events in enable array, if fired, enable this button
     enable.forEach(e => {
       subscribers[e].add(button)
 

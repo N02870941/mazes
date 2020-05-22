@@ -49,15 +49,12 @@ for (url of links) {
 let closeMenu = function() {
   $('#navigation').prop('checked', false);
 
-  // Resolve promise after 250ms, gives
-  // enough time for close animation to complete
+  // Resolve promise after 250ms, gives enough time for close animation to complete
   return new Promise(resolve => setTimeout(resolve, 250));
 }
 
-// By default the sidebare is hidden.
-// Make sure we uncheck the nav checkbox
-// so the menu is not out, then we can
-// show the sidebar (make it clickable)
+// By default the sidebare is hidden. Make sure we uncheck the nav checkbox
+// so the menu is not out, then we can show the sidebar (make it clickable)
 $(document).ready(function() {
     closeMenu()
     $('#sidebar').show()
@@ -70,13 +67,11 @@ $(document).keyup(function(e) {
   }
 })
 
-// Close menu if click happens
-// outside of the sidebar
+// Close menu if click happens outside of the sidebar
 $(document).mouseup(function(e) {
   let sidebar = $("#sidebar")
 
-  // if the target of the click isn't the container
-  // nor a descendant of the container, close the menue
+  // if the target of the click isn't the container nor a descendant of the container, close the menue
   if (!sidebar.is(e.target) && sidebar.has(e.target).length === 0) {
       closeMenu()
   }

@@ -2,13 +2,9 @@
  * Generates the maze.
  */
 function generate() {
-
-  // Fire generating event
   let algorithm = trigger.generating();
 
-  // Change main event
-  // loop algorithm to
-  // the specified generator
+  // Change main event loop algorithm to the specified generator
   maze.action = () => showMessage(strings.messages.generate.start);
 
   // List of callbacks
@@ -28,15 +24,12 @@ function generate() {
 
   trigger.initializing()
 
-  // Initialize the queue
   queue = new List()
 
-  // Start at source
   maze.current = maze.source();
 
   // Start the process in async mode
   if (animated()) {
-
     if (autosolve())
       maze.tasks.push(solve)
 
@@ -44,31 +37,23 @@ function generate() {
 
   // Start synchronously
   } else {
-
     start()
 
     if (autosolve())
       solve()
   }
-
-
 }
 
 //------------------------------------------------------------------------------
 
 /**
- * Create a new funda, mark all
- * nodes as unvisited, and add them
- * to the funda.
+ * Create a new funda, mark all nodes as unvisited, and add them to the funda.
  */
 function loadFunda() {
-
   queue = new Funda()
 
   maze.forEach(c => {
-
     c.visited = false
-
     queue.push(c)
   })
 

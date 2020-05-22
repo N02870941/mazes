@@ -4,12 +4,10 @@
 const aStar = {
 
   /**
-   * Initializes the 'open set' min priority
-   * binary heap with the specified comparator
+   * Initializes the 'open set' min priority binary heap with the specified comparator
    * for minimizing f(n) = g(n) + h(n).
    *
-   * We set the initial heuristic value of each
-   * cell 0, and as we go through the maze, we
+   * We set the initial heuristic value of each cell 0, and as we go through the maze, we
    * will update each one upon discovery.
    */
   init : () => {
@@ -17,10 +15,8 @@ const aStar = {
     // Comparator for heap that minimizes: f(n) = g(n) + h(n)
     let comparator = Cell.heuristics.comparators.standard;
 
-    // Create new heap
     queue = new Heap(comparator);
 
-    // Set the initial heuristic
     let src = maze.source()
 
     src.heuristic = maze.heuristic(src, maze.target());
@@ -39,8 +35,7 @@ const aStar = {
     // Mark as visited
     maze.visit(u)
 
-    // This cell is the target,
-    // so we have no more work to do
+    // This cell is the target, so we have no more work to do
     if (Cell.equals(maze.target(), u)) {
       maze.current = u;
 
@@ -75,7 +70,6 @@ const aStar = {
         // Add to heap to visit later
         queue.push(v);
       }
-
     });
 
     return queue.empty();

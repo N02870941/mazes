@@ -1,7 +1,5 @@
 const kruskal = {
-
   init : () => {
-
     let top
     let bottom
     let right

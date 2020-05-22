@@ -1,19 +1,18 @@
 # Solving with Breadth-first search (BFS)
-Breadth-first search is another general purpose graph traversal algorithm. The intuition behind BFS can be looked at as roughly the "opposite" of that of DFS. In DFS we try to go as deep as possible until we hit a dead end. With BFS, we try to go as wide as possible until we hit a dead end, or find our target. For acyclic graphs (trees) it is the equivalent of a level-order traversal.
+Breadth-first search is another general purpose graph traversal algorithm. The intuition behind BFS can be looked at as roughly the "opposite" of that of DFS. In DFS we try to go as deep as possible until we hit a dead end. With BFS, we try to go as wide as possible until we hit a dead end, or find our target. For acyclic graphs it is the equivalent of a level-order traversal of a tree.
 
 ## Implementing BFS
-It turns out that the only difference between implementing BFS and DFS is the data structure used to process vertices. For DFS we used a stack (FILO) structure. For BFS we will use a standard queue (FIFO) structure. The code is otherwise, roughly the same.
+It turns out that the only difference between implementing BFS and DFS is the data structure used to process vertices. For DFS we used a stack, which is a First In Last Out (FILO) structure. For BFS we will use a standard queue, which is a First In First Out (FIFO) structure. The code is otherwise, roughly the same.
 
 
 Pseudo code follows:
 
 ```javascript
 bfs(src, dst) {
-
-	var unvisited = []	// Queue
-	var neighbors = []	// Set
-	var parents   = []	// Map
-	var current
+	let unvisited = []	// Queue
+	let neighbors = []	// Set
+	let parents   = []	// Map
+	let current
 
 	// The start vertex has no parent
 	parents[src.key] = null
@@ -21,29 +20,19 @@ bfs(src, dst) {
 	// Start with source
 	unvisited.enqueue(src);
 
-	// Process each vertex
 	while (unvisited.length > 0) {
-
-		// Get next vertex
 		current = unvisited.dequeue()
 
-		// We found the target
 		if (current == dst) {
-
 			break
 		}
 
-		// If first time visiting
 		if (!current.visited) {
-
-			// Label is visited
 			current.visited = true
 
-			// Get it's neighbors
 			neighbors = current.neighbors()
 
-			// Push all unvisited neighbors to stack
-			neighbors.forEach( neighbor => {
+			neighbors.forEach(neighbor => {
 
 				// If there is no path to this vertex yet
 				if (!neighbor.visited) {
@@ -64,12 +53,10 @@ bfs(src, dst) {
 
 	// Backtrack highlighting the path
 	while (current) {
-
 		current.highlight()
 
 		current = parents[current.key]
 	}
-
 }
 ```
 

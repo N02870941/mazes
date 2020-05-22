@@ -12,15 +12,11 @@ class Cell {
     this.i = i;
     this.j = j;
 
-    // Default heuristic when
-    // finding the shortest path
+    // Default heuristic when finding the shortest path
     this.heuristic = 0;
 
-    // Cost to get to this cell
-    // from the start in the search.
-    // By default, it is infinite,
-    // indicating that there is currently
-    // no path to this cell. Upon generating
+    // Cost to get to this cell from the start in the search. By default, it is infinite,
+    // indicating that there is currently no path to this cell. Upon generating
     // The maze, this value will be updated.
     this.cost = Infinity;
 
@@ -30,15 +26,12 @@ class Cell {
     // Width of the cell
     this.w = w;
 
-    // Boolean flags to indicate
-    // whether or not the cell
-    // has been visited and if
-    // it is highlighted on screen
+    // Boolean flags to indicate  whether or not the cell
+    // has been visited and if it is highlighted on screen
     this.visited     = false;
     this.highlighted = false;
 
-    // Boolean 'array' to indicate whether or
-    // not a wall is present for this particular cell.
+    // Boolean 'array' to indicate whether or not a wall is present for this particular cell.
     //
     // +-----+-------+--------+------+
     // |  1  |   0   |   1    |  1   |
@@ -46,8 +39,7 @@ class Cell {
     // | top | right | bottom | left |
     // +-----+-------+--------+------+
     //
-    // The above indicates there is a top, bottom,
-    // and left wall, but there is no right wall.
+    // The above indicates there is a top, bottom, and left wall, but there is no right wall.
     // To check if there is a right wall, we do:
     //
     // bit  = 1011
@@ -59,14 +51,10 @@ class Cell {
     //
     // 0 is falsy, so the right bit is NOT set
     //
-    // Note, we use a binary value
-    // instead of a traditional array
-    // simply for optimization. The cell
-    // object has a slightly smaller memory footprint
-    // and lookup may be faster with bitwise
-    // operations rather than array lookup (
-    // linear search or pointer arithmetic).
-    // We use bitwise operations to modify
+    // Note, we use a binary value instead of a traditional array
+    // simply for optimization. The cell object has a slightly smaller memory footprint
+    // and lookup may be faster with bitwise operations rather than array lookup (
+    // linear search or pointer arithmetic). We use bitwise operations to modify
     // and extract data from this binary value.
     this.bounds = 0b1111;
   }
@@ -74,19 +62,13 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Returns an array of size 4 of
-   * potential adjacent cells. If the
-   * computed index for a particular adjacent vertex
-   * is out of bounds (of the grid),
-   * then undefined is placed where the reference
-   * would have gone.
+   * Returns an array of size 4 of potential adjacent cells. If the
+   * computed index for a particular adjacent vertex is out of bounds (of the grid),
+   * then undefined is placed where the reference would have gone.
    *
-   * The reason we stored undefined and have a
-   * separate method for filtering out falsy
-   * neighbors is because in certain methods such
-   * as next() in solve.js, we are expecting
-   * the top to be in index 0, right in index 1,
-   * etc. It is then up to the calling function
+   * The reason we stored undefined and have a separate method for filtering out falsy
+   * neighbors is because in certain methods such as next() in solve.js, we are expecting
+   * the top to be in index 0, right in index 1, etc. It is then up to the calling function
    * to ignore / filter out falsy values to avoid errors.
    */
   potentials() {
@@ -103,10 +85,8 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Returns all adjacent vertices. This
-   * essential filters out all undefined /
-   * null neighbors returned from potentials().
-   * It is worth noting that this function
+   * Returns all adjacent vertices. This essential filters out all undefined /
+   * null neighbors returned from potentials(). It is worth noting that this function
    * ignores whether or not a neighbor has been visited.
    */
   neighbors() {
@@ -157,10 +137,8 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Returns all unvisited adjacent vertices.
-   * This essentially filters ouf all adjacent
-   * vertices that have already been marked
-   * as visited as well as falsy values (null, undefined).
+   * Returns all unvisited adjacent vertices. This essentially filters ouf all adjacent
+   * vertices that have already been marked as visited as well as falsy values (null, undefined).
    */
   unvisited() {
     return this.potentials().filter((c) => c && !c.visited)
@@ -193,8 +171,7 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Fill the grid square with some color. This will
-   * be blended with pixels that are already there.
+   * Fill the grid square with some color. This will be blended with pixels that are already there.
    */
   fill(r, g, b, a, x, y, l, w) {
     noStroke();
@@ -300,8 +277,7 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Shades a cell in pink to highlight it. This is
-   * used to highlight a path or given walk of the maze.
+   * Shades a cell in pink to highlight it. This is used to highlight a path or given walk of the maze.
    */
   shade() {
     this.clear();
@@ -311,15 +287,11 @@ class Cell {
 //------------------------------------------------------------------------------
 
   /**
-   * Highlights the cell with a color
-   * from the gradient from red to green
-   * depending on the distance between
-   * this cell and the target vertex (in search).
+   * Highlights the cell with a color from the gradient from red to green
+   * depending on the distance between this cell and the target vertex (in search).
    *
-   * Distance is either euclidian or manhattan. This
-   * is based on the heuristic used at runtime (specific
-   * to A*). If no heuristic is being used (Dijkstra, DFS,
-   * or BFS), then euclidian distance is used.
+   * Distance is either euclidian or manhattan. This is based on the heuristic used at runtime (specific
+   * to A*). If no heuristic is being used (Dijkstra, DFS, or BFS), then euclidian distance is used.
    */
   gradient() {
 
@@ -379,19 +351,15 @@ class Cell {
    */
   static makeColor(val) {
 
-    // This algorithm goes from green
-    // to red, but we want red to green,
-    // so we reverse it by subtracting
-    // value from 1, and setting that to val.
+    // This algorithm goes from green to red, but we want red to green,
+    // so we reverse it by subtracting value from 1, and setting that to val.
     val = 1 - val;
 
     // https://stackoverflow.com/questions/4161369/html-color-codes-red-to-yellow-to-green
 
     /**
-     * Converts integer to a hexidecimal
-     * code, prepad's single
-     * digit hex codes with 0 to
-     * always return a two digit code.
+     * Converts integer to a hexidecimal code, prepad's single
+     * digit hex codes with 0 to always return a two digit code.
      */
     let hex = (i) => {
 

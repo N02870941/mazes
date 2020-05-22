@@ -1,15 +1,14 @@
 # Solving with Depth-first search (DFS)
 A modified depth-first search can be used, stopping once we come across the
-target vertex. We then backtrack to reconstruct the path from source to destination. This is a brute force method that may not always result in the optimal solution if there is more than one path from beginning to end. However, in practice it runs relatively fast in comparison to other search algorithms.
+target vertex. We then backtrack to reconstruct the path from the destination to the source. This is a brute force method that may not always result in the optimal solution if there is more than one path from beginning to end. However, in practice it runs relatively fast in comparison to other search algorithms.
 
 ## Implementing DFS
-To implement DFS we start by pushing the source vertex onto a stack of unvisited. We then loop until the unvisited node stack is empty. Within the loop, we `pop()` a node. If this node is the target, we break, otherwise we check if the node is unvisited. If so, we mark it as visited, then push all of it's unvisited neighbors onto the stack.
+To implement DFS we start by pushing the source vertex onto a stack of unvisited vertices. We then loop until the unvisited node stack is empty. Within the loop, we `pop()` a node. If this node is the target, we break, otherwise we check if the node is unvisited. If so, we mark it as visited, then push all of it's unvisited neighbors onto the stack.
 
 Pseudo code follows:
 
 ```javascript
 dfs(src, dst) {
-
 	var unvisited = []  // Stack
 	var neighbors = []  // Set
 	var parents   = []  // Map
@@ -29,21 +28,15 @@ dfs(src, dst) {
 
 		// We found the target
 		if (current == dst) {
-
 			break
 		}
 
-		// If first time visiting
 		if (!current.visited) {
-
-			// Label is visited
 			current.visited = true
 
-			// Get it's neighbors
 			neighbors = current.neighbors()
 
-			// Push all unvisited neighbors to stack
-			neighbors.forEach( neighbor => {
+			neighbors.forEach(neighbor => {
 
 				// If there is no path to this vertex yet
 				if (!neighbor.visited) {
@@ -54,7 +47,6 @@ dfs(src, dst) {
 					// Add to start for processing
 					unvisited.push(neighbor)
 				}
-
 			})
 		}
 	}
@@ -64,12 +56,10 @@ dfs(src, dst) {
 
 	// Backtrack highlighting the path
 	while (current) {
-
 		current.highlight()
 
 		current = parents[current.key]
 	}
-
 }
 ```
 

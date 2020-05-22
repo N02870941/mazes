@@ -2,17 +2,23 @@
 One way of framing the problem of generating and solving a maze is in terms of graph theory. For the
 purpose of clarity, we will use the words maze and graph interchangeably. If you
 are not familiar with graph theory, here is an explanation of the information
-about graph theory that is relevant to understand this problem.
+about graph theory that is relevant to this problem.
 
 A graph `G` is a pair denoted as `G = {V, E}` where `V` is a set of vertices and
-`E` is a set of edges. Each edge connects some vertex another vertex from the vertex set `V`. In other words, a vertex is a
-**location** in a network and an edge is a **connection** between these vertices. Graphs
-come in various forms:
+`E` is a set of edges. Each edge connects some vertex from `V` with another vertex from `V`. In other words, a vertex is a
+**location** in a network and an edge is a **connection** between two vertices.
+
+Graphs come in various forms:
 
 1. Weighted
 2. Directed
 
-We can have any of the following types of graphs:
+They can also be:
+
+1. Directed
+2. Undirected
+
+The four basic types of graphs are:
 
 1. Weighted and directed
 2. Weighted and undirected
@@ -21,20 +27,22 @@ We can have any of the following types of graphs:
 
 <p align="center">
   <img src="img/png/weighted-unweighted.png"><br>
+  <i>Comparison between a weighted and unweighted graph</i>
 </p>
 
-A weighted graph is a graph who's edges have a specified **weight** or **cost** associated
+A weighted graph is a graph where the edges have a specified **weight** or **cost** associated
 with connecting two vertices. For example, if we represent a country as a graph where
 vertices are cities and edges are roads, the weight of an edge might be the distance between
 two cities.
 
 <p align="center">
   <img src="img/png/directed-undirected.png"><br>
+  <i>Comparison between a directed and undirected graph</i>
 </p>
 
 A directed graph is a graph where an edge `e`  from vertex `u` to
 `v` is not equal to an edge `f` from `v` to `u`. In other words, edges are directional. For example, in our graph that represents a country we may have an edge (road) from New York to Chicago with weight 200 miles.
-But, we have a **different** edge going from Chicago to New York that is 250 miles because the return route may require taking a different road.
+But, we have a **different** edge going from Chicago to New York that is 250 miles because the return route may require taking a different physical road.
 
 <p align="center">
   <img src="img/png/undirected-weighted.png"><br>
@@ -49,6 +57,10 @@ just indicates that two vertices are one pixel away from each other (adjacent).
   <img src="img/png/grid.png"><br>
   <i>A 30 x 30 square grid that represents a graph with <strong>no</strong> edges.</i>
 </p>
+
+This maze (graph) has zero edges because there does not exist a path of continuous white pixels
+between one white pixel area and another. In order for our graph to have an edge, we must remove
+at least one of the black lines (not including the borders).
 
 # Maze generating
 Generating a maze requires a modified graph traversal algorithm. Traversing the graph means to
@@ -78,7 +90,7 @@ This is called a **spanning tree**.
 
 A spanning tree `S` is a sub-graph of a graph `G = {V, E}` that contains the minimum
 number of edges required to connect all vertices in `G`. If we denote the number of
-vertices in `G` as `|V|` and number of edges as `|E|`, then for graph `S`, `|V'| = |V|` and `|E'| = |V| - 1`. It also turns out that graph `S` has the **acyclic** property of a graph.
+vertices in `G` as `|V|` and number of edges as `|E|`, then for graph `S`, `|V'| = |V|` and `|E'| = |V| - 1`. It also turns out that graph `S` has the **acyclic** property.
 
 <p align="center">
   <img src="img/png/cyclic-acyclic.png"><br>
@@ -88,10 +100,10 @@ vertices in `G` as `|V|` and number of edges as `|E|`, then for graph `S`, `|V'|
 A graph is acyclic if there is **no way** to start
 at a specified vertex `vi` and follow an alternating sequence of vertices and edges `v1, e1, v2, e2...`
 where edge `ei` connects `vi` and `vi+1` and visit the same vertex twice. In other words, there
-are no loops or repitition in a walk of the graph.
+are no loops or repetition in a walk of the graph.
 
 As we traverse the graph removing walls, we will
-be generating a continuous path of white pixels that represent traversable vertices
+be generating a continuous path of white pixels that represents traversable vertices
 in the graph. Black pixels that are left over will be the walls of the maze. They
 are the absence of edges, or area that does not allow us to go from one vertex to another.
 
@@ -105,8 +117,7 @@ Now that we have framed the problem, we can see some of the algorithms used to a
 # Notes on runtime and space analysis
 
 We will explore the runtime of both generating the maze, and solving it. But, before we do that
-we must prove a few things and understand that runtime analysis on graphs is often times
-dependent on **how** the graph is implemented. Let's explore the worst case scenarios.
+we must prove a few things and understand that runtime analysis on graphs is dependent on **how** the graph is implemented. Let's explore the worst case scenarios.
 
 As stated, a graph `G = {V, E}` can have a vertex set with cardinality `|V|`. Provided
 that each vertex in an **arbitrary** graph can be connected to at most, every other vertex, the cardinality of the edge set
@@ -136,11 +147,10 @@ adjacent vertices. In total, for `|V|` vertices we have 4 * `|V|` edges. `|E|` i
 Although typically we say `O(|E|) = O(|V|²)`, for **this particular problem** we can say `O(|E|) = O(|V|) = O(n²)` where `n` is the number of boxes in our grid.
 
 # Implementation details
-There are many ways to represent a graph in memory. The typical implementations of the graph structure are Edge List, Adjacency Matrix, and Adjacency List. However, since this graph does not need to support all of the standard graph operations, we will implement a modified version of the adjacency list. We will have a single array called `grid` that represents a flattened `n x n` matrix of squares / vertices. The `grid` array will be of type `Cell`.
+There are many ways to represent a graph in memory. The typical implementations of the graph structure are Edge List, Adjacency Matrix, and Adjacency List. However, since this graph does not need to support all of the standard graph operations, we will implement a modified version of the adjacency list. We will have a single array called `grid` that represents a flattened `n x n` matrix of vertices. The `grid` array will be of type `Cell`, where a `Cell` represents a vertex that also contains information about its surrounding edges.
 
 ```
 Cell {
-
 	walls     = 1111
 	visited   = false
 	cost      = Infinity

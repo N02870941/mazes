@@ -1,7 +1,5 @@
-// IIFE to expose Maze 'class' as
-// a non-threadsafe Singleton. Does thread-safety
-// matter in the browser? IDK. But, to be
-// on the safe side, we make it a singleton.
+// IIFE to expose Maze 'class' as a non-threadsafe Singleton. Does thread-safety
+// matter in the browser? IDK. But, to be on the safe side, we make it a singleton.
 const Maze = (() => {
 
 // PRIVATE ATTRIBUTES START HERE

@@ -20,7 +20,7 @@ maze-solution-depth-first-search-5017-6574.png"><br>
   <i>Maze solved with DFS.</i>
 </p>
 
-Here we solve with depth-first search. It is a brute force approach where we go as deep as possible before turning around and trying new paths. It works, but it does not give us an optimal solution. Here we found the target by visiting 6574 squares with a path of length 5017. We visited 7% of the grid, but do not have am optimal solution or anything close.
+Here we solve with depth-first search. It is a brute force approach where we go as deep as possible before turning around and trying new paths. It works, but it does not give us an optimal solution. Here we found the target by visiting 6574 squares with a path of length 5017. We visited 7% of the grid, but do not have an optimal solution or anything close.
 
 <p align="center">
   <img src="../assets/img//png/performance/maze-solution-breadth-first-search-599-89999.png"><br>
@@ -48,9 +48,9 @@ Another improvement to solving the maze is using the A* search using the euclidi
   <i>Maze solved with A* using manhattan distance as the heuristic.</i>
 </p>
 
-An improvement to A* where only perpendicular movement is allowed is changing the heuristic to manhattan distance. That is, rather than computing the straight line distance, we imagine we are in the city of New York, trying to get to from the upper west side to the lower east side. We count the number of blocks downtown we must walk and then add that to the number of blocks east we must walk. This gives us a very close approximation as to how many squares we must visit. This produced a path of length 599 but we only visited 15764 squares - 17% of the maze.
+An improvement to A* where only perpendicular movement is allowed is changing the heuristic to manhattan distance. That is, rather than computing the straight line distance, we imagine we are in the city of New York, trying to get from the upper west side to the lower east side. We count the number of blocks downtown we must walk and then add that to the number of blocks east we must walk. This gives us a very close approximation as to how many squares we must visit. This produced a path of length 599 but we only visited 15764 squares - 17% of the maze.
 
-However, we still notice that we are visiting many squares that do not contribute to the final result. The reason is because we have no mechanism for breaking ties between equally good options. For example, we see for this maze, many optimal solutions lie both above and below the straight line from the top-left corner to the bottom-right corner. If we are on a vertex that lies on the line, the vertices both above and to the right of our current position are equally good choices. We consider this a tie. Presently, we have no mechanism for breaking this tie so we explore both. We must add a tie-breaker.
+However, we still notice that we are visiting many squares that do not contribute to the final result. The reason is because we have no mechanism for breaking ties between equally good options. For example, we see for this maze, many optimal solutions lie both above and below the straight line from the top-left corner to the bottom-right corner. If we are on a vertex that lies on the line, the vertices both above and to the right of our current position are equally good choices. We consider this a tie. Presently, we have no mechanism for breaking this tie - so we explore both. We must add a tie-breaker.
 
 <p align="center">
   <img src="../assets/img//png/performance/maze-solution-astar-manhattan-weighted-599-2740.png"><br>
@@ -61,7 +61,7 @@ Another improvement to A* is adding a weight to the heuristic, or a tie breaker.
 
 For this particular application,  we consider a step in a particular direction a vector. We compute the determinant of that step vector and the vector from origin to target. We then use some multiple of this value to add to our heuristic (manhattan distance).
 
-The reason we do this is because the determinant of any 2d vectors tells us information about the angle made between the two vectors. The closer these vectors are to parallel, the small that angle gets - eventually reaching 0 if the vectors are perfectly parallel.
+The reason we do this is because the determinant of any 2d vectors tells us information about the angle made between the two vectors. The closer these vectors are to parallel, the smaller that angle gets - eventually reaching 0 if the vectors are perfectly parallel.
 
 So, if we are above the line, and we have an equal choice to go right (further from the line) or down (closer to the line), even though the cost of both steps is 1 (equal), we break this tie by choosing the vector that produces an angle "most parallel" to the straight line from origin to target, which in this case is down because we are rotating towards the line rather than away from it.
 

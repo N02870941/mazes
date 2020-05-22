@@ -1,9 +1,7 @@
 
 /**
- * Maze generating based on backtracking. The
- * The dequeue function determines how to select
- * the next node to dequeue. This has a direct
- * connection with the branching factor and
+ * Maze generating based on backtracking. The The dequeue function determines how to select
+ * the next node to dequeue. This has a direct connection with the branching factor and
  * difficulty of the maze.
  */
 const backtrack = (() => {
@@ -26,12 +24,10 @@ const backtrack = (() => {
       // Mark as visited
       next.visited = true;
 
-      // Push current onto stack
-      // for backtracking purposes
+      // Push current onto stack for backtracking purposes
       queue.push(maze.current);
 
-      // Remove the wall between
-      // these two adjacent vertices
+      // Remove the wall between these two adjacent vertices
       maze.pave(maze.current, next);
 
       // Highlight end of path
@@ -40,8 +36,7 @@ const backtrack = (() => {
       // Shift the pointers
       maze.current = next;
 
-    // We have reached a dead end
-    // so we start back tracking
+    // We have reached a dead end so we start back tracking
     } else if (queue.size() > 0) {
 
       maze.current = dequeue(queue);
@@ -55,39 +50,28 @@ const backtrack = (() => {
   return {
 
     /**
-     * Generates using breadth-first search. This
-     * results in a maze with a high branching factor
-     * and relatively easy to find solution with the
-     * naked eye. However, it takes longer to run
-     * algorithmically because there are many potentially
-     * promising paths.
+     * Generates using breadth-first search. This results in a maze with a high branching factor
+     * and relatively easy to find solution with the naked eye. However, it takes longer to run
+     * algorithmically because there are many potentially promising paths.
      */
     bfs : () => backtrack(s => s.shift()),
 
     /**
-     * Generates using depth-first search. This
-     * results in a maze with a low branching factor
-     * and an extremely difficult to find solution with the
-     * naked eye. However, the solution is easily found
-     * algorithmically because dead ends are relatively
-     * shorter, and there are far fever potentially promising paths
+     * Generates using depth-first search. This results in a maze with a low branching factor
+     * and an extremely difficult to find solution with the naked eye. However, the solution is easily found
+     * algorithmically because dead ends are relatively shorter, and there are far fever potentially promising paths
      * when compared with breadth-first search.
      */
     dfs : () => backtrack(s => s.pop()),
 
     /**
-     * Generates using a 50:50 hybrid of breadth-first
-     * search and depth-first search. The only difference
-     * between the two is that DFS uses as a stack, and
-     * BFS uses a FIFO queue. The hybrid randomly alternates
-     * with equal probability between treating the unvisited
-     * set as a stack and a queue. This results in a higher branching
-     * factor than BFS, thus a less obvious solution, but it
-     * is still a lot more solvable than a pure DFS.
+     * Generates using a 50:50 hybrid of breadth-first search and depth-first search. The only difference
+     * between the two is that DFS uses as a stack, and BFS uses a FIFO queue. The hybrid randomly alternates
+     * with equal probability between treating the unvisited set as a stack and a queue. This results in a higher branching
+     * factor than BFS, thus a less obvious solution, but it is still a lot more solvable than a pure DFS.
      */
     hybrid : () => {
       return backtrack((s) => {
-
         let n = floor(random(1, 101));
 
         if (n % 2 === 0)
@@ -95,11 +79,7 @@ const backtrack = (() => {
 
         else
           return s.pop();
-
       });
-
     }
-
   }
-
 })();
