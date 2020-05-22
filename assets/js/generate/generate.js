@@ -26,7 +26,6 @@ function generate() {
     () => showMessage(strings.messages.generate.done)
   ];
 
-  // Initialize the grid
   trigger.initializing()
 
   // Initialize the queue

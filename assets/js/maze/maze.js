@@ -12,12 +12,9 @@ const Maze = (() => {
 
   // Initialize singleton
   function init() {
-
-    // Private attributes
     const grid  = new Array()
 
-    // p5 Canvas object that
-    // represents the html canvas
+    // p5 Canvas object that represents the html canvas
     let canvas
 
     // Cells
@@ -48,7 +45,6 @@ const Maze = (() => {
         !width  ||
         !height
       ) {
-
         throw new Error('Row / col count  and width must be positive integers')
       }
     }
@@ -59,7 +55,6 @@ const Maze = (() => {
      * Computes index of cell by cartesian coordinates
      */
     function index(i, j) {
-
       if (
         i < 0   ||
         j < 0   ||
@@ -75,7 +70,6 @@ const Maze = (() => {
 // PUBLIC ATTRIBUTES START HERE
 //==============================================================================
 
-    // Public attributes
     return {
 
       // Current cell during walk of maze
@@ -131,7 +125,6 @@ const Maze = (() => {
         }
       }) {
 
-        // Argument validation
         validate({
           rows   : rows,
           cols   : cols,
@@ -140,7 +133,6 @@ const Maze = (() => {
           height : height
         })
 
-        // Create p5 canvas object
         canvas = createCanvas(
           width,
           height
@@ -157,21 +149,17 @@ const Maze = (() => {
         grid.length = 0
         this.parents.clear()
 
-        // It's just a grid to start with
-        // so we are neither in the generated
+        // It's just a grid to start with so we are neither in the generated
         // state, nor the solved state.
         this.generated = false
         this.solved    = false
 
         this.resetWalk()
 
-        // Rows
+        // Loop through rows and cols
         for (let j = 0; j < r; j++) {
-
-          // Cols
           for (let i = 0; i < c; i++) {
             let t = new Cell(i, j, pathW)
-
             t.clear()
             grid.push(t)
           }
@@ -238,31 +226,26 @@ const Maze = (() => {
        */
       pave : function(u, v) {
 
-        // Vertical and horizontal
-        // distances between two cells
+        // Vertical and horizontal distances between two cells
         const x = u.i - v.i;
         const y = u.j - v.j;
 
         // They are next to each other
         if (x === 1) {
-
           u.bounds &= Cell.masks.unset.LEFT;
           v.bounds &= Cell.masks.unset.RIGHT;
 
         } else if (x === -1) {
-
           u.bounds &= Cell.masks.unset.RIGHT;
           v.bounds &= Cell.masks.unset.LEFT;
         }
 
         // They are on top of each other
         if (y === 1) {
-
           u.bounds &= Cell.masks.unset.TOP;
           v.bounds &= Cell.masks.unset.BOTTOM;
 
         } else if (y === -1) {
-
           u.bounds &= Cell.masks.unset.BOTTOM;
           v.bounds &= Cell.masks.unset.TOP;
         }
@@ -272,12 +255,9 @@ const Maze = (() => {
         v.clear()
       },
 
-      // Resets coloring, cost,
-      // heuristic, and visited status
+      // Resets coloring, cost, heuristic, and visited status
       reset : function() {
-
-        this.forEach( c => {
-
+        this.forEach(c => {
           c.heuristic = 0
           c.cost      = Infinity
           c.visited   = false
@@ -288,11 +268,9 @@ const Maze = (() => {
       },
 
       /**
-       * Removes any highlighting
-       * from all cells in grid.
+       * Removes any highlighting from all cells in grid.
        */
       clean : function() {
-
         grid.forEach( c => c.clear())
 
         return true
@@ -300,24 +278,15 @@ const Maze = (() => {
 
       // Highlights a path
       highlight : function() {
-
         let stop = true;
 
-        // Highlight current vertex
         maze.current.shade();
-
-        // Increment walk count
         maze.walk.length++;
-
-        // Get previous vertex
         maze.current = maze.parents.get(maze.current.key);
 
-        // If one came back
         if (maze.current) {
 
-          // Return false to indicate
-          // we still have more vertices
-          // in our path to highlight
+          // Return false to indicate we still have more vertices in our path to highlight
           stop = false;
         }
 
@@ -325,21 +294,18 @@ const Maze = (() => {
       },
 
       /**
-       * Saves the maze into a variable. This
-       * way, we can continue to solve the maze
+       * Saves the maze into a variable. This way, we can continue to solve the maze
        * and print the original maze later.
        */
       saveMaze : function() {
-
-        maze.images.maze = canvas.get()
+        maze.images.maze = canvas.get(0, 0, canvas.width, canvas.height)
       },
 
       /**
        * Saves the solved maze into a variable.
        */
       saveSolution : function() {
-
-        maze.images.solution = canvas.get()
+        maze.images.solution = canvas.get(0, 0, canvas.width, canvas.height)
       },
 
       /**
@@ -355,7 +321,6 @@ const Maze = (() => {
        * Labels a cell visited.
        */
       visit : function(cell) {
-
         this.walk.visits++
 
         if (!cell.visited) {
@@ -367,19 +332,16 @@ const Maze = (() => {
     }
   }
 
-  // Only expose getInstance(). This way
-  // we ensure that we only have one instance
+  // Only expose getInstance(). This way we ensure that we only have one instance
   // of the maze object in memory at a time.
   return {
 
     // Returns reference to Maze singleton
     getInstance : function() {
-
         if (!instance)
           instance = init()
 
         return instance
     }
   };
-
 })();

@@ -4,8 +4,7 @@
 const trigger = (() => {
 
   /**
-   * Triggers an specified event on all
-   * of it's subscribers from the subscribers map.
+   * Triggers an specified event on all of it's subscribers from the subscribers map.
    */
   function trigger(ev) {
     subscribers[ev].forEach(element => element.trigger(ev))
@@ -89,7 +88,5 @@ const trigger = (() => {
 
       return true
     }
-
   }
-
 })()

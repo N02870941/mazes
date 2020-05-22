@@ -89,9 +89,7 @@ function cancel() {
     // being interrupted, if it was a solver, just clean the maze,
     // so all highlighting is gone
     if (maze.solved || solver(prev)) {
-
       maze.forEach(c => {
-
         c.clear()
       });
 
@@ -99,12 +97,10 @@ function cancel() {
 
       maze.solved = false;
 
-    // If it was not a solver, and we were generating, just
-    // completely reinitialize the maze
+    // If it was not a solver, and we were generating, just completely reinitialize the maze
     } else {
       trigger.initializing()
     }
-
   });
 }
 
