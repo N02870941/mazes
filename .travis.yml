@@ -10,8 +10,6 @@ before_script:
 
 script:
   - bundle exec jekyll build
-
-after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t jabaridash/mazes .
   - docker push jabaridash/mazes
