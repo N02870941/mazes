@@ -25,30 +25,23 @@ const dijkstra = {
     // Found target?
     if (Cell.equals(maze.target(), u)) {
 
-      // Set current for
-      // backtracking
+      // Set current for backtracking
       maze.current = u;
 
       return true;
     }
 
-    // Get neighbors
     let neighbors = u.x();
 
-    // Loop through each one
-    neighbors.forEach( v => {
-
-      // Compute alternative cost
+    neighbors.forEach(v => {
       let cost = u.cost + 1;
 
-      // Is this better?
       if (cost < v.cost) {
 
         // Update parent
         maze.parents.set(v.key, u);
 
-        // Update cost, and decrease key
-        // If the key is new, a push() occurs
+        // Update cost, and decrease key If the key is new, a push() occurs
         queue.decrease(v, cost);
       }
     });

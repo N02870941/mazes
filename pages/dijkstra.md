@@ -20,13 +20,12 @@ dijkstra(graph, src, dst) {
 	let cost
 
 	// Add to heap with initial cost of infinity
-	graph.verticies.forEach( v => {
+	graph.verticies.forEach(v => {
 		if (v != src) {
 			v.cost = Infinity
 
 			unvisited.push(v)
 		}
-
 	})
 
 	// The start vertex has no parent

@@ -2,7 +2,7 @@
 The limitations of Dijkstra's algorithm is the reason we use A* (A Star). A* is an **informed search** that uses a heuristic function to help guide our search.
 
 ## What is a heuristic?
-The heuristic is an easy-to-compute value computed for each discovered vertex that we use to determine whether or not we are getting closer to our target. The equation follows.
+The heuristic is an easy-to-compute value that we compute for each discovered vertex so that we can determine whether or not we are getting closer to our target vertex. The equation follows.
 
 <p align="center">
   <img src="img/png/informed-search-equation.png"><br>
@@ -19,26 +19,26 @@ The `h(n)` function is very useful in that it helps us rule out expanding too wi
 
 However, there are some restrictions on `h(n)`.
 
-1. The unit should be the same as that `g(n)`.
+1. The unit of measurement should be the same as that `g(n)`.
 2. It **should** be admissible.
 
-If the unit of the heuristic function is not the same as the unit used by `g(n)`, then we are not approximating the **cost** - we are computing some other value. For example, for grids, sometimes the euclidian distance squared is used as the heuristic. If we are computing distance in centimeters, `g(n)` is in centimeters, and `h(n)` is in centimeters squared. We cannot add centimeters and centimeters squared. If we add just their magnitudes (ignoring units), provided that centimeters squared is an order of magnitude larger than centimeters, we will be imposing a **huge** bias on the heuristic over the aggregated cost `g(n)`. It turns out weighting the heuristic may be a good thing, but there are also some draw backs - most notabely that it breaks admissibility.
+If the unit of the heuristic function is not the same as the unit used by `g(n)`, then we are not approximating the **cost** - we are computing some other value. For example, for grids, sometimes the euclidian distance squared is used as the heuristic. If we are computing distance in centimeters, `g(n)` is in centimeters, and `h(n)` is in centimeters squared. We cannot add centimeters and centimeters squared. If we add just their magnitudes (ignoring units), provided that centimeters squared is an order of magnitude larger than centimeters, we will be imposing a **huge** bias on the heuristic over the aggregated cost `g(n)`. It turns out weighting the heuristic may be a good thing, but there are also some draw backs - most notably that it breaks admissibility.
 
 A heuristic function is **admissible** if it never overestimates. For the purpose of traversing a weighted graph using A*, this means the heuristic never returns an estimate path cost that exceeds the minimum cost path from the current node to the target. If it does, then the `f(n)` overestimates, gets assigned a lower priority in the priority queue, and potentially never gets explored if the target is found before it is dequeued. This will result in a sub-optimal solution because we have **narrowed the search too much**.
 
-The advantage of a non-admissible heuristic is if there are not many obsticals A* will not stray off on to too many paths because it is making decisions almost entirely based on the heuristic. For a good heuristic, this means we will find a solution very quickly - often times in a small amount of steps. The disadvantage is that a heuristic that overestimates is effectively overlooking potentially better options - kind of like tunnel vision.
+The advantage of a non-admissible heuristic is if there are not many obstacles, A* will not stray off on to too many paths because it is making decisions almost entirely based on the heuristic. For a good heuristic, this means we will find a solution very quickly - often times in a small amount of steps. The disadvantage is that a heuristic that overestimates is effectively overlooking potentially better options - kind of like tunnel vision.
 
-So, even though A* with a weighted heuristic will run very fast, if it is not admissible, it may not always return the optimal solution. For most applications this is okay, as it may be more valuable to find a solution that is slighlty sub-optimal extremely quickly than to do a near exhaustive search to find the exact optimal solution. There is math that says that we can pick a non-admissible heuristic that guarantees solutions with a cost that is some scalar multiple ε of the optimal solutions cost, where ε ≥ 1. Essentially we are "limiting the inefficiency" of the solution by some epsilon. This is called an ε-admissible heuristic. However, that is beyond the scope of this project.
+So, even though A* with a weighted heuristic will run very fast, if it is not admissible, it may not always return the optimal solution. For most applications this is okay, as it may be more valuable to find a solution that is slightly sub-optimal extremely quickly than to do a near exhaustive search to find the exact optimal solution. There is math that says that we can pick a non-admissible heuristic that guarantees solutions with a cost that is some scalar multiple ε of the optimal solution's cost, where ε ≥ 1. Essentially we are "limiting the inefficiency" of the solution by some epsilon. This is called an ε-admissible heuristic. However, that is beyond the scope of this project.
 
-## Chosing a heuristic
+## Choosing a heuristic
 Deciding on a heuristic function is highly dependent on the nature of the problem. For example, for a grid where diagonal movement is allowed, the straight-line (euclidian) distance is a good choice.
 
 
-However, for grids where only lateral movement is allowed euclidian almost always **underestimates** because we cannot actually ever go in a straight line. This is okay, as it will still lead to an optimal solution, but because it consistently underestimates, we will branch out very far and explore many more options than necessary. A better heuristic is manhattan distance.
+However, for grids where only lateral movement is allowed, euclidian almost always **underestimates** because we cannot actually ever go in a straight line. This is okay, as it will still lead to an optimal solution, but because it consistently underestimates, we will branch out very far and explore many more options than what is necessary. A better heuristic is manhattan distance.
 
 Manhattan distance is essentially creating a triangle between two points and instead of taking the length of the hypotenuse (euclidian distance), we sum the lengths of the other two sides. It can also be seen as follows:
 
-*You are in the upper-west side of Manhattan and you would like to get to the lower-east side. You compute your distance to your target by counting the number of blocks downtown you must walk and summing that with the number of blocks crosstown you must walk.*
+*You are in the upper-west side of Manhattan and you would like to get to the lower-east side. You compute your distance to your target by counting the number of blocks downtown you must walk and sum that with the number of blocks crosstown you must walk.*
 
 This gives us a more accurate yet still admissible approximation. In fact, for our purpose, if our maze had no walls, the manhattan distance would be a perfect heuristic, meaning it always estimates the exact distance to the target every time, thus producing a search that finds the optimal solution on it's first try and does not visit vertices that do not contribute to the final solution.
 
@@ -46,6 +46,76 @@ This gives us a more accurate yet still admissible approximation. In fact, for o
 The code for A* is nearly identical to that of Dijkstra's algorithm. The only difference is the function used when assigning order in the priority queue.
 
 Pseudo code follows:
+
+```javascript
+aStar(graph, src, dst, heuristic) {
+	let unvisited = []	// Heap
+	let neighbors = []	// Set
+	let parents   = []	// Map
+	let current
+	let cost
+
+	// Add to heap with initial cost of infinity and heuristic of 0
+	graph.verticies.forEach(v => {
+		if (v != src) {
+			v.cost = Infinity
+			v.heuristic = 0
+
+			unvisited.push(v)
+		}
+	})
+
+	parents[src.key] = null
+
+	src.cost = 0
+
+	unvisited.push(src)
+
+	while (unvisited.length > 0) {
+
+		// Get next vertex with min cost: f(n) = g(n) + h(n)
+		current = unvisited.min()
+
+		current.visited = true
+
+		if (current == dst) {
+			break
+		}
+
+		neighbors = current.neighbors()
+
+		// Discover each neighbor
+		neighbors.forEach(neighbor => {
+			if (neighbor.visited)
+				return
+
+			// Compute cost to go over one vertex
+			let cost = current.cost + 1
+
+			// Have we found a shorter path to this vertex?
+			if (cost < neighbor.cost) {
+				neighbor.cost = cost // g(n)
+				neighbor.heuristic = heuristic(neighbor, dst) // h(n)
+
+				parents[neighbor.key] = current.key
+
+				// Add to heap, sorting by f(n) = g(n) + h(n)
+				unvisited.decreaseKey(neighbor, neighbor.cost + neighbor.heuristic)
+			}
+		})
+	}
+
+	// Start at destination
+	current = dst
+
+	// Backtrack highlighting the path
+	while (current) {
+		current.highlight()
+
+		current = parents[current.key]
+	}
+}
+```
 
 
 ## Time complexity of A*

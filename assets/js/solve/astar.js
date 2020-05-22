@@ -46,7 +46,7 @@ const aStar = {
     let neighbors = u.x();
 
     // Loop through each one
-    neighbors.forEach( v => {
+    neighbors.forEach(v => {
 
       // Do no revisit visited nodes
       if (v.visited)
