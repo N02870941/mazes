@@ -1,35 +1,35 @@
 const links = [
   {
     text: "Home",
-    name: "/mazes/"
+    name: "/index.html"
   },
   {
     text: "Intuition",
-    name: "/mazes/pages/intuition.html"
+    name: "/pages/intuition.html"
   },
   {
     text: "Generting with backtracking",
-    name: "/mazes/pages/backtrack.html"
+    name: "/pages/backtrack.html"
   },
   {
     text: "Solving with DFS",
-    name: "/mazes/pages/dfs.html"
+    name: "/pages/dfs.html"
   },
   {
     text: "Solving with BFS",
-    name: "/mazes/pages/bfs.html"
+    name: "/pages/bfs.html"
   },
   {
     text: "Solving with Dijkstra's Algorithm",
-    name: "/mazes/pages/dijkstra.html"
+    name: "/pages/dijkstra.html"
   },
   {
     text: "Solving with A* search",
-    name: "/mazes/pages/aStar.html"
+    name: "/pages/aStar.html"
   },
   {
     text: "Performance comparison",
-    name: "/mazes/pages/performance.html"
+    name: "/pages/performance.html"
   }
 ]
 

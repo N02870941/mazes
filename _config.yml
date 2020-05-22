@@ -1,6 +1,6 @@
 theme: jekyll-theme-cayman
 index_page: README.md
-baseurl: "/mazes"
+baseurl: ""
 url: "https://n02870941.github.io"
 repository: "N02870941/mazes"
 sass:
