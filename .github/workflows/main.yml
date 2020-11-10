@@ -1,4 +1,4 @@
-name: Rails Unit Tests
+name: Jek
 
 on: [push, pull_request]
 
@@ -21,7 +21,7 @@ jobs:
       run: bundle exec jekyll build
 
     - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+      uses: w9jds/firebase-action@master
         with:
           args: deploy -m $GITHUB_SHA
         env:
