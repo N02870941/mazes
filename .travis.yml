@@ -2,6 +2,10 @@ language: ruby
 
 sudo: false
 
+env:
+  global:
+  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+
 rvm:
 - 2.3.3
 
@@ -10,13 +14,10 @@ before_script:
 
 script:
   - bundle exec jekyll build
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker build -t jabaridash/mazes .
-  - docker push jabaridash/mazes
 
-env:
-  global:
-  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
-
-on:
-  branch: master
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: firebase deploy --token "$FIREBASE_TOKEN" --non-interactive --only hosting
+  on:
+    branch: master
