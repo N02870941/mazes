@@ -22,7 +22,7 @@ jobs:
 
     - name: Deploy to Firebase
       uses: w9jds/firebase-action@master
-        with:
+      with:
           args: deploy -m $GITHUB_SHA
-        env:
+      env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
